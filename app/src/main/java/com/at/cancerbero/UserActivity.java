@@ -182,31 +182,31 @@ public class UserActivity extends AppCompatActivity {
 
         // Find which item was selected
         switch(item.getItemId()) {
-            case R.id.nav_user_add_attribute:
-                // Add a new attribute
-                addAttribute();
-                break;
+//            case R.id.nav_user_add_attribute:
+//                // Add a new attribute
+//                addAttribute();
+//                break;
 
             case R.id.nav_user_change_password:
                 // Change password
                 changePassword();
                 break;
-            case R.id.nav_user_verify_attribute:
-                // Confirm new user
-                // confirmUser();
-                attributesVerification();
-                break;
-            case R.id.nav_user_settings:
-                // Show user settings
-                showSettings();
-                break;
+//            case R.id.nav_user_verify_attribute:
+//                // Confirm new user
+//                // confirmUser();
+//                attributesVerification();
+//                break;
+//            case R.id.nav_user_settings:
+//                // Show user settings
+//                showSettings();
+//                break;
             case R.id.nav_user_sign_out:
                 // Sign out from this account
                 signOut();
                 break;
-            case R.id.nav_user_trusted_devices:
-                showTrustedDevices();
-                break;
+//            case R.id.nav_user_trusted_devices:
+//                showTrustedDevices();
+//                break;
             case R.id.nav_user_about:
                 // For the inquisitive
                 Intent aboutAppActivity = new Intent(this, AboutApp.class);
@@ -222,6 +222,9 @@ public class UserActivity extends AppCompatActivity {
 
     // Show user attributes from CIP service
     private void showAttributes() {
+        View navigationHeader = nDrawer.getHeaderView(0);
+        TextView navHeaderSubTitle = (TextView) navigationHeader.findViewById(R.id.textViewNavUserSub);
+        navHeaderSubTitle.setText(AppHelper.getUserDetails().getAttributes().getAttributes().get("given_name"));
         final UserAttributesAdapter attributesAdapter = new UserAttributesAdapter(getApplicationContext());
         final ListView attributesListView;
         attributesListView = (ListView) findViewById(R.id.listViewUserAttributes);

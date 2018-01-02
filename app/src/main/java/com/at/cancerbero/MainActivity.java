@@ -93,12 +93,12 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         // Set navigation drawer for this screen
-        mDrawer = (DrawerLayout) findViewById(R.id.main_drawer_layout);
-        mDrawerToggle = new ActionBarDrawerToggle(this,mDrawer, toolbar, R.string.nav_drawer_open, R.string.nav_drawer_close);
-        mDrawer.addDrawerListener(mDrawerToggle);
-        mDrawerToggle.syncState();
-        nDrawer = (NavigationView) findViewById(R.id.nav_view);
-        setNavDrawer();
+//        mDrawer = (DrawerLayout) findViewById(R.id.main_drawer_layout);
+//        mDrawerToggle = new ActionBarDrawerToggle(this,mDrawer, toolbar, R.string.nav_drawer_open, R.string.nav_drawer_close);
+//        mDrawer.addDrawerListener(mDrawerToggle);
+//        mDrawerToggle.syncState();
+//        nDrawer = (NavigationView) findViewById(R.id.nav_view);
+//        setNavDrawer();
 
         // Initialize application
         AppHelper.init(getApplicationContext());
@@ -453,7 +453,7 @@ public class MainActivity extends AppCompatActivity {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 if(s.length() == 0) {
                     TextView label = (TextView) findViewById(R.id.textViewUserIdLabel);
-                    label.setText(R.string.Username);
+                    label.setText(R.string.email);
                     inUsername.setBackground(getDrawable(R.drawable.text_border_selector));
                 }
             }
