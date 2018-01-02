@@ -92,7 +92,7 @@
         android:layout_centerHorizontal="true"
         android:background="@drawable/text_border_selector"
         android:hint="@string/email"
-        android:inputType="textEmailAddress"/>
+        android:inputType="textEmailAddress"
         android:paddingLeft="@dimen/activity_text_padding"
         android:paddingRight="@dimen/activity_text_padding" />
 
