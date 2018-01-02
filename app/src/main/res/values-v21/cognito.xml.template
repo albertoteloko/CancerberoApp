@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="userPoolId"></string>
+    <string name="clientId"></string>
+    <string name="clientSecret"></string>
+    <string name="region">eu-central-1</string>
+</resources>
