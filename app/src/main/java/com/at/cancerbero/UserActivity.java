@@ -222,6 +222,7 @@ public class UserActivity extends AppCompatActivity {
 
     // Show user attributes from CIP service
     private void showAttributes() {
+        Log.i("TOKEN", AppHelper.getCurrSession().getAccessToken().getJWTToken());
         View navigationHeader = nDrawer.getHeaderView(0);
         TextView navHeaderSubTitle = (TextView) navigationHeader.findViewById(R.id.textViewNavUserSub);
         navHeaderSubTitle.setText(AppHelper.getUserDetails().getAttributes().getAttributes().get("given_name"));
