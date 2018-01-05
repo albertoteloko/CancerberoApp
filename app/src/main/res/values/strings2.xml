@@ -1,0 +1,43 @@
+<resources>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="menu_save">Save</string>
+    <string name="menu_cancel">Cancel</string>
+
+    <string name="label_loading">Loading</string>
+    <string name="label_singUp">Signing Up</string>
+
+    <string name="label_email">EMail:</string>
+    <string name="label_password">Password:</string>
+
+    <string name="label_forgot_password">Forgot Password?</string>
+    <string name="label_sign_up">Sign Up!</string>
+    <string name="label_sign_in">Sign In!</string>
+
+    <string name="message_invalid_credentials">Invalid credentials</string>
+    <string name="message_user_cant_be_created">User cant be created</string>
+    <string name="message_unable_to_connect_with_the_server">Unable to connect with the server</string>
+    <string name="message_saving_food">Saving food...</string>
+    <string name="message_unable_to_save_food">Unable to save food, please try it again later</string>
+    <string name="label_no_items">No Shared Food</string>
+    <string name="menu_edit_food">Edit Food</string>
+    <string name="menu_accept_food">Accept Food</string>
+    <string name="menu_details_food">Food Details</string>
+    <string name="menu_delete_food">Delete Food</string>
+    <string name="message_deleting_food">Deleting Food...</string>
+    <string name="message_unable_to_delete_food">Unable to delete food, try it later</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="action_profile">Profile</string>
+
+    <string-array name="walking_time">
+        <item>5 Min</item>
+        <item>10 Min</item>
+        <item>15 Min</item>
+        <item>20 Min</item>
+        <item>25 Min</item>
+        <item>30 Min</item>
+    </string-array>
+
+</resources>

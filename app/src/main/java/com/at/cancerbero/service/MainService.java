@@ -6,6 +6,16 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoDevice;
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUser;
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserDetails;
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserPool;
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserSession;
+import com.at.cancerbero.activities.MainActivity;
+import com.at.cancerbero.service.handlers.Event;
+
+import java.util.Set;
+
 public class MainService extends Service {
 
     private static MainService instance;
@@ -23,6 +33,23 @@ public class MainService extends Service {
     protected final String TAG = getClass().getSimpleName();
 
     private final IBinder mBinder = new MainBinder();
+
+
+    private CognitoUserPool userPool;
+    private CognitoDevice newDevice;
+    private CognitoUser currentUser;
+
+    private CognitoUserSession currSession;
+    private CognitoUserDetails userDetails;
+
+    // User details to display - they are the current values, including any local modification
+    private boolean phoneVerified;
+    private boolean emailVerified;
+
+    private boolean phoneAvailable;
+    private boolean emailAvailable;
+
+    private Set<String> currUserAttributes;
 
 //    public void delegateLogin(final LoginController loginController) {
 //        new ServiceAsyncTask(this, R.string.message_invalid_credentials) {
@@ -54,7 +81,6 @@ public class MainService extends Service {
         return Service.START_STICKY;
     }
 
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -70,21 +96,24 @@ public class MainService extends Service {
         instance = null;
     }
 
+    public CognitoUser getCurrentUser() {
+        return currentUser;
+    }
 
-//    void sendEvent(Event event) {
-//        MainActivity mainActivity = MainActivity.getInstance();
-//        if ((mainActivity != null) && (event != null)) {
-//            mainActivity.handle(event);
-//        }
-//    }
-//
-//    void sendEventUI(final Event event) {
-//        final MainActivity mainActivity = MainActivity.getInstance();
-//        mainActivity.runOnUiThread(new Runnable() {
-//            public void run() {
-//                mainActivity.handle(event);
-//            }
-//        });
-//    }
+    void sendEvent(Event event) {
+        MainActivity mainActivity = MainActivity.getInstance();
+        if ((mainActivity != null) && (event != null)) {
+            mainActivity.handle(event);
+        }
+    }
+
+    void sendEventUI(final Event event) {
+        final MainActivity mainActivity = MainActivity.getInstance();
+        mainActivity.runOnUiThread(new Runnable() {
+            public void run() {
+                mainActivity.handle(event);
+            }
+        });
+    }
 
 }
