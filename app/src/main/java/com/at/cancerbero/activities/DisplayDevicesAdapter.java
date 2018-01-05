@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.at.cancerbero;
+package com.at.cancerbero.activities;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -26,19 +26,23 @@ import android.widget.TextView;
 
 import com.at.cancerbero.CancerberoApp.R;
 
-public class FirstTimeLoginAttributesDisplayAdapter extends BaseAdapter {
-    private String TAG = "FirstTimeLoginDetails";
+/**
+ * Adapter to show device details on the screen.
+ */
+public class DisplayDevicesAdapter extends BaseAdapter {
+    private String TAG = "DisplayDevicesAdapter";
     private Context context;
     private int count;
     private static LayoutInflater layoutInflater;
 
-    public FirstTimeLoginAttributesDisplayAdapter(Context context) {
+    public DisplayDevicesAdapter(Context context) {
         this.context = context;
 
-        count = AppHelper.getFirstTimeLogInItemsCount();
+        count = AppHelper.getDevicesCount();
 
         layoutInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
+
     @Override
     public int getCount() {
         return count;
@@ -58,7 +62,7 @@ public class FirstTimeLoginAttributesDisplayAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         Holder holder;
 
-        if(convertView == null) {
+        if (convertView == null) {
             convertView = layoutInflater.inflate(R.layout.fields_generic, null);
             holder = new Holder();
             holder.label = (TextView) convertView.findViewById(R.id.textViewUserDetailLabel);
@@ -66,21 +70,31 @@ public class FirstTimeLoginAttributesDisplayAdapter extends BaseAdapter {
             holder.message = (TextView) convertView.findViewById(R.id.textViewUserDetailMessage);
 
             convertView.setTag(holder);
-        }
-        else {
+        } else {
             holder = (Holder) convertView.getTag();
         }
 
-        ItemToDisplay item = AppHelper.getUserAttributeForFirstLogInCheck(position);
+        ItemToDisplay item = AppHelper.getDeviceForDisplay(position);
         holder.label.setText(item.getLabelText());
         holder.label.setTextColor(item.getLabelColor());
         holder.data.setHint(item.getLabelText());
         holder.data.setText(item.getDataText());
         holder.data.setTextColor(item.getDataColor());
+        int resID = 0;
+        if(item.getDataDrawable() != null) {
+            if(item.getDataDrawable().equals("checked")) {
+                resID = R.drawable.checked;
+            }
+            else if(item.getDataDrawable().equals("not_checked")) {
+                resID = R.drawable.not_checked;
+            }
+        }
+        holder.data.setCompoundDrawablesWithIntrinsicBounds(0, 0, resID, 0);
         holder.message.setText(item.getMessageText());
         holder.message.setTextColor(item.getMessageColor());
 
         return convertView;
+
     }
 
     // Helper class to recycle View's

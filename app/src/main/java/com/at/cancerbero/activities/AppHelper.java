@@ -15,10 +15,9 @@
  * limitations under the License.
  */
 
-package com.at.cancerbero;
+package com.at.cancerbero.activities;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.util.Log;
 
@@ -27,7 +26,6 @@ import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserAttribu
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserDetails;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserPool;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserSession;
-import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.cognitoidentityprovider.model.AttributeType;
 

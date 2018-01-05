@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.at.cancerbero.MainActivity"
+            android:name="com.at.cancerbero.activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,56 +21,68 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.at.cancerbero.UserActivity"
+            android:name="com.at.cancerbero.activities.UserActivity"
             android:label="@string/title_activity_user"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.at.cancerbero.RegisterUser"
+            android:name="com.at.cancerbero.activities.RegisterUser"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.at.cancerbero.AboutApp"
+            android:name="com.at.cancerbero.activities.AboutApp"
             android:label="@string/title_activity_about_app"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.at.cancerbero.SignUpConfirm"
+            android:name="com.at.cancerbero.activities.SignUpConfirm"
             android:label="@string/title_activity_sign_up_confirm"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.at.cancerbero.MFAActivity"
+            android:name="com.at.cancerbero.activities.MFAActivity"
             android:label="@string/title_activity_mfa"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.at.cancerbero.ForgotPasswordActivity"
+            android:name="com.at.cancerbero.activities.ForgotPasswordActivity"
             android:label="@string/title_activity_forgot_password"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.at.cancerbero.SettingsActivity"
+            android:name="com.at.cancerbero.activities.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.at.cancerbero.ChangePasswordActivity"
+            android:name="com.at.cancerbero.activities.ChangePasswordActivity"
             android:label="@string/title_activity_change_password"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.at.cancerbero.VerifyActivity"
+            android:name="com.at.cancerbero.activities.VerifyActivity"
             android:label="@string/title_activity_verify"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.at.cancerbero.AddAttributeActivity"
+            android:name="com.at.cancerbero.activities.AddAttributeActivity"
             android:label="@string/title_activity_add_attribute"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.at.cancerbero.DeviceSettings"
+            android:name="com.at.cancerbero.activities.DeviceSettings"
             android:label="@string/title_activity_device_settings"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.at.cancerbero.NewPassword"
+            android:name="com.at.cancerbero.activities.NewPassword"
             android:label="@string/title_activity_new_password"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.at.cancerbero.ChooseMFA"
+            android:name="com.at.cancerbero.activities.ChooseMFA"
             android:label="@string/title_activity_choose_mfa"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <service
+            android:name="com.at.cancerbero.service.MainService"
+            android:enabled="true"
+            android:exported="true"></service>
+
+        <receiver android:name="com.at.cancerbero.service.receivers.MainServiceStartBootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name="com.at.cancerbero.service.receivers.MainServiceStartReceiver"></receiver>
     </application>
 
 </manifest>

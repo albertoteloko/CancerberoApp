@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.at.cancerbero;
+package com.at.cancerbero.activities;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -222,7 +222,9 @@ public class UserActivity extends AppCompatActivity {
 
     // Show user attributes from CIP service
     private void showAttributes() {
-        Log.i("TOKEN", AppHelper.getCurrSession().getAccessToken().getJWTToken());
+        Log.i("ACC TOKEN", AppHelper.getCurrSession().getAccessToken().getJWTToken());
+        Log.i("ID  TOKEN", AppHelper.getCurrSession().getIdToken().getJWTToken());
+        Log.i("Attr", AppHelper.getUserDetails().getAttributes().getAttributes().toString());
         View navigationHeader = nDrawer.getHeaderView(0);
         TextView navHeaderSubTitle = (TextView) navigationHeader.findViewById(R.id.textViewNavUserSub);
         navHeaderSubTitle.setText(AppHelper.getUserDetails().getAttributes().getAttributes().get("given_name"));

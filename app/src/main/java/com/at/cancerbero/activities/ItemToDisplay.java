@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.at.cancerbero;
+package com.at.cancerbero.activities;
 
 public class ItemToDisplay {
     // Text for display

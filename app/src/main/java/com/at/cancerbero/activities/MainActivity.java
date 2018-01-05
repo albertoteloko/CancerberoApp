@@ -15,12 +15,16 @@
  * limitations under the License.
  */
 
-package com.at.cancerbero;
+package com.at.cancerbero.activities;
 
 import android.app.ProgressDialog;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
+import android.os.IBinder;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
@@ -49,6 +53,7 @@ import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.Choo
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.AuthenticationHandler;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.ForgotPasswordHandler;
 import com.at.cancerbero.CancerberoApp.R;
+import com.at.cancerbero.service.MainService;
 
 import java.util.List;
 import java.util.Locale;
@@ -80,8 +85,12 @@ public class MainActivity extends AppCompatActivity {
 
     // Mandatory overrides first
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Intent intent = new Intent(this, MainService.class);
+        startService(intent);
+
         setContentView(R.layout.activity_main);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
@@ -104,6 +113,19 @@ public class MainActivity extends AppCompatActivity {
         AppHelper.init(getApplicationContext());
         initApp();
         findCurrent();
+
+        bindService(intent, new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                Log.i(TAG, "Service connected!");
+                unbindService(this);
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+
+            }
+        }, Context.BIND_AUTO_CREATE);
     }
 
     @Override

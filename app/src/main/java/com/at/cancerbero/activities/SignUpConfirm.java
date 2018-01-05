@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.at.cancerbero;
+package com.at.cancerbero.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;

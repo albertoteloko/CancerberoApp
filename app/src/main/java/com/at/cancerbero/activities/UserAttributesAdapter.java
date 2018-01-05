@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.at.cancerbero;
+package com.at.cancerbero.activities;
 
 
 import android.content.Context;
@@ -27,24 +27,19 @@ import android.widget.TextView;
 
 import com.at.cancerbero.CancerberoApp.R;
 
-/**
- * Displays user MFA options.
- */
-
-public class DisplayMfaOptionsAdapter extends BaseAdapter {
-    private String TAG = "DisplayDevicesAdapter";
+public class UserAttributesAdapter extends BaseAdapter {
+    private String TAG = "UserAttributesAdapter";
     private Context context;
     private int count;
     private static LayoutInflater layoutInflater;
 
-    public DisplayMfaOptionsAdapter(Context context) {
+    public UserAttributesAdapter(Context context) {
         this.context = context;
 
-        count = AppHelper.getMfaOptionsCount();
+        count = AppHelper.getItemCount();
 
         layoutInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
-
     @Override
     public int getCount() {
         return count;
@@ -62,21 +57,22 @@ public class DisplayMfaOptionsAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        DisplayMfaOptionsAdapter.Holder holder;
+        Holder holder;
 
-        if (convertView == null) {
+        if(convertView == null) {
             convertView = layoutInflater.inflate(R.layout.fields_generic, null);
-            holder = new DisplayMfaOptionsAdapter.Holder();
+            holder = new Holder();
             holder.label = (TextView) convertView.findViewById(R.id.textViewUserDetailLabel);
             holder.data = (TextView) convertView.findViewById(R.id.editTextUserDetailInput);
             holder.message = (TextView) convertView.findViewById(R.id.textViewUserDetailMessage);
 
             convertView.setTag(holder);
-        } else {
-            holder = (DisplayMfaOptionsAdapter.Holder) convertView.getTag();
+        }
+        else {
+            holder = (Holder) convertView.getTag();
         }
 
-        ItemToDisplay item = AppHelper.getMfaOptionForDisplay(position);
+        ItemToDisplay item = AppHelper.getItemForDisplay(position);
         holder.label.setText(item.getLabelText());
         holder.label.setTextColor(item.getLabelColor());
         holder.data.setHint(item.getLabelText());
@@ -96,7 +92,6 @@ public class DisplayMfaOptionsAdapter extends BaseAdapter {
         holder.message.setTextColor(item.getMessageColor());
 
         return convertView;
-
     }
 
     // Helper class to recycle View's
