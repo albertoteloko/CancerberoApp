@@ -1,5 +1,6 @@
 package com.at.cancerbero.fragments;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -29,6 +30,10 @@ public abstract class AppFragment extends Fragment implements Handler {
 
     public AlertDialog showDialogMessage(String title, String body) {
         return getMainActivity().showDialogMessage(title, body);
+    }
+
+    public ProgressDialog showProgressMessage(String message) {
+        return getMainActivity().showProgressMessage(message);
     }
 
     public void afterCreation(MainActivity mainActivity, Bundle arguments) {

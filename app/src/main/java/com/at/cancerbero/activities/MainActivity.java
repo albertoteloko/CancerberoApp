@@ -1,5 +1,6 @@
 package com.at.cancerbero.activities;
 
+import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -23,6 +24,7 @@ import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.Chal
 import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.fragments.AboutFragment;
 import com.at.cancerbero.fragments.AppFragment;
+import com.at.cancerbero.fragments.ChangePasswordFragment;
 import com.at.cancerbero.fragments.LandingFragment;
 import com.at.cancerbero.fragments.LoadingFragment;
 import com.at.cancerbero.fragments.LoginFirstTimeFragment;
@@ -101,6 +103,13 @@ public class MainActivity extends AppCompatActivity implements Handler {
         AlertDialog dialog = builder.create();
         dialog.show();
         return dialog;
+    }
+
+    public ProgressDialog showProgressMessage(String message) {
+        ProgressDialog waitDialog = new ProgressDialog(this);
+        waitDialog.setTitle(message);
+        waitDialog.show();
+        return waitDialog;
     }
 
     public void changeFragment(Class<? extends AppFragment> fragmentClass, Bundle params) {
@@ -198,6 +207,9 @@ public class MainActivity extends AppCompatActivity implements Handler {
                 break;
             case R.id.nav_user_about:
                 changeFragment(AboutFragment.class);
+                break;
+            case R.id.nav_user_change_password:
+                changeFragment(ChangePasswordFragment.class);
                 break;
         }
     }

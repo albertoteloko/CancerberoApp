@@ -21,10 +21,13 @@ import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.Forg
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.MultiFactorAuthenticationContinuation;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.NewPasswordContinuation;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.AuthenticationHandler;
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.GenericHandler;
 import com.amazonaws.regions.Regions;
 import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.activities.MainActivity;
 import com.at.cancerbero.service.handlers.AuthenticationChallenge;
+import com.at.cancerbero.service.handlers.ChangePasswordFail;
+import com.at.cancerbero.service.handlers.ChangePasswordSuccess;
 import com.at.cancerbero.service.handlers.Event;
 import com.at.cancerbero.service.handlers.LogInFail;
 import com.at.cancerbero.service.handlers.LogInSuccess;
@@ -155,6 +158,20 @@ public class MainService extends Service {
     public void login(final String email, final String password) {
         AuthenticationHandler handler = getAuthenticationHandler(email, password);
         userPool.getUser(email).getSessionInBackground(handler);
+    }
+
+    public void changePassword(String oldPassword, String newPassword) {
+        userPool.getCurrentUser().changePasswordInBackground(oldPassword, newPassword, new GenericHandler() {
+            @Override
+            public void onSuccess() {
+                sendEvent(new ChangePasswordSuccess());
+            }
+
+            @Override
+            public void onFailure(Exception exception) {
+                sendEvent(new ChangePasswordFail(exception));
+            }
+        });
     }
 
     public void logout() {
