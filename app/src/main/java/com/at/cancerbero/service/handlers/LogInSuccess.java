@@ -9,11 +9,11 @@ import lombok.ToString;
 
 @ToString
 @EqualsAndHashCode
-public class LogInSucess implements Event {
+public class LogInSuccess implements Event {
     public final CognitoUserSession cognitoUserSession;
     public final CognitoDevice device;
 
-    public LogInSucess(CognitoUserSession cognitoUserSession, CognitoDevice device) {
+    public LogInSuccess(CognitoUserSession cognitoUserSession, CognitoDevice device) {
         this.cognitoUserSession = cognitoUserSession;
         this.device = device;
     }

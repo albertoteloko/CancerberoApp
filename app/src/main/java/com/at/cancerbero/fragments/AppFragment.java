@@ -1,10 +1,12 @@
 package com.at.cancerbero.fragments;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,6 +29,20 @@ public abstract class AppFragment extends Fragment implements Handler {
 
     public void showErrorDialog(String error) {
         Toast.makeText(getActivity().getApplicationContext(), error, Toast.LENGTH_SHORT).show();
+    }
+
+
+    public AlertDialog showDialogMessage(String title, String body) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(title).setMessage(body).setNeutralButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        return dialog;
     }
 
     public void afterCreation(MainActivity mainActivity, Bundle arguments) {
@@ -58,9 +74,9 @@ public abstract class AppFragment extends Fragment implements Handler {
         return getMainActivity().getSupportActionBar();
     }
 
-    public TabLayout getTabLayout() {
-        return (TabLayout) getMainActivity().findViewById(R.id.layout_tabs);
-    }
+//    public TabLayout getTabLayout() {
+//        return (TabLayout) getMainActivity().findViewById(R.id.layout_tabs);
+//    }
 
     @Override
     public final void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -77,10 +93,10 @@ public abstract class AppFragment extends Fragment implements Handler {
     public final View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(false);
 
-        TabLayout tabLayout = getTabLayout();
-        tabLayout.removeAllTabs();
-        tabLayout.setVisibility(View.GONE);
-        tabLayout.setOnTabSelectedListener(null);
+//        TabLayout tabLayout = getTabLayout();
+//        tabLayout.removeAllTabs();
+//        tabLayout.setVisibility(View.GONE);
+//        tabLayout.setOnTabSelectedListener(null);
 
         getSupportActionBar().hide();
 //        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(false);

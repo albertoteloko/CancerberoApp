@@ -18,6 +18,8 @@ public class LandingFragment extends AppFragment {
     public View onCreateViewApp(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_landing, container, false);
 
+        getSupportActionBar().show();
+
         // Login Controllers
 
 

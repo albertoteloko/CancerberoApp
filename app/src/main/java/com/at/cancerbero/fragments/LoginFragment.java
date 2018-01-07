@@ -17,6 +17,7 @@ import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.service.handlers.AuthenticationChallenge;
 import com.at.cancerbero.service.handlers.Event;
 import com.at.cancerbero.service.handlers.LogInFail;
+import com.at.cancerbero.service.handlers.LogInSuccess;
 
 public class LoginFragment extends AppFragment {
 
@@ -132,23 +133,20 @@ public class LoginFragment extends AppFragment {
             if (!exception.getMessage().equals("user ID cannot be null")) {
                 showErrorDialog("Unable to log in");
             }
-        }else if(event instanceof AuthenticationChallenge){
+            result = true;
+        } else if (event instanceof LogInSuccess) {
+            LogInSuccess logInSuccess = ((LogInSuccess) event);
+
+            changeFragment(LandingFragment.class);
+            result = true;
+        } else if (event instanceof AuthenticationChallenge) {
             ChallengeContinuation continuation = ((AuthenticationChallenge) event).continuation;
             getMainActivity().setChallengeContinuation(continuation);
             if ("NEW_PASSWORD_REQUIRED".equals(continuation.getChallengeName())) {
-                // This is the first sign-in attempt for an admin created user
-//                newPasswordContinuation = (NewPasswordContinuation) continuation;
-//                AppHelper.setUserAttributeForDisplayFirstLogIn(newPasswordContinuation.getCurrentUserAttributes(),
-//                        newPasswordContinuation.getRequiredAttributes());
-//                closeWaitDialog();
-//                firstTimeSignIn();
                 changeFragment(LoginFirstTimeFragment.class);
             } else if ("SELECT_MFA_TYPE".equals(continuation.getChallengeName())) {
-//                closeWaitDialog();
-//                mfaOptionsContinuation = (ChooseMfaContinuation) continuation;
-//                List<String> mfaOptions = mfaOptionsContinuation.getMfaOptions();
-//                selectMfaToSignIn(mfaOptions, continuation.getParameters());
             }
+            result = true;
         }
 
         return result;

@@ -6,10 +6,15 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.ChallengeContinuation;
@@ -59,6 +64,11 @@ public class MainActivity extends AppCompatActivity implements Handler {
     }
 
     private AppFragment currentFragment;
+
+    private NavigationView nDrawer;
+    private DrawerLayout mDrawer;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private Toolbar toolbar;
 
     private Bundle bundle = new Bundle();
 
@@ -132,8 +142,20 @@ public class MainActivity extends AppCompatActivity implements Handler {
         Intent intent = new Intent(this, MainService.class);
         startService(intent);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        toolbar.setTitle("");
+        TextView main_title = (TextView) findViewById(R.id.main_toolbar_title);
+        main_title.setText(R.string.app_name);
         setSupportActionBar(toolbar);
+
+        // Set navigation drawer for this screen
+        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerToggle = new ActionBarDrawerToggle(this,mDrawer, toolbar, R.string.nav_drawer_open, R.string.nav_drawer_close);
+        mDrawer.addDrawerListener(mDrawerToggle);
+        mDrawerToggle.syncState();
+
+        nDrawer = (NavigationView) findViewById(R.id.nav_view);
+        setNavDrawer();
 
         changeFragment(LoadingFragment.class);
 
@@ -150,6 +172,29 @@ public class MainActivity extends AppCompatActivity implements Handler {
 
             }
         }, Context.BIND_AUTO_CREATE);
+    }
+
+
+    // Handle when the a navigation item is selected
+    private void setNavDrawer() {
+        nDrawer.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem item) {
+                performAction(item);
+                return true;
+            }
+        });
+    }
+
+    // Perform the action for the selected navigation item
+    private void performAction(MenuItem item) {
+        // Close the navigation drawer
+        mDrawer.closeDrawers();
+
+        // Find which item was selected
+        switch (item.getItemId()) {
+
+        }
     }
 
     @SuppressWarnings("unchecked")

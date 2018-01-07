@@ -17,7 +17,6 @@ import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.Auth
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.AuthenticationDetails;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.ChallengeContinuation;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.ChooseMfaContinuation;
-import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.CognitoIdentityProviderContinuation;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.ForgotPasswordContinuation;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.MultiFactorAuthenticationContinuation;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.NewPasswordContinuation;
@@ -28,7 +27,7 @@ import com.at.cancerbero.service.handlers.AuthenticationChallenge;
 import com.at.cancerbero.service.handlers.Event;
 import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.service.handlers.LogInFail;
-import com.at.cancerbero.service.handlers.LogInSucess;
+import com.at.cancerbero.service.handlers.LogInSuccess;
 import com.at.cancerbero.service.handlers.MultiFactorAuthentication;
 
 import java.util.Map;
@@ -182,7 +181,7 @@ public class MainService extends Service {
             public void onSuccess(CognitoUserSession userSession, CognitoDevice newDevice) {
                 MainService.this.currSession = userSession;
                 MainService.this.device = newDevice;
-                sendEvent(new LogInSucess(userSession, newDevice));
+                sendEvent(new LogInSuccess(userSession, newDevice));
             }
 
             @Override
@@ -229,7 +228,7 @@ public class MainService extends Service {
 //            Log.d(TAG, " -- Auth Success");
 //            MainService.this.currSession = cognitoUserSession;
 //            MainService.this.device = device;
-//            sendEvent(new LogInSucess(cognitoUserSession, device));
+//            sendEvent(new LogInSuccess(cognitoUserSession, device));
 //        }
 //
 //        @Override

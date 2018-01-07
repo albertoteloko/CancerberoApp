@@ -65,11 +65,33 @@
         android:layout_alignStart="@+id/textViewNewPassPassMessage"
         android:id="@+id/newPassSpace2" />
 
-    <ListView
-        android:layout_below="@+id/newPassSpace2"
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/listViewCurrentUserDetails"/>
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textSize="@dimen/activity_text_size_small"
+        android:text=" "
+        android:id="@+id/textViewNewNameLabel"
+        android:layout_below="@+id/newPassSpace2"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/activity_text_height"
+        android:paddingLeft="@dimen/activity_text_padding"
+        android:paddingRight="@dimen/activity_text_padding"
+        android:id="@+id/editTextName"
+        android:layout_below="@+id/textViewNewNameLabel"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/text_border_selector"
+        android:hint="@string/label_name"
+        android:inputType="text"/>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="20px"
+        android:id="@+id/newPassSpace3"
+        android:layout_below="@+id/editTextName" />
 
     <Button
         android:layout_width="match_parent"
@@ -81,13 +103,7 @@
         android:background="@drawable/button_selector"
         android:id="@+id/buttonNewPass"
         android:layout_centerHorizontal="true"
-        android:layout_above="@+id/newPassSpace3" />
+        android:layout_below="@+id/newPassSpace3" />
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="20px"
-        android:layout_alignStart="@+id/textViewNewPassPassMessage"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/newPassSpace3" />
 
 </RelativeLayout>

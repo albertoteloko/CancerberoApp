@@ -51,12 +51,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/app_main_screen_title"
+        android:text="Welcome"
         android:textColor="@color/toolbar_items"
-        android:id="@+id/textViewNavMain"
+        android:id="@+id/textViewNavUser"
         android:layout_centerVertical="true"
         android:layout_below="@+id/nav_header_space_2"
         android:layout_toEndOf="@+id/imageViewAppMainCognitoIcon"
+        android:paddingLeft="@dimen/activity_text_padding"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="User"
+        android:textColor="@color/toolbar_items"
+        android:id="@+id/textViewNavUserSub"
+        android:layout_below="@+id/textViewNavUser"
+        android:layout_alignStart="@+id/textViewNavUser"
         android:paddingLeft="@dimen/activity_text_padding"/>
 
     <Space
