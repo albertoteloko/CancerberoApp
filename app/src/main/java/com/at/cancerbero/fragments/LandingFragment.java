@@ -30,5 +30,6 @@ public class LandingFragment extends AppFragment {
     public void onResume() {
         super.onResume();
         getMainService().loadUserDetails();
+        getMainService().loadInstallations();
     }
 }

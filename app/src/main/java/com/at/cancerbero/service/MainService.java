@@ -27,6 +27,8 @@ import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.GetDetail
 import com.amazonaws.regions.Regions;
 import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.activities.MainActivity;
+import com.at.cancerbero.model.Installation;
+import com.at.cancerbero.server.APIGatewayServerClient;
 import com.at.cancerbero.service.handlers.AuthenticationChallenge;
 import com.at.cancerbero.service.handlers.ChangePasswordFail;
 import com.at.cancerbero.service.handlers.ChangePasswordSuccess;
@@ -34,6 +36,7 @@ import com.at.cancerbero.service.handlers.Event;
 import com.at.cancerbero.service.handlers.ForgotPasswordFail;
 import com.at.cancerbero.service.handlers.ForgotPasswordStart;
 import com.at.cancerbero.service.handlers.ForgotPasswordSuccess;
+import com.at.cancerbero.service.handlers.InstallationLoaded;
 import com.at.cancerbero.service.handlers.LogInFail;
 import com.at.cancerbero.service.handlers.LogInSuccess;
 import com.at.cancerbero.service.handlers.Logout;
@@ -74,6 +77,26 @@ public class MainService extends Service {
     private NewPasswordContinuation newPasswordContinuation;
     private ChooseMfaContinuation mfaOptionsContinuation;
 
+    private APIGatewayServerClient serverClient;
+
+    public void loadInstallations() {
+        ServiceAsyncTask serviceAsyncTask = new ServiceAsyncTask(this) {
+            @Override
+            public Event run() {
+                Set<Installation> myFood = getServerClient().loadInstallations();
+                Log.i(TAG, "My installation: " + myFood);
+                return new InstallationLoaded(myFood);
+            }
+        };
+        serviceAsyncTask.execute();
+    }
+
+    private APIGatewayServerClient getServerClient() {
+        Log.d(TAG, "ACC T: " + currSession.getAccessToken().getJWTToken());
+        Log.d(TAG, "Id  T: " + currSession.getIdToken().getJWTToken());
+        serverClient.setToken(currSession.getIdToken().getJWTToken());
+        return serverClient;
+    }
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -100,6 +123,8 @@ public class MainService extends Service {
         // Create a user pool with default ClientConfiguration
         userPool = new CognitoUserPool(context, userPoolId, clientId, clientSecret, cognitoRegion);
 
+        String baseUrl = context.getResources().getString(R.string.backEndUrl);
+        serverClient = new APIGatewayServerClient(baseUrl, false);
     }
 
     @Override
@@ -161,7 +186,6 @@ public class MainService extends Service {
             forgotPasswordContinuation.setVerificationCode(verCode);
             forgotPasswordContinuation.continueTask();
         }
-
     }
 
     public void login() {

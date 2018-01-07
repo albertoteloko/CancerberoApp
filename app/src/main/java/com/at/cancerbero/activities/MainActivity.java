@@ -36,6 +36,7 @@ import com.at.cancerbero.service.handlers.Handler;
 import com.at.cancerbero.service.handlers.LogInFail;
 import com.at.cancerbero.service.handlers.LogInSuccess;
 import com.at.cancerbero.service.handlers.Logout;
+import com.at.cancerbero.service.handlers.ServerError;
 import com.at.cancerbero.service.handlers.UserDetailsSuccess;
 
 public class MainActivity extends AppCompatActivity implements Handler {
@@ -308,6 +309,10 @@ public class MainActivity extends AppCompatActivity implements Handler {
                 usernameDetails.setText(input.userDetails.getAttributes().getAttributes().get("given_name"));
             }
 
+            result = true;
+        } else if (event instanceof ServerError) {
+            ServerError input = (ServerError) event;
+            showDialogMessage("Server error", input.exception.getMessage());
             result = true;
         }
 
