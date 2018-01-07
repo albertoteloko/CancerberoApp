@@ -22,12 +22,13 @@ import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.Mult
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.NewPasswordContinuation;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.AuthenticationHandler;
 import com.amazonaws.regions.Regions;
+import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.activities.MainActivity;
 import com.at.cancerbero.service.handlers.AuthenticationChallenge;
 import com.at.cancerbero.service.handlers.Event;
-import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.service.handlers.LogInFail;
 import com.at.cancerbero.service.handlers.LogInSuccess;
+import com.at.cancerbero.service.handlers.Logout;
 import com.at.cancerbero.service.handlers.MultiFactorAuthentication;
 
 import java.util.Map;
@@ -53,8 +54,6 @@ public class MainService extends Service {
 
 
     private CognitoUserPool userPool;
-    private CognitoDevice newDevice;
-    private CognitoUser currentUser;
     private CognitoDevice device;
 
     private CognitoUserSession currSession;
@@ -129,7 +128,7 @@ public class MainService extends Service {
     }
 
     public CognitoUser getCurrentUser() {
-        return currentUser;
+        return userPool.getCurrentUser();
     }
 
     void sendEvent(Event event) {
@@ -158,6 +157,13 @@ public class MainService extends Service {
         userPool.getUser(email).getSessionInBackground(handler);
     }
 
+    public void logout() {
+        if (getCurrentUser() != null) {
+            getCurrentUser().signOut();
+            sendEvent(new Logout());
+        }
+    }
+
     public void continueWithFirstTimeSignIn(String newPassword, Map<String, String> newAttributes) {
         if (newPasswordContinuation != null) {
             newPasswordContinuation.setPassword(newPassword);
@@ -168,7 +174,6 @@ public class MainService extends Service {
                 }
             }
             newPasswordContinuation.continueTask();
-            newPasswordContinuation = null;
         } else {
             throw new IllegalStateException("There is no continue with sign in");
         }
@@ -181,6 +186,7 @@ public class MainService extends Service {
             public void onSuccess(CognitoUserSession userSession, CognitoDevice newDevice) {
                 MainService.this.currSession = userSession;
                 MainService.this.device = newDevice;
+                newPasswordContinuation = null;
                 sendEvent(new LogInSuccess(userSession, newDevice));
             }
 

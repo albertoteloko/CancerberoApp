@@ -2,6 +2,7 @@ package com.at.cancerbero.activities;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -18,14 +20,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.ChallengeContinuation;
+import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.fragments.AppFragment;
 import com.at.cancerbero.fragments.LandingFragment;
 import com.at.cancerbero.fragments.LoadingFragment;
+import com.at.cancerbero.fragments.LoginFirstTimeFragment;
 import com.at.cancerbero.fragments.LoginFragment;
 import com.at.cancerbero.service.MainService;
+import com.at.cancerbero.service.handlers.AuthenticationChallenge;
 import com.at.cancerbero.service.handlers.Event;
 import com.at.cancerbero.service.handlers.Handler;
-import com.at.cancerbero.CancerberoApp.R;
+import com.at.cancerbero.service.handlers.LogInFail;
+import com.at.cancerbero.service.handlers.LogInSuccess;
+import com.at.cancerbero.service.handlers.Logout;
 
 public class MainActivity extends AppCompatActivity implements Handler {
 
@@ -73,18 +80,26 @@ public class MainActivity extends AppCompatActivity implements Handler {
     private Bundle bundle = new Bundle();
 
 
-    private ChallengeContinuation challengeContinuation;
-
-    public ChallengeContinuation getChallengeContinuation() {
-        return challengeContinuation;
-    }
-
-    public void setChallengeContinuation(ChallengeContinuation challengeContinuation) {
-        this.challengeContinuation = challengeContinuation;
-    }
-
     public void changeFragment(Class<? extends AppFragment> fragmentClass) {
         changeFragment(fragmentClass, Bundle.EMPTY);
+    }
+
+    public void showErrorDialog(String error) {
+        Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
+    }
+
+
+    public AlertDialog showDialogMessage(String title, String body) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle(title).setMessage(body).setNeutralButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        return dialog;
     }
 
     public void changeFragment(Class<? extends AppFragment> fragmentClass, Bundle params) {
@@ -105,21 +120,6 @@ public class MainActivity extends AppCompatActivity implements Handler {
         }
     }
 
-//    public void loginBasic(LoginController controller, boolean rememberMe) {
-//        getMainService().loginController = controller;
-//        Log.i("ShareFood", controller.getCurrentUser().toString());
-//        if (controller instanceof DefaultLoginController) {
-//            User user = controller.getCurrentUser();
-//            BasicCredentials credentials = new BasicCredentials();
-//            credentials.email = user.email;
-//            credentials.password = user.password;
-//
-//            getMainService().loginBasic(credentials, rememberMe);
-//        }
-//
-//        changeFragment(LoadingFragment.class);
-//        ((LoadingFragment) currentFragment).setText(R.string.label_singUp);
-//    }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements Handler {
 
         // Set navigation drawer for this screen
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerToggle = new ActionBarDrawerToggle(this,mDrawer, toolbar, R.string.nav_drawer_open, R.string.nav_drawer_close);
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.nav_drawer_open, R.string.nav_drawer_close);
         mDrawer.addDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
 
@@ -190,10 +190,11 @@ public class MainActivity extends AppCompatActivity implements Handler {
     private void performAction(MenuItem item) {
         // Close the navigation drawer
         mDrawer.closeDrawers();
-
         // Find which item was selected
         switch (item.getItemId()) {
-
+            case R.id.nav_user_sign_out:
+                getMainService().logout();
+                break;
         }
     }
 
@@ -213,8 +214,6 @@ public class MainActivity extends AppCompatActivity implements Handler {
             } else {
                 failSafeWorkflow();
             }
-        } else {
-            failSafeWorkflow();
         }
     }
 
@@ -264,42 +263,28 @@ public class MainActivity extends AppCompatActivity implements Handler {
 
         Log.i(TAG, "Event: " + event.toString());
 
+        if (event instanceof Logout) {
+            changeFragment(LoginFragment.class);
+            result = true;
+        } else if (event instanceof LogInSuccess) {
+            changeFragment(LandingFragment.class);
+            result = true;
+        } else if (event instanceof LogInFail) {
+            Exception exception = ((LogInFail) event).exception;
 
-//        if (event instanceof Logged) {
-//            changeFragment(TabsFragment.class);
-//
-//            if (getMainService().loginController instanceof TwitterController && getMainService().loginController.getCurrentUser().email == null) {
-//                TwitterSession session = Twitter.getSessionManager().getActiveSession();
-//                TwitterAuthClient authClient = new TwitterAuthClient();
-//                authClient.requestEmail(session, new Callback<String>() {
-//                    @Override
-//                    public void success(Result<String> result) {
-//                        String email = result.data;
-//                        Log.i(TAG, "Email, " + email);
-//                        User user = getMainService().loginController.getCurrentUser();
-//                        user.email = email;
-//                        getMainService().loginController.setCurrentUser(user);
-//                        getMainService().saveUser(user);
-//                    }
-//
-//                    @Override
-//                    public void failure(TwitterException exception) {
-//                        Log.i(TAG, "No Email!!");
-//
-//                    }
-//                });
-//            }
-//
-//        } else if (event instanceof LoginRequired) {
-//            changeFragment(LoginFragment.class);
-//            String explanationText = ((LoginRequired) event).explanationText;
-//
-//            if (explanationText != null) {
-//                Toast.makeText(getBaseContext(), explanationText, Toast.LENGTH_LONG).show();
-//            }
-//        } else if (event instanceof UserCreated) {
-//            changeFragment(LoginFragment.class);
-//        }
+            if (!exception.getMessage().equals("user ID cannot be null")) {
+                showErrorDialog("Unable to log in");
+            }
+            changeFragment(LoginFragment.class);
+            result = true;
+        } else if (event instanceof AuthenticationChallenge) {
+            ChallengeContinuation continuation = ((AuthenticationChallenge) event).continuation;
+            if ("NEW_PASSWORD_REQUIRED".equals(continuation.getChallengeName())) {
+                changeFragment(LoginFirstTimeFragment.class);
+            } else if ("SELECT_MFA_TYPE".equals(continuation.getChallengeName())) {
+            }
+            result = true;
+        }
 
         return result;
     }

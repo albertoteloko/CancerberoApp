@@ -1,9 +1,7 @@
 package com.at.cancerbero.fragments;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -12,9 +10,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.activities.MainActivity;
 import com.at.cancerbero.service.MainService;
 import com.at.cancerbero.service.handlers.Event;
@@ -28,21 +24,11 @@ public abstract class AppFragment extends Fragment implements Handler {
 
 
     public void showErrorDialog(String error) {
-        Toast.makeText(getActivity().getApplicationContext(), error, Toast.LENGTH_SHORT).show();
+        getMainActivity().showErrorDialog(error);
     }
 
-
     public AlertDialog showDialogMessage(String title, String body) {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle(title).setMessage(body).setNeutralButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        AlertDialog dialog = builder.create();
-        dialog.show();
-        return dialog;
+        return getMainActivity().showDialogMessage(title, body);
     }
 
     public void afterCreation(MainActivity mainActivity, Bundle arguments) {

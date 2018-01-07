@@ -28,12 +28,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.ChallengeContinuation;
 import com.at.cancerbero.CancerberoApp.R;
-import com.at.cancerbero.service.handlers.AuthenticationChallenge;
 import com.at.cancerbero.service.handlers.Event;
 import com.at.cancerbero.service.handlers.LogInFail;
-import com.at.cancerbero.service.handlers.LogInSuccess;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -141,19 +138,6 @@ public class LoginFirstTimeFragment extends AppFragment {
 
             if (!exception.getMessage().equals("user ID cannot be null")) {
                 showErrorDialog("Unable to log in");
-            }
-            result = true;
-        } else if (event instanceof LogInSuccess) {
-            LogInSuccess logInSuccess = ((LogInSuccess) event);
-
-            changeFragment(LandingFragment.class);
-            result = true;
-        } else if (event instanceof AuthenticationChallenge) {
-            ChallengeContinuation continuation = ((AuthenticationChallenge) event).continuation;
-            getMainActivity().setChallengeContinuation(continuation);
-            if ("NEW_PASSWORD_REQUIRED".equals(continuation.getChallengeName())) {
-                changeFragment(LoginFirstTimeFragment.class);
-            } else if ("SELECT_MFA_TYPE".equals(continuation.getChallengeName())) {
             }
             result = true;
         }
