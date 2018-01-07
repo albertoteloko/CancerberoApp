@@ -21,7 +21,9 @@ import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.Forg
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.MultiFactorAuthenticationContinuation;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.NewPasswordContinuation;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.AuthenticationHandler;
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.ForgotPasswordHandler;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.GenericHandler;
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.GetDetailsHandler;
 import com.amazonaws.regions.Regions;
 import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.activities.MainActivity;
@@ -29,10 +31,15 @@ import com.at.cancerbero.service.handlers.AuthenticationChallenge;
 import com.at.cancerbero.service.handlers.ChangePasswordFail;
 import com.at.cancerbero.service.handlers.ChangePasswordSuccess;
 import com.at.cancerbero.service.handlers.Event;
+import com.at.cancerbero.service.handlers.ForgotPasswordFail;
+import com.at.cancerbero.service.handlers.ForgotPasswordStart;
+import com.at.cancerbero.service.handlers.ForgotPasswordSuccess;
 import com.at.cancerbero.service.handlers.LogInFail;
 import com.at.cancerbero.service.handlers.LogInSuccess;
 import com.at.cancerbero.service.handlers.Logout;
 import com.at.cancerbero.service.handlers.MultiFactorAuthentication;
+import com.at.cancerbero.service.handlers.UserDetailsFail;
+import com.at.cancerbero.service.handlers.UserDetailsSuccess;
 
 import java.util.Map;
 import java.util.Set;
@@ -66,34 +73,6 @@ public class MainService extends Service {
     private ForgotPasswordContinuation forgotPasswordContinuation;
     private NewPasswordContinuation newPasswordContinuation;
     private ChooseMfaContinuation mfaOptionsContinuation;
-
-    // User details to display - they are the current values, including any local modification
-    private boolean phoneVerified;
-    private boolean emailVerified;
-
-    private boolean phoneAvailable;
-    private boolean emailAvailable;
-
-    private Set<String> currUserAttributes;
-
-//    public void delegateLogin(final LoginController loginController) {
-//        new ServiceAsyncTask(this, R.string.message_invalid_credentials) {
-//
-//            @Override
-//            public Event run() {
-//                MainService.this.loginController = loginController;
-//                currentUser = serverClient.delegateLogin(loginController.getSession());
-//                Log.i(TAG, "Delegate login: " + currentUser);
-//                return new Logged(currentUser);
-//            }
-//
-//            @Override
-//            protected void onPostExecute(Event event) {
-//                super.onPostExecute(event);
-//                loadMyFood(true);
-//            }
-//        }.execute();
-//    }
 
 
     @Override
@@ -134,6 +113,10 @@ public class MainService extends Service {
         return userPool.getCurrentUser();
     }
 
+    public CognitoUserDetails getUserDetails() {
+        return userDetails;
+    }
+
     void sendEvent(Event event) {
         MainActivity mainActivity = MainActivity.getInstance();
         if ((mainActivity != null) && (event != null)) {
@@ -148,6 +131,37 @@ public class MainService extends Service {
                 mainActivity.handle(event);
             }
         });
+    }
+
+    public void forgotPassword(final String userId) {
+        userPool.getUser(userId).forgotPasswordInBackground(new ForgotPasswordHandler() {
+            @Override
+            public void onSuccess() {
+                forgotPasswordContinuation = null;
+                sendEvent(new ForgotPasswordSuccess(userId));
+            }
+
+            @Override
+            public void getResetCode(ForgotPasswordContinuation continuation) {
+                forgotPasswordContinuation = continuation;
+                sendEvent(new ForgotPasswordStart(userId, continuation));
+            }
+
+            @Override
+            public void onFailure(Exception exception) {
+                sendEvent(new ForgotPasswordFail(userId, exception));
+            }
+        });
+    }
+
+
+    public void changePasswordForgotten(String newPassword, String verCode) {
+        if (forgotPasswordContinuation != null) {
+            forgotPasswordContinuation.setPassword(newPassword);
+            forgotPasswordContinuation.setVerificationCode(verCode);
+            forgotPasswordContinuation.continueTask();
+        }
+
     }
 
     public void login() {
@@ -205,6 +219,7 @@ public class MainService extends Service {
                 MainService.this.device = newDevice;
                 newPasswordContinuation = null;
                 sendEvent(new LogInSuccess(userSession, newDevice));
+                loadUserDetails();
             }
 
             @Override
@@ -232,8 +247,27 @@ public class MainService extends Service {
         };
     }
 
+    public void loadUserDetails() {
+        userPool.getCurrentUser().getDetailsInBackground(new GetDetailsHandler() {
+            @Override
+            public void onSuccess(CognitoUserDetails cognitoUserDetails) {
+                MainService.this.userDetails = cognitoUserDetails;
+                sendEvent(new UserDetailsSuccess(cognitoUserDetails));
+            }
+
+            @Override
+            public void onFailure(Exception exception) {
+                sendEvent(new UserDetailsFail(exception));
+            }
+        });
+    }
+
     public NewPasswordContinuation getNewPasswordContinuation() {
         return newPasswordContinuation;
+    }
+
+    public ForgotPasswordContinuation getForgotPasswordContinuation() {
+        return forgotPasswordContinuation;
     }
 
     private void setChallengeContinuation(ChallengeContinuation continuation) {
@@ -244,87 +278,4 @@ public class MainService extends Service {
         }
     }
 
-
-//    AuthenticationHandler authenticationHandler = new AuthenticationHandler() {
-//        @Override
-//        public void onSuccess(CognitoUserSession cognitoUserSession, CognitoDevice device) {
-//            Log.d(TAG, " -- Auth Success");
-//            MainService.this.currSession = cognitoUserSession;
-//            MainService.this.device = device;
-//            sendEvent(new LogInSuccess(cognitoUserSession, device));
-//        }
-//
-//        @Override
-//        public void getAuthenticationDetails(AuthenticationContinuation authenticationContinuation, String username) {
-//            Locale.setDefault(Locale.US);
-//            getUserAuthentication(authenticationContinuation, username);
-//        }
-//
-//        @Override
-//        public void getMFACode(MultiFactorAuthenticationContinuation multiFactorAuthenticationContinuation) {
-//            mfaAuth(multiFactorAuthenticationContinuation);
-//        }
-//
-//        @Override
-//        public void onFailure(Exception e) {
-//            closeWaitDialog();
-//            TextView label = (TextView) findViewById(R.id.textViewUserIdMessage);
-//            label.setText("Sign-in failed");
-//            inPassword.setBackground(getDrawable(R.drawable.text_border_error));
-//
-//            label = (TextView) findViewById(R.id.textViewUserIdMessage);
-//            label.setText("Sign-in failed");
-//            inUsername.setBackground(getDrawable(R.drawable.text_border_error));
-//
-//            showDialogMessage("Sign-in failed", AppHelper.formatException(e));
-//        }
-//
-//        @Override
-//        public void authenticationChallenge(ChallengeContinuation continuation) {
-//            /**
-//             * For Custom authentication challenge, implement your logic to present challenge to the
-//             * user and pass the user's responses to the continuation.
-//             */
-//            if ("NEW_PASSWORD_REQUIRED".equals(continuation.getChallengeName())) {
-//                // This is the first sign-in attempt for an admin created user
-//                newPasswordContinuation = (NewPasswordContinuation) continuation;
-//                AppHelper.setUserAttributeForDisplayFirstLogIn(newPasswordContinuation.getCurrentUserAttributes(),
-//                        newPasswordContinuation.getRequiredAttributes());
-//                closeWaitDialog();
-//                firstTimeSignIn();
-//            } else if ("SELECT_MFA_TYPE".equals(continuation.getChallengeName())) {
-//                closeWaitDialog();
-//                mfaOptionsContinuation = (ChooseMfaContinuation) continuation;
-//                List<String> mfaOptions = mfaOptionsContinuation.getMfaOptions();
-//                selectMfaToSignIn(mfaOptions, continuation.getParameters());
-//            }
-//        }
-//    };
-//
-//    private void getUserAuthentication(AuthenticationContinuation continuation, String username) {
-//        if (username != null) {
-//            this.username = username;
-//            AppHelper.setUser(username);
-//        }
-//        if (this.password == null) {
-//            inUsername.setText(username);
-//            password = inPassword.getText().toString();
-//            if (password == null) {
-//                TextView label = (TextView) findViewById(R.id.textViewUserPasswordMessage);
-//                label.setText(inPassword.getHint() + " enter password");
-//                inPassword.setBackground(getDrawable(R.drawable.text_border_error));
-//                return;
-//            }
-//
-//            if (password.length() < 1) {
-//                TextView label = (TextView) findViewById(R.id.textViewUserPasswordMessage);
-//                label.setText(inPassword.getHint() + " enter password");
-//                inPassword.setBackground(getDrawable(R.drawable.text_border_error));
-//                return;
-//            }
-//        }
-//        AuthenticationDetails authenticationDetails = new AuthenticationDetails(this.username, password, null);
-//        continuation.setAuthenticationDetails(authenticationDetails);
-//        continuation.continueTask();
-//    }
 }

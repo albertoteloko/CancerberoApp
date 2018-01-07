@@ -36,6 +36,7 @@ import com.at.cancerbero.service.handlers.Handler;
 import com.at.cancerbero.service.handlers.LogInFail;
 import com.at.cancerbero.service.handlers.LogInSuccess;
 import com.at.cancerbero.service.handlers.Logout;
+import com.at.cancerbero.service.handlers.UserDetailsSuccess;
 
 public class MainActivity extends AppCompatActivity implements Handler {
 
@@ -299,6 +300,14 @@ public class MainActivity extends AppCompatActivity implements Handler {
                 changeFragment(LoginFirstTimeFragment.class);
             } else if ("SELECT_MFA_TYPE".equals(continuation.getChallengeName())) {
             }
+            result = true;
+        } else if (event instanceof UserDetailsSuccess) {
+            TextView usernameDetails = (TextView) findViewById(R.id.textViewNavUserSub);
+            if (usernameDetails != null) {
+                UserDetailsSuccess input = (UserDetailsSuccess) event;
+                usernameDetails.setText(input.userDetails.getAttributes().getAttributes().get("given_name"));
+            }
+
             result = true;
         }
 

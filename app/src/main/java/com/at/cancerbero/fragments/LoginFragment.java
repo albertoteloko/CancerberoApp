@@ -8,19 +8,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.service.handlers.Event;
+import com.at.cancerbero.service.handlers.ForgotPasswordFail;
+import com.at.cancerbero.service.handlers.ForgotPasswordStart;
 import com.at.cancerbero.service.handlers.LogInFail;
 
 public class LoginFragment extends AppFragment {
 
     private EditText emailEditText;
     private EditText passwordEditText;
-    private CheckBox rememberMeCheckBox;
 
     private TextView inUsername;
     private TextView inPassword;
@@ -115,6 +115,14 @@ public class LoginFragment extends AppFragment {
             }
         });
 
+        TextView forgotPassword = (TextView) view.findViewById(R.id.textViewUserForgotPassword);
+        forgotPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                forgotpasswordUser(view);
+            }
+        });
+
         emailEditText.requestFocus();
 
         return view;
@@ -131,72 +139,37 @@ public class LoginFragment extends AppFragment {
                 showErrorDialog("Unable to log in");
             }
             result = true;
+        } else if (event instanceof ForgotPasswordStart) {
+            ForgotPasswordStart input = ((ForgotPasswordStart) event);
+
+            Bundle bundle = new Bundle();
+            bundle.putString("userId", input.userId);
+            changeFragment(ForgotPasswordFragment.class, bundle);
+            result = true;
+        } else if (event instanceof ForgotPasswordFail) {
+            showErrorDialog("Unable to reset password");
+            result = true;
         }
 
         return result;
     }
 
-    public void logIn(View view) {
+    private void forgotpasswordUser(View view) {
+        String username = emailEditText.getText().toString();
+        if (username == null) {
+            TextView label = (TextView) view.findViewById(R.id.textViewUserIdMessage);
+            label.setText(inUsername.getHint() + " cannot be empty");
+            inUsername.setBackground(view.getContext().getDrawable(R.drawable.text_border_error));
+            return;
+        }
 
-//        AppHelper.getPool().getUser(email).getSessionInBackground(authenticationHandler);
+        if (username.length() < 1) {
+            TextView label = (TextView) view.findViewById(R.id.textViewUserIdMessage);
+            label.setText(inUsername.getHint() + " cannot be empty");
+            inUsername.setBackground(view.getContext().getDrawable(R.drawable.text_border_error));
+            return;
+        }
+
+        getMainService().forgotPassword(username);
     }
-//
-//    AuthenticationHandler authenticationHandler = new AuthenticationHandler() {
-//        @Override
-//        public void onSuccess(CognitoUserSession cognitoUserSession, CognitoDevice device) {
-//            Log.d(TAG, " -- Auth Success");
-//            AppHelper.setCurrSession(cognitoUserSession);
-//            AppHelper.newDevice(device);
-//            closeWaitDialog();
-//            launchUser();
-//        }
-//
-//        @Override
-//        public void getAuthenticationDetails(AuthenticationContinuation authenticationContinuation, String username) {
-//            closeWaitDialog();
-//            Locale.setDefault(Locale.US);
-//            getUserAuthentication(authenticationContinuation, username);
-//        }
-//
-//        @Override
-//        public void getMFACode(MultiFactorAuthenticationContinuation multiFactorAuthenticationContinuation) {
-//            closeWaitDialog();
-//            mfaAuth(multiFactorAuthenticationContinuation);
-//        }
-//
-//        @Override
-//        public void onFailure(Exception e) {
-//            closeWaitDialog();
-//            TextView label = (TextView) findViewById(R.id.textViewUserIdMessage);
-//            label.setText("Sign-in failed");
-//            inPassword.setBackground(getDrawable(R.drawable.text_border_error));
-//
-//            label = (TextView) findViewById(R.id.textViewUserIdMessage);
-//            label.setText("Sign-in failed");
-//            inUsername.setBackground(getDrawable(R.drawable.text_border_error));
-//
-//            showDialogMessage("Sign-in failed", AppHelper.formatException(e));
-//        }
-//
-//        @Override
-//        public void authenticationChallenge(ChallengeContinuation continuation) {
-//            /**
-//             * For Custom authentication challenge, implement your logic to present challenge to the
-//             * user and pass the user's responses to the continuation.
-//             */
-//            if ("NEW_PASSWORD_REQUIRED".equals(continuation.getChallengeName())) {
-//                // This is the first sign-in attempt for an admin created user
-//                newPasswordContinuation = (NewPasswordContinuation) continuation;
-//                AppHelper.setUserAttributeForDisplayFirstLogIn(newPasswordContinuation.getCurrentUserAttributes(),
-//                        newPasswordContinuation.getRequiredAttributes());
-//                closeWaitDialog();
-//                firstTimeSignIn();
-//            } else if ("SELECT_MFA_TYPE".equals(continuation.getChallengeName())) {
-//                closeWaitDialog();
-//                mfaOptionsContinuation = (ChooseMfaContinuation) continuation;
-//                List<String> mfaOptions = mfaOptionsContinuation.getMfaOptions();
-//                selectMfaToSignIn(mfaOptions, continuation.getParameters());
-//            }
-//        }
-//    };
 }

@@ -25,4 +25,10 @@ public class LandingFragment extends AppFragment {
 
         return view;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getMainService().loadUserDetails();
+    }
 }
