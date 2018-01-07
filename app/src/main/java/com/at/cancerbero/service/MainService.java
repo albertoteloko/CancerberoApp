@@ -92,8 +92,6 @@ public class MainService extends Service {
     }
 
     private APIGatewayServerClient getServerClient() {
-        Log.d(TAG, "ACC T: " + currSession.getAccessToken().getJWTToken());
-        Log.d(TAG, "Id  T: " + currSession.getIdToken().getJWTToken());
         serverClient.setToken(currSession.getIdToken().getJWTToken());
         return serverClient;
     }
