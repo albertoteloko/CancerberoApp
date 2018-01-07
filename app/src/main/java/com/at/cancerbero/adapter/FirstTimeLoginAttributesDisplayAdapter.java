@@ -15,30 +15,33 @@
  * limitations under the License.
  */
 
-package com.at.cancerbero.activitiesLegacy;
+package com.at.cancerbero.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.at.cancerbero.CancerberoApp.R;
+import com.at.cancerbero.fragments.LoginFirstTimeFragment;
 
 public class FirstTimeLoginAttributesDisplayAdapter extends BaseAdapter {
     private String TAG = "FirstTimeLoginDetails";
-    private Context context;
+    private LoginFirstTimeFragment newPasswordFragment;
     private int count;
     private static LayoutInflater layoutInflater;
 
-    public FirstTimeLoginAttributesDisplayAdapter(Context context) {
-        this.context = context;
+    public FirstTimeLoginAttributesDisplayAdapter(LoginFirstTimeFragment newPasswordFragment) {
+        this.newPasswordFragment = newPasswordFragment;
 
-        count = AppHelper.getFirstTimeLogInItemsCount();
+        count = newPasswordFragment.getUserAttributes().size();
 
-        layoutInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        layoutInflater = (LayoutInflater) newPasswordFragment.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
+
     @Override
     public int getCount() {
         return count;
@@ -58,20 +61,19 @@ public class FirstTimeLoginAttributesDisplayAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         Holder holder;
 
-        if(convertView == null) {
+        if (convertView == null) {
             convertView = layoutInflater.inflate(R.layout.fields_generic, null);
             holder = new Holder();
             holder.label = (TextView) convertView.findViewById(R.id.textViewUserDetailLabel);
-            holder.data = (TextView) convertView.findViewById(R.id.editTextUserDetailInput);
+            holder.data = (EditText) convertView.findViewById(R.id.editTextUserDetailInput);
             holder.message = (TextView) convertView.findViewById(R.id.textViewUserDetailMessage);
 
             convertView.setTag(holder);
-        }
-        else {
+        } else {
             holder = (Holder) convertView.getTag();
         }
 
-        ItemToDisplay item = AppHelper.getUserAttributeForFirstLogInCheck(position);
+        ItemToDisplay item = newPasswordFragment.getUserAttributes().get(position);
         holder.label.setText(item.getLabelText());
         holder.label.setTextColor(item.getLabelColor());
         holder.data.setHint(item.getLabelText());
@@ -86,7 +88,7 @@ public class FirstTimeLoginAttributesDisplayAdapter extends BaseAdapter {
     // Helper class to recycle View's
     static class Holder {
         TextView label;
-        TextView data;
+        EditText data;
         TextView message;
     }
 }

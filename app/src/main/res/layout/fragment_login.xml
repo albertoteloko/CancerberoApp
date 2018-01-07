@@ -6,7 +6,7 @@
     android:layout_marginLeft="@dimen/activity_horizontal_margin"
     android:layout_marginRight="@dimen/activity_horizontal_margin"
     android:layout_marginTop="@dimen/activity_vertical_margin"
-    tools:context="com.at.cancerbero.fragments.LoginFragment">
+    tools:newPasswordFragment="com.at.cancerbero.fragments.LoginFragment">
 
     <ImageView
         android:layout_width="110dp"
@@ -104,7 +104,7 @@
         android:textColor="@color/alert"
         android:id="@+id/textViewUserPasswordMessage"
         android:layout_below="@+id/editTextUserPassword"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"  />
 
     <Space
         android:layout_width="match_parent"
@@ -123,8 +123,7 @@
         android:id="@+id/buttonLogIn"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/space4"
-        android:background="@drawable/button_selector"
-        android:onClick="logIn"/>
+        android:background="@drawable/button_selector"/>
 
     <Space
         android:layout_width="match_parent"
@@ -150,7 +149,6 @@
         android:id="@+id/textViewUserForgotPassword"
         android:clickable="true"
         android:layout_below="@+id/space6"
-        android:layout_alignParentEnd="true"
-        android:onClick="forgotPassword"/>
+        android:layout_alignParentEnd="true"/>
 
 </RelativeLayout>

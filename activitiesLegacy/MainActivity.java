@@ -344,7 +344,7 @@ public class MainActivity extends AppCompatActivity {
         username = inUsername.getText().toString();
         if (username == null) {
             TextView label = (TextView) findViewById(R.id.textViewUserIdMessage);
-            label.setText(inUsername.getHint() + " cannot be empty");
+            label.setText(inUsername.getHint() + " cannot be empty"R.);
             inUsername.setBackground(getDrawable(R.drawable.text_border_error));
             return;
         }

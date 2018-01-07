@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.activities.MainActivity;
@@ -22,6 +23,11 @@ public abstract class AppFragment extends Fragment implements Handler {
     protected final String TAG = getClass().getSimpleName();
 
     private MainActivity mainActivity;
+
+
+    public void showErrorDialog(String error) {
+        Toast.makeText(getActivity().getApplicationContext(), error, Toast.LENGTH_SHORT).show();
+    }
 
     public void afterCreation(MainActivity mainActivity, Bundle arguments) {
         this.mainActivity = mainActivity;

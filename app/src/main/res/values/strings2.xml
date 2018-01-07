@@ -14,6 +14,8 @@
     <string name="label_forgot_password">Forgot Password?</string>
     <string name="label_sign_up">Sign Up!</string>
     <string name="label_sign_in">Sign In!</string>
+    <string name="label_email_empty">Email cannot be empty</string>
+    <string name="label_password_empty">Password cannot be empty</string>
 
     <string name="message_invalid_credentials">Invalid credentials</string>
     <string name="message_user_cant_be_created">User cant be created</string>
@@ -31,13 +33,5 @@
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="action_profile">Profile</string>
 
-    <string-array name="walking_time">
-        <item>5 Min</item>
-        <item>10 Min</item>
-        <item>15 Min</item>
-        <item>20 Min</item>
-        <item>25 Min</item>
-        <item>30 Min</item>
-    </string-array>
 
 </resources>

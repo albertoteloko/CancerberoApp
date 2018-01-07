@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.ChallengeContinuation;
 import com.at.cancerbero.fragments.AppFragment;
 import com.at.cancerbero.fragments.LandingFragment;
 import com.at.cancerbero.fragments.LoadingFragment;
@@ -61,6 +62,17 @@ public class MainActivity extends AppCompatActivity implements Handler {
 
     private Bundle bundle = new Bundle();
 
+
+    private ChallengeContinuation challengeContinuation;
+
+    public ChallengeContinuation getChallengeContinuation() {
+        return challengeContinuation;
+    }
+
+    public void setChallengeContinuation(ChallengeContinuation challengeContinuation) {
+        this.challengeContinuation = challengeContinuation;
+    }
+
     public void changeFragment(Class<? extends AppFragment> fragmentClass) {
         changeFragment(fragmentClass, Bundle.EMPTY);
     }
@@ -103,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements Handler {
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
 
-        Log.i(TAG, "Sving!!");
+        Log.i(TAG, "Saving!!");
         savedInstanceState.putString(CURRENT_FRAGMENT, currentFragment.getClass().getName());
         Log.i(TAG, savedInstanceState.getString(CURRENT_FRAGMENT));
     }
@@ -130,6 +142,7 @@ public class MainActivity extends AppCompatActivity implements Handler {
             public void onServiceConnected(ComponentName name, IBinder service) {
                 onRestoreInstanceState(savedInstanceState);
                 unbindService(this);
+                getMainService().login();
             }
 
             @Override
@@ -203,6 +216,9 @@ public class MainActivity extends AppCompatActivity implements Handler {
 
     private boolean handleEventMyOwn(Event event) {
         boolean result = false;
+
+        Log.i(TAG, "Event: " + event.toString());
+
 
 //        if (event instanceof Logged) {
 //            changeFragment(TabsFragment.class);
