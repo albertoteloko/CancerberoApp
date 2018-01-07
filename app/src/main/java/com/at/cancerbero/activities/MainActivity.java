@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.ChallengeContinuation;
 import com.at.cancerbero.CancerberoApp.R;
+import com.at.cancerbero.fragments.AboutFragment;
 import com.at.cancerbero.fragments.AppFragment;
 import com.at.cancerbero.fragments.LandingFragment;
 import com.at.cancerbero.fragments.LoadingFragment;
@@ -194,6 +195,9 @@ public class MainActivity extends AppCompatActivity implements Handler {
         switch (item.getItemId()) {
             case R.id.nav_user_sign_out:
                 getMainService().logout();
+                break;
+            case R.id.nav_user_about:
+                changeFragment(AboutFragment.class);
                 break;
         }
     }
