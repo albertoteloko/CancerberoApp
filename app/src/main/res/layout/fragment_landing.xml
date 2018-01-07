@@ -8,23 +8,21 @@
     android:layout_marginTop="@dimen/activity_vertical_margin"
     tools:newPasswordFragment="com.at.cancerbero.fragments.LoginFragment">
 
-    <ImageView
-        android:layout_width="110dp"
-        android:layout_height="110dp"
-        android:id="@+id/imageViewAppMainCognitoIcon"
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/installationView"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:src="@drawable/logo_transparent"
-        android:scaleType="fitXY"/>
+        android:layout_centerHorizontal="true"/>
 
     <TextView
+        android:id="@+id/emptyElement"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="You are in!"
-        android:textSize="30dp"
-        android:id="@+id/textViewAppMainTitle"
-        android:layout_below="@+id/imageViewAppMainCognitoIcon"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerInParent="true"
+        android:text="You have no installation attached"
+        android:textColor="#525252"
+        android:textSize="19.0sp"
+        android:visibility="gone" />
 
 </RelativeLayout>
