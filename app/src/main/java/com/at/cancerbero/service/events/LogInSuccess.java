@@ -1,4 +1,4 @@
-package com.at.cancerbero.service.handlers;
+package com.at.cancerbero.service.events;
 
 
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoDevice;

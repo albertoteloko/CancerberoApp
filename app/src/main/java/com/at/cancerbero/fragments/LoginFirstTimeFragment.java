@@ -29,8 +29,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.at.cancerbero.CancerberoApp.R;
-import com.at.cancerbero.service.handlers.Event;
-import com.at.cancerbero.service.handlers.LogInFail;
+import com.at.cancerbero.service.events.Event;
+import com.at.cancerbero.service.events.LogInFail;
 
 import java.util.HashMap;
 import java.util.Map;

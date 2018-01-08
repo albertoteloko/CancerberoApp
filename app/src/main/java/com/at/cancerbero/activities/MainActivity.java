@@ -30,14 +30,14 @@ import com.at.cancerbero.fragments.LoadingFragment;
 import com.at.cancerbero.fragments.LoginFirstTimeFragment;
 import com.at.cancerbero.fragments.LoginFragment;
 import com.at.cancerbero.service.MainService;
-import com.at.cancerbero.service.handlers.AuthenticationChallenge;
-import com.at.cancerbero.service.handlers.Event;
-import com.at.cancerbero.service.handlers.Handler;
-import com.at.cancerbero.service.handlers.LogInFail;
-import com.at.cancerbero.service.handlers.LogInSuccess;
-import com.at.cancerbero.service.handlers.Logout;
-import com.at.cancerbero.service.handlers.ServerError;
-import com.at.cancerbero.service.handlers.UserDetailsSuccess;
+import com.at.cancerbero.service.events.AuthenticationChallenge;
+import com.at.cancerbero.service.events.Event;
+import com.at.cancerbero.service.events.Handler;
+import com.at.cancerbero.service.events.LogInFail;
+import com.at.cancerbero.service.events.LogInSuccess;
+import com.at.cancerbero.service.events.Logout;
+import com.at.cancerbero.service.events.ServerError;
+import com.at.cancerbero.service.events.UserDetailsSuccess;
 
 public class MainActivity extends AppCompatActivity implements Handler {
 

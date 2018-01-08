@@ -29,25 +29,28 @@ import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.activities.MainActivity;
 import com.at.cancerbero.model.Installation;
 import com.at.cancerbero.server.APIGatewayServerClient;
-import com.at.cancerbero.service.handlers.AuthenticationChallenge;
-import com.at.cancerbero.service.handlers.ChangePasswordFail;
-import com.at.cancerbero.service.handlers.ChangePasswordSuccess;
-import com.at.cancerbero.service.handlers.Event;
-import com.at.cancerbero.service.handlers.ForgotPasswordFail;
-import com.at.cancerbero.service.handlers.ForgotPasswordStart;
-import com.at.cancerbero.service.handlers.ForgotPasswordSuccess;
-import com.at.cancerbero.service.handlers.InstallationLoaded;
-import com.at.cancerbero.service.handlers.LogInFail;
-import com.at.cancerbero.service.handlers.LogInSuccess;
-import com.at.cancerbero.service.handlers.Logout;
-import com.at.cancerbero.service.handlers.MultiFactorAuthentication;
-import com.at.cancerbero.service.handlers.UserDetailsFail;
-import com.at.cancerbero.service.handlers.UserDetailsSuccess;
+import com.at.cancerbero.server.async.AsyncGateway;
+import com.at.cancerbero.server.async.LoadInstallations;
+import com.at.cancerbero.server.async.ServiceAsyncTask;
+import com.at.cancerbero.service.events.AuthenticationChallenge;
+import com.at.cancerbero.service.events.ChangePasswordFail;
+import com.at.cancerbero.service.events.ChangePasswordSuccess;
+import com.at.cancerbero.service.events.Event;
+import com.at.cancerbero.service.events.ForgotPasswordFail;
+import com.at.cancerbero.service.events.ForgotPasswordStart;
+import com.at.cancerbero.service.events.ForgotPasswordSuccess;
+import com.at.cancerbero.service.events.InstallationLoaded;
+import com.at.cancerbero.service.events.LogInFail;
+import com.at.cancerbero.service.events.LogInSuccess;
+import com.at.cancerbero.service.events.Logout;
+import com.at.cancerbero.service.events.MultiFactorAuthentication;
+import com.at.cancerbero.service.events.UserDetailsFail;
+import com.at.cancerbero.service.events.UserDetailsSuccess;
 
 import java.util.Map;
 import java.util.Set;
 
-public class MainService extends Service {
+public class MainService extends Service implements AsyncGateway{
 
     private static MainService instance;
 
@@ -80,18 +83,11 @@ public class MainService extends Service {
     private APIGatewayServerClient serverClient;
 
     public void loadInstallations() {
-        ServiceAsyncTask serviceAsyncTask = new ServiceAsyncTask(this) {
-            @Override
-            public Event run() {
-                Set<Installation> myFood = getServerClient().loadInstallations();
-                Log.i(TAG, "My installation: " + myFood);
-                return new InstallationLoaded(myFood);
-            }
-        };
-        serviceAsyncTask.execute();
+        new LoadInstallations(this).execute();
     }
 
-    private APIGatewayServerClient getServerClient() {
+    @Override
+    public APIGatewayServerClient getServerClient() {
         serverClient.setToken(currSession.getIdToken().getJWTToken());
         return serverClient;
     }
@@ -140,7 +136,8 @@ public class MainService extends Service {
         return userDetails;
     }
 
-    void sendEvent(Event event) {
+    @Override
+    public void sendEvent(Event event) {
         MainActivity mainActivity = MainActivity.getInstance();
         if ((mainActivity != null) && (event != null)) {
             mainActivity.handle(event);

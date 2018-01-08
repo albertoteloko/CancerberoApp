@@ -1,7 +1,6 @@
-package com.at.cancerbero.model;
+package com.at.cancerbero.server.model;
 
 import java.util.Set;
-import java.util.UUID;
 
 import lombok.Data;
 

@@ -12,10 +12,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.at.cancerbero.CancerberoApp.R;
-import com.at.cancerbero.service.handlers.ChangePasswordFail;
-import com.at.cancerbero.service.handlers.ChangePasswordSuccess;
-import com.at.cancerbero.service.handlers.Event;
-import com.at.cancerbero.service.handlers.LogInFail;
+import com.at.cancerbero.service.events.ChangePasswordFail;
+import com.at.cancerbero.service.events.ChangePasswordSuccess;
+import com.at.cancerbero.service.events.Event;
 
 public class ChangePasswordFragment extends AppFragment {
 

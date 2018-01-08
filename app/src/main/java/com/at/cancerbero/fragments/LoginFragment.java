@@ -12,10 +12,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.at.cancerbero.CancerberoApp.R;
-import com.at.cancerbero.service.handlers.Event;
-import com.at.cancerbero.service.handlers.ForgotPasswordFail;
-import com.at.cancerbero.service.handlers.ForgotPasswordStart;
-import com.at.cancerbero.service.handlers.LogInFail;
+import com.at.cancerbero.service.events.Event;
+import com.at.cancerbero.service.events.ForgotPasswordFail;
+import com.at.cancerbero.service.events.ForgotPasswordStart;
+import com.at.cancerbero.service.events.LogInFail;
 
 public class LoginFragment extends AppFragment {
 

@@ -14,8 +14,8 @@ import android.view.ViewGroup;
 
 import com.at.cancerbero.activities.MainActivity;
 import com.at.cancerbero.service.MainService;
-import com.at.cancerbero.service.handlers.Event;
-import com.at.cancerbero.service.handlers.Handler;
+import com.at.cancerbero.service.events.Event;
+import com.at.cancerbero.service.events.Handler;
 
 public abstract class AppFragment extends Fragment implements Handler {
 

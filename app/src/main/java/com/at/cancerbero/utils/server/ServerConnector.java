@@ -51,24 +51,26 @@ public class ServerConnector {
         return commonHeaders;
     }
 
-    public <T> T get(String relativeUrl, Class<T> outputClass) throws UnexpectedCodeException {
-        return execute(relativeUrl, "GET", null, outputClass);
+    public <T> T get(String relativeUrl, Class<T> outputClass, int... expectedCodes) throws UnexpectedCodeException {
+        return execute(relativeUrl, "GET", null, outputClass, expectedCodes);
     }
 
-    public <T> T post(String relativeUrl, Object input, Class<T> outputClass) throws UnexpectedCodeException {
-        return execute(relativeUrl, "POST", input, outputClass);
+    public <T> T post(String relativeUrl, Object input, Class<T> outputClass, int... expectedCodes) throws UnexpectedCodeException {
+        return execute(relativeUrl, "POST", input, outputClass, expectedCodes);
     }
 
-    public <T> T delete(String relativeUrl, Class<T> outputClass) throws UnexpectedCodeException {
-        return execute(relativeUrl, "DELETE", null, outputClass);
+    public <T> T delete(String relativeUrl, Class<T> outputClass, int... expectedCodes) throws UnexpectedCodeException {
+        return execute(relativeUrl, "DELETE", null, outputClass, expectedCodes);
     }
 
-    public <T> T execute(String relativeUrl, String method, Object input, Class<T> outputClass) throws UnexpectedCodeException {
+    public <T> T execute(String relativeUrl, String method, Object input, Class<T> outputClass, int... expectedCodes) throws UnexpectedCodeException {
         T result = null;
 
         ObjectMapper objectMapper = new ObjectMapper();
+        long t1 = System.currentTimeMillis();
+        String url = baseUrl + relativeUrl;
+        int responseCode = -1;
         try {
-            long t1 = System.currentTimeMillis();
 
             InputStream in = null;
             if (input != null) {
@@ -76,38 +78,53 @@ public class ServerConnector {
                 in = new ByteArrayInputStream(content.getBytes(Charset.forName("UTF-8")));
             }
 
+            URI uri = new URI(url);
             Map<String, String> headers = getHeaders();
-            Log.d(TAG, "Header: " + headers);
-            URI url = new URI(baseUrl + relativeUrl);
-            HttpRequest request = new HttpRequest(method, url, headers, in);
+            HttpRequest request = new HttpRequest(method, uri, headers, in);
 
 
             HttpResponse response = client.execute(request);
             scanCookies(response);
             Log.d(TAG, "Send data " + method + " in " + (System.currentTimeMillis() - t1) + "ms");
 
-            Log.d(TAG, "Response code: " + response.getStatusCode());
+            responseCode = response.getStatusCode();
 
-            if (isSuccessAnswer(response.getStatusCode())) {
-                if (outputClass != null) {
-                    result = objectMapper.readValue(response.getContent(), outputClass);
-                }
-            } else {
+            if (!isExpectedCode(responseCode, expectedCodes)) {
                 Scanner scanner = new Scanner(response.getContent());
                 StringBuilder builder = new StringBuilder();
 
                 while (scanner.hasNextLine()) {
                     builder.append(scanner.nextLine()).append("\n");
                 }
-                Log.d(TAG, "Server response: " + builder);
-
-                throw new UnexpectedCodeException(response.getStatusCode(), builder.toString());
+                throw new UnexpectedCodeException(responseCode, builder.toString());
+            } else if (isSuccessAnswer(response.getStatusCode())) {
+                if (outputClass != null) {
+                    result = objectMapper.readValue(response.getContent(), outputClass);
+                }
             }
-            Log.d(TAG, method + " " + url + " " + (System.currentTimeMillis() - t1) + "ms");
         } catch (Exception e) {
             ExceptionUtils.throwRuntimeException(e);
+        } finally {
+            if (responseCode > -1) {
+                Log.d(TAG, method + " " + url + " " + (System.currentTimeMillis() - t1) + "ms -> " + responseCode);
+            } else {
+                Log.d(TAG, method + " " + url + " " + (System.currentTimeMillis() - t1) + "ms");
+            }
         }
         return result;
+    }
+
+    private boolean isExpectedCode(int statusCode, int[] expectedCodes) {
+        return (expectedCodes.length == 0) || (contains(expectedCodes, statusCode));
+    }
+
+    private boolean contains(int[] expectedCodes, int statusCode) {
+        for (int expectedCode : expectedCodes) {
+            if (statusCode == expectedCode) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean isSuccessAnswer(int statusCode) {

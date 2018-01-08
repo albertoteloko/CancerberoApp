@@ -1,7 +1,6 @@
 package com.at.cancerbero.fragments;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -13,11 +12,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.at.cancerbero.CancerberoApp.R;
-import com.at.cancerbero.service.handlers.ChangePasswordFail;
-import com.at.cancerbero.service.handlers.ChangePasswordSuccess;
-import com.at.cancerbero.service.handlers.Event;
-import com.at.cancerbero.service.handlers.ForgotPasswordFail;
-import com.at.cancerbero.service.handlers.ForgotPasswordSuccess;
+import com.at.cancerbero.service.events.Event;
+import com.at.cancerbero.service.events.ForgotPasswordFail;
+import com.at.cancerbero.service.events.ForgotPasswordSuccess;
 
 public class ForgotPasswordFragment extends AppFragment {
 

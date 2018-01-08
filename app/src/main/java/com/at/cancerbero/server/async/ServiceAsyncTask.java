@@ -1,18 +1,18 @@
-package com.at.cancerbero.service;
+package com.at.cancerbero.server.async;
 
 import android.os.AsyncTask;
 
-import com.at.cancerbero.service.handlers.Event;
-import com.at.cancerbero.service.handlers.ServerError;
+import com.at.cancerbero.service.events.Event;
+import com.at.cancerbero.service.events.ServerError;
 
 public abstract class ServiceAsyncTask extends AsyncTask<Void, Void, Event> {
 
     protected final String TAG = getClass().getSimpleName();
 
-    private final MainService service;
+    protected final AsyncGateway asyncGateway;
 
-    public ServiceAsyncTask(MainService service) {
-        this.service = service;
+    protected ServiceAsyncTask(AsyncGateway asyncGateway) {
+        this.asyncGateway = asyncGateway;
     }
 
     public abstract Event run();
@@ -29,6 +29,6 @@ public abstract class ServiceAsyncTask extends AsyncTask<Void, Void, Event> {
 
     @Override
     protected void onPostExecute(Event event) {
-        service.sendEvent(event);
+        asyncGateway.sendEvent(event);
     }
 }
