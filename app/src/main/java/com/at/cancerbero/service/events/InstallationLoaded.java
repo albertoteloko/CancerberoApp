@@ -1,6 +1,6 @@
 package com.at.cancerbero.service.events;
 
-import com.at.cancerbero.model.Installation;
+import com.at.cancerbero.installations.model.domain.Installation;
 
 import java.util.Set;
 

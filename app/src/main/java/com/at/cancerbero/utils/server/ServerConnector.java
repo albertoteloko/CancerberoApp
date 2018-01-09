@@ -7,6 +7,7 @@ import com.amazonaws.http.ApacheHttpClient;
 import com.amazonaws.http.HttpRequest;
 import com.amazonaws.http.HttpResponse;
 import com.at.cancerbero.utils.ExceptionUtils;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.ByteArrayInputStream;
@@ -21,9 +22,16 @@ public class ServerConnector {
 
     private static final int TIMEOUT = 5000;
 
+    private static ObjectMapper defaultObjectMapper() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        return objectMapper;
+    }
+
     protected final String TAG = getClass().getSimpleName();
 
     private final String baseUrl;
+    private final ObjectMapper objectMapper;
 
     private Map<String, String> cookies = new HashMap<>();
 
@@ -34,7 +42,12 @@ public class ServerConnector {
 
 
     public ServerConnector(String baseUrl, boolean ignoreHostVerification) {
+        this(baseUrl, ignoreHostVerification, defaultObjectMapper());
+    }
+
+    public ServerConnector(String baseUrl, boolean ignoreHostVerification, ObjectMapper objectMapper) {
         this.baseUrl = baseUrl;
+        this.objectMapper = objectMapper;
 
         commonHeaders.put("Content-Type", "application/json");
 
@@ -66,7 +79,6 @@ public class ServerConnector {
     public <T> T execute(String relativeUrl, String method, Object input, Class<T> outputClass, int... expectedCodes) throws UnexpectedCodeException {
         T result = null;
 
-        ObjectMapper objectMapper = new ObjectMapper();
         long t1 = System.currentTimeMillis();
         String url = baseUrl + relativeUrl;
         int responseCode = -1;

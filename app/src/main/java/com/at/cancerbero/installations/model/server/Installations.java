@@ -1,4 +1,4 @@
-package com.at.cancerbero.server.model;
+package com.at.cancerbero.installations.model.server;
 
 import java.util.Set;
 

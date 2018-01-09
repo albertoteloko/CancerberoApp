@@ -27,11 +27,11 @@ import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.GetDetail
 import com.amazonaws.regions.Regions;
 import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.activities.MainActivity;
-import com.at.cancerbero.model.Installation;
-import com.at.cancerbero.server.APIGatewayServerClient;
-import com.at.cancerbero.server.async.AsyncGateway;
-import com.at.cancerbero.server.async.LoadInstallations;
-import com.at.cancerbero.server.async.ServiceAsyncTask;
+import com.at.cancerbero.installations.repository.BackEndClient;
+import com.at.cancerbero.installations.repository.InstallationRepository;
+import com.at.cancerbero.installations.repository.NodesRepository;
+import com.at.cancerbero.service.async.AsyncGateway;
+import com.at.cancerbero.installations.async.LoadInstallations;
 import com.at.cancerbero.service.events.AuthenticationChallenge;
 import com.at.cancerbero.service.events.ChangePasswordFail;
 import com.at.cancerbero.service.events.ChangePasswordSuccess;
@@ -39,7 +39,6 @@ import com.at.cancerbero.service.events.Event;
 import com.at.cancerbero.service.events.ForgotPasswordFail;
 import com.at.cancerbero.service.events.ForgotPasswordStart;
 import com.at.cancerbero.service.events.ForgotPasswordSuccess;
-import com.at.cancerbero.service.events.InstallationLoaded;
 import com.at.cancerbero.service.events.LogInFail;
 import com.at.cancerbero.service.events.LogInSuccess;
 import com.at.cancerbero.service.events.Logout;
@@ -48,7 +47,6 @@ import com.at.cancerbero.service.events.UserDetailsFail;
 import com.at.cancerbero.service.events.UserDetailsSuccess;
 
 import java.util.Map;
-import java.util.Set;
 
 public class MainService extends Service implements AsyncGateway{
 
@@ -80,16 +78,18 @@ public class MainService extends Service implements AsyncGateway{
     private NewPasswordContinuation newPasswordContinuation;
     private ChooseMfaContinuation mfaOptionsContinuation;
 
-    private APIGatewayServerClient serverClient;
+    private BackEndClient serverClient;
 
     public void loadInstallations() {
         new LoadInstallations(this).execute();
     }
 
-    @Override
-    public APIGatewayServerClient getServerClient() {
-        serverClient.setToken(currSession.getIdToken().getJWTToken());
-        return serverClient;
+    public NodesRepository getNodesRepository(){
+        return new NodesRepository(getServerClient());
+    }
+
+    public InstallationRepository getiInstallationRepository(){
+        return new InstallationRepository(getServerClient());
     }
 
     @Override
@@ -118,7 +118,7 @@ public class MainService extends Service implements AsyncGateway{
         userPool = new CognitoUserPool(context, userPoolId, clientId, clientSecret, cognitoRegion);
 
         String baseUrl = context.getResources().getString(R.string.backEndUrl);
-        serverClient = new APIGatewayServerClient(baseUrl, false);
+        serverClient = new BackEndClient(baseUrl, false);
     }
 
     @Override
@@ -295,6 +295,11 @@ public class MainService extends Service implements AsyncGateway{
         } else if (continuation instanceof ChooseMfaContinuation) {
             mfaOptionsContinuation = (ChooseMfaContinuation) continuation;
         }
+    }
+
+    private  BackEndClient getServerClient() {
+        serverClient.setToken(currSession.getIdToken().getJWTToken());
+        return serverClient;
     }
 
 }

@@ -1,4 +1,4 @@
-package com.at.cancerbero.server.async;
+package com.at.cancerbero.service.async;
 
 import android.os.AsyncTask;
 

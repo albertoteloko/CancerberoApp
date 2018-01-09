@@ -1,4 +1,4 @@
-package com.at.cancerbero.model;
+package com.at.cancerbero.installations.model.domain;
 
 import java.util.Collections;
 import java.util.Set;
