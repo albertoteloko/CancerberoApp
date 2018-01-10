@@ -16,5 +16,5 @@ public class AlarmStatusChangeEvent {
     public final UUID id;
     public final String source;
     public final Date timestamp;
-    public final AlarmStatus status;
+    public final AlarmStatus value;
 }

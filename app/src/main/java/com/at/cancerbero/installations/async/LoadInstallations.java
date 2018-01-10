@@ -119,7 +119,7 @@ public class LoadInstallations extends ServiceAsyncTask {
                 input.getId(),
                 input.getSource(),
                 input.getTimestamp(),
-                input.getStatus()
+                input.getValue()
         );
     }
 }
