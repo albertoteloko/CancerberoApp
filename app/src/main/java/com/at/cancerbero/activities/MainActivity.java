@@ -25,7 +25,7 @@ import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.fragments.AboutFragment;
 import com.at.cancerbero.fragments.AppFragment;
 import com.at.cancerbero.fragments.ChangePasswordFragment;
-import com.at.cancerbero.fragments.LandingFragment;
+import com.at.cancerbero.fragments.InstallationsFragment;
 import com.at.cancerbero.fragments.LoadingFragment;
 import com.at.cancerbero.fragments.LoginFirstTimeFragment;
 import com.at.cancerbero.fragments.LoginFragment;
@@ -237,7 +237,7 @@ public class MainActivity extends AppCompatActivity implements Handler {
 
     private void failSafeWorkflow() {
         if (getMainService().getCurrentUser() != null) {
-            changeFragment(LandingFragment.class);
+            changeFragment(InstallationsFragment.class);
         } else {
             changeFragment(LoginFragment.class);
         }
@@ -253,14 +253,14 @@ public class MainActivity extends AppCompatActivity implements Handler {
     @Override
     public void onBackPressed() {
         if (!isMainFragment()) {
-            changeFragment(LandingFragment.class);
+            changeFragment(InstallationsFragment.class);
         } else {
             super.onBackPressed();
         }
     }
 
     private boolean isMainFragment() {
-        Class<?>[] mainFragments = {LoadingFragment.class, LoginFragment.class, LandingFragment.class};
+        Class<?>[] mainFragments = {LoadingFragment.class, LoginFragment.class, InstallationsFragment.class};
 
         boolean result = false;
 
@@ -285,7 +285,7 @@ public class MainActivity extends AppCompatActivity implements Handler {
             changeFragment(LoginFragment.class);
             result = true;
         } else if (event instanceof LogInSuccess) {
-            changeFragment(LandingFragment.class);
+            changeFragment(InstallationsFragment.class);
             result = true;
         } else if (event instanceof LogInFail) {
             Exception exception = ((LogInFail) event).exception;

@@ -1,5 +1,7 @@
 package com.at.cancerbero.installations.model.domain;
 
+import com.at.cancerbero.installations.model.common.AlarmStatus;
+
 import java.util.Collections;
 import java.util.Set;
 import java.util.UUID;
@@ -20,5 +22,20 @@ public class Installation {
         this.name = name;
         this.users = Collections.unmodifiableSet(users);
         this.nodes = Collections.unmodifiableSet(nodes);
+    }
+
+    public AlarmStatus getAlarmStatus() {
+        AlarmStatus status = AlarmStatus.IDLE;
+
+        for (Node node : nodes) {
+            if((node.modules.alarm != null) && (node.modules.alarm.status != null)){
+                if(node.modules.alarm.status.value.ordinal() > status.ordinal()){
+                    status = node.modules.alarm.status.value;
+                }
+            }
+        }
+
+
+        return status;
     }
 }

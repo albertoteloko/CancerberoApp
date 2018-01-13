@@ -137,7 +137,7 @@ public class ChangePasswordFragment extends AppFragment {
             result = true;
         } else if (event instanceof ChangePasswordSuccess) {
             showErrorDialog("Password changed");
-            changeFragment(LandingFragment.class);
+            changeFragment(InstallationsFragment.class);
             closeProgressDialog();
             result = true;
         }

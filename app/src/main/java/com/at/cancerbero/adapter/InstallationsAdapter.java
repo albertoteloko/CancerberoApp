@@ -1,6 +1,7 @@
 package com.at.cancerbero.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,17 +10,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.at.cancerbero.CancerberoApp.R;
-import com.at.cancerbero.installations.model.common.AlarmStatus;
 import com.at.cancerbero.installations.model.domain.Installation;
-import com.at.cancerbero.installations.model.domain.Node;
 
 import java.util.List;
 
-public class InstallationAdapter extends ArrayAdapter<Node> {
+public class InstallationsAdapter extends ArrayAdapter<Installation> {
     private final Context context;
-    private final List<Node> values;
+    private final List<Installation> values;
 
-    public InstallationAdapter(Context context, List<Node> values) {
+    public InstallationsAdapter(Context context, List<Installation> values) {
         super(context, -1, values);
         this.context = context;
         this.values = values;
@@ -40,20 +39,14 @@ public class InstallationAdapter extends ArrayAdapter<Node> {
         TextView textView = rowView.findViewById(R.id.text_description);
         ImageView imageView = rowView.findViewById(R.id.image_food);
 
-        Node node = values.get(position);
-        textView.setText(node.name);
-        imageView.setImageResource(getImage(node));
+        Installation installation = values.get(position);
+        textView.setText(installation.name);
+        imageView.setImageResource(getImage(installation));
         return rowView;
     }
 
-    private int getImage(Node node) {
-        AlarmStatus status = AlarmStatus.IDLE;
-
-        if ((node.modules.alarm != null) && (node.modules.alarm.status != null)) {
-            status = node.modules.alarm.status.value;
-        }
-
-        switch (status) {
+    private int getImage(Installation installation) {
+        switch (installation.getAlarmStatus()) {
             case SABOTAGE:
                 return R.drawable.status_sabotage;
             case SAFETY:

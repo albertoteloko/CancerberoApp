@@ -9,32 +9,35 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.at.cancerbero.CancerberoApp.R;
-import com.at.cancerbero.adapter.InstallationAdapter;
+import com.at.cancerbero.adapter.InstallationsAdapter;
 import com.at.cancerbero.installations.model.domain.Installation;
 import com.at.cancerbero.service.events.Event;
-import com.at.cancerbero.service.events.InstallationLoaded;
+import com.at.cancerbero.service.events.InstallationsLoaded;
+import com.at.cancerbero.service.events.ServerError;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class LandingFragment extends AppFragment {
+public class InstallationsFragment extends AppFragment {
 
     private ListView listView;
 
     private SwipeRefreshLayout swipeRefreshLayout;
 
-    public LandingFragment() {
+    public InstallationsFragment() {
     }
 
     @Override
     public boolean handle(Event event) {
         boolean result = false;
 
-        if (event instanceof InstallationLoaded) {
-            showItems(((InstallationLoaded) event).installations);
+        if (event instanceof InstallationsLoaded) {
+            showItems(((InstallationsLoaded) event).installations);
             swipeRefreshLayout.setRefreshing(false);
             result = true;
+        }else  if (event instanceof ServerError) {
+            swipeRefreshLayout.setRefreshing(false);
         }
 
         return result;
@@ -49,7 +52,7 @@ public class LandingFragment extends AppFragment {
                 listView.setItemChecked(-1, true);
 
                 List<Installation> values = new ArrayList<>(installations);
-                listView.setAdapter(new InstallationAdapter(getContext(), values));
+                listView.setAdapter(new InstallationsAdapter(getContext(), values));
             }
         }
     }
@@ -57,7 +60,7 @@ public class LandingFragment extends AppFragment {
 
     @Override
     public View onCreateViewApp(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.fragment_landing, container, false);
+        final View view = inflater.inflate(R.layout.fragment_installations, container, false);
 
         getSupportActionBar().show();
 
@@ -77,7 +80,8 @@ public class LandingFragment extends AppFragment {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                listView.showContextMenuForChild(view);
+                Installation installation = (Installation) listView.getItemAtPosition(position);
+                selectInstallation(installation);
             }
 
         });
@@ -85,6 +89,13 @@ public class LandingFragment extends AppFragment {
         loadInstallations(view);
 
         return view;
+    }
+
+    private void selectInstallation(Installation itemValue) {
+        changeFragment(InstallationFragment.class);
+        InstallationFragment currentFragment = (InstallationFragment) getCurrentFragment();
+        currentFragment.setInstallationId(itemValue.id);
+        currentFragment.showItems(itemValue);
     }
 
     private void loadInstallations(View view) {

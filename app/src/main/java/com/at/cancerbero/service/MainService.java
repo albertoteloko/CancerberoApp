@@ -27,6 +27,7 @@ import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.GetDetail
 import com.amazonaws.regions.Regions;
 import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.activities.MainActivity;
+import com.at.cancerbero.installations.async.LoadInstallation;
 import com.at.cancerbero.installations.repository.BackEndClient;
 import com.at.cancerbero.installations.repository.InstallationRepository;
 import com.at.cancerbero.installations.repository.NodesRepository;
@@ -47,8 +48,9 @@ import com.at.cancerbero.service.events.UserDetailsFail;
 import com.at.cancerbero.service.events.UserDetailsSuccess;
 
 import java.util.Map;
+import java.util.UUID;
 
-public class MainService extends Service implements AsyncGateway{
+public class MainService extends Service implements AsyncGateway {
 
     private static MainService instance;
 
@@ -84,11 +86,15 @@ public class MainService extends Service implements AsyncGateway{
         new LoadInstallations(this).execute();
     }
 
-    public NodesRepository getNodesRepository(){
+    public void loadInstallation(UUID installationId) {
+        new LoadInstallation(this, installationId).execute();
+    }
+
+    public NodesRepository getNodesRepository() {
         return new NodesRepository(getServerClient());
     }
 
-    public InstallationRepository getiInstallationRepository(){
+    public InstallationRepository getiInstallationRepository() {
         return new InstallationRepository(getServerClient());
     }
 
@@ -297,7 +303,7 @@ public class MainService extends Service implements AsyncGateway{
         }
     }
 
-    private  BackEndClient getServerClient() {
+    private BackEndClient getServerClient() {
         serverClient.setToken(currSession.getIdToken().getJWTToken());
         return serverClient;
     }
