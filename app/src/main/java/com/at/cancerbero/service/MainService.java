@@ -28,11 +28,12 @@ import com.amazonaws.regions.Regions;
 import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.activities.MainActivity;
 import com.at.cancerbero.installations.async.LoadInstallation;
+import com.at.cancerbero.installations.async.LoadInstallations;
+import com.at.cancerbero.installations.async.LoadNode;
 import com.at.cancerbero.installations.repository.BackEndClient;
 import com.at.cancerbero.installations.repository.InstallationRepository;
 import com.at.cancerbero.installations.repository.NodesRepository;
 import com.at.cancerbero.service.async.AsyncGateway;
-import com.at.cancerbero.installations.async.LoadInstallations;
 import com.at.cancerbero.service.events.AuthenticationChallenge;
 import com.at.cancerbero.service.events.ChangePasswordFail;
 import com.at.cancerbero.service.events.ChangePasswordSuccess;
@@ -88,6 +89,10 @@ public class MainService extends Service implements AsyncGateway {
 
     public void loadInstallation(UUID installationId) {
         new LoadInstallation(this, installationId).execute();
+    }
+
+    public void loadNode(String nodeId) {
+        new LoadNode(this, nodeId).execute();
     }
 
     public NodesRepository getNodesRepository() {

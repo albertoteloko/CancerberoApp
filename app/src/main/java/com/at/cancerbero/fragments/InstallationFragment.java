@@ -10,17 +10,14 @@ import android.widget.ListView;
 
 import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.adapter.InstallationAdapter;
-import com.at.cancerbero.adapter.InstallationsAdapter;
 import com.at.cancerbero.installations.model.domain.Installation;
 import com.at.cancerbero.installations.model.domain.Node;
 import com.at.cancerbero.service.events.Event;
 import com.at.cancerbero.service.events.InstallationLoaded;
-import com.at.cancerbero.service.events.InstallationsLoaded;
 import com.at.cancerbero.service.events.ServerError;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 public class InstallationFragment extends AppFragment {
@@ -95,7 +92,8 @@ public class InstallationFragment extends AppFragment {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                listView.showContextMenuForChild(view);
+                Node node = (Node) listView.getItemAtPosition(position);
+                selectNode(node);
             }
 
         });
@@ -105,16 +103,21 @@ public class InstallationFragment extends AppFragment {
         return view;
     }
 
+    private void selectNode(Node node) {
+        changeFragment(NodeFragment.class);
+        NodeFragment currentFragment = (NodeFragment) getCurrentFragment();
+        currentFragment.setNodeId(node.id);
+        currentFragment.showItem(node);
+    }
+
     private void loadInstallation(View view) {
-        if (installationId != null) {
-            view.post(new Runnable() {
-                @Override
-                public void run() {
-                    swipeRefreshLayout.setRefreshing(true);
-                }
-            });
-            getMainService().loadInstallation(installationId);
-        }
+        view.post(new Runnable() {
+            @Override
+            public void run() {
+                swipeRefreshLayout.setRefreshing(true);
+            }
+        });
+        getMainService().loadInstallations();
     }
 
 

@@ -22,7 +22,7 @@ public class LoadInstallation extends LoadInstallationBase {
     @Override
     public Event run() {
         Installation serverInstallation = convertInstallation(asyncGateway.getiInstallationRepository().loadInstallation(installationId));
-        Log.i(TAG, "Load installation: " + serverInstallation);
+        Log.i(TAG, "Load node: " + serverInstallation);
         return new InstallationLoaded(serverInstallation);
     }
 }
