@@ -1,6 +1,7 @@
 package com.at.cancerbero.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -111,18 +112,39 @@ public class InstallationFragment extends AppFragment {
     }
 
     private void loadInstallation(View view) {
-        view.post(new Runnable() {
-            @Override
-            public void run() {
-                swipeRefreshLayout.setRefreshing(true);
-            }
-        });
-        getMainService().loadInstallations();
+        if (installationId != null) {
+            view.post(new Runnable() {
+                @Override
+                public void run() {
+                    swipeRefreshLayout.setRefreshing(true);
+                }
+            });
+            getMainService().loadInstallation(installationId);
+        }
     }
 
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (installationId != null) {
+            outState.putString("installationId", installationId.toString());
+        }
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+
+        if((savedInstanceState != null)  && (savedInstanceState.containsKey("installationId"))){
+            installationId = UUID.fromString(savedInstanceState.getString("installationId"));
+            loadInstallation(getView());
+        }
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        changeFragment(InstallationsFragment.class);
+        return true;
     }
 }

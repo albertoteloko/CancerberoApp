@@ -29,4 +29,9 @@ public class AboutFragment extends AppFragment {
         return view;
     }
 
+    @Override
+    public boolean onBackPressed() {
+        changeFragment(InstallationsFragment.class);
+        return true;
+    }
 }

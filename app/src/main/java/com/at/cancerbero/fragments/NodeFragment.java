@@ -1,6 +1,7 @@
 package com.at.cancerbero.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,8 @@ import com.at.cancerbero.installations.model.domain.Node;
 import com.at.cancerbero.service.events.Event;
 import com.at.cancerbero.service.events.NodeLoaded;
 import com.at.cancerbero.service.events.ServerError;
+
+import java.util.UUID;
 
 public class NodeFragment extends AppFragment {
 
@@ -108,9 +111,28 @@ public class NodeFragment extends AppFragment {
         }
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (nodeId != null) {
+            outState.putString("nodeId", nodeId.toString());
+        }
+    }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+
+        if((savedInstanceState != null)  && (savedInstanceState.containsKey("nodeId"))){
+            nodeId = savedInstanceState.getString("nodeId");
+            loadNode(getView());
+        }
+    }
+
+
+    @Override
+    public boolean onBackPressed() {
+        changeFragment(InstallationFragment.class);
+        return true;
     }
 }

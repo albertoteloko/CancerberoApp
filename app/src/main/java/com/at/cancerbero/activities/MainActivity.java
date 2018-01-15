@@ -252,9 +252,7 @@ public class MainActivity extends AppCompatActivity implements Handler {
 
     @Override
     public void onBackPressed() {
-        if (!isMainFragment()) {
-            changeFragment(InstallationsFragment.class);
-        } else {
+        if (!currentFragment.onBackPressed()) {
             super.onBackPressed();
         }
     }

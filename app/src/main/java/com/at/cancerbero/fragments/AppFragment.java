@@ -110,4 +110,8 @@ public abstract class AppFragment extends Fragment implements Handler {
     public boolean handle(Event event) {
         return false;
     }
+
+    public boolean onBackPressed(){
+        return false;
+    }
 }

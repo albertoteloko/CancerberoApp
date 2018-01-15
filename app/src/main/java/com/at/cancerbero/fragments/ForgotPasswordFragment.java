@@ -147,4 +147,11 @@ public class ForgotPasswordFragment extends AppFragment {
 
         return result;
     }
+
+
+    @Override
+    public boolean onBackPressed() {
+        changeFragment(LoginFragment.class);
+        return true;
+    }
 }

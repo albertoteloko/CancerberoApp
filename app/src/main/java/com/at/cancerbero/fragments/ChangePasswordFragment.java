@@ -145,67 +145,10 @@ public class ChangePasswordFragment extends AppFragment {
         return result;
     }
 
-    public void logIn(View view) {
 
-//        AppHelper.getPool().getUser(email).getSessionInBackground(authenticationHandler);
+    @Override
+    public boolean onBackPressed() {
+        changeFragment(InstallationsFragment.class);
+        return true;
     }
-//
-//    AuthenticationHandler authenticationHandler = new AuthenticationHandler() {
-//        @Override
-//        public void onSuccess(CognitoUserSession cognitoUserSession, CognitoDevice device) {
-//            Log.d(TAG, " -- Auth Success");
-//            AppHelper.setCurrSession(cognitoUserSession);
-//            AppHelper.newDevice(device);
-//            closeWaitDialog();
-//            launchUser();
-//        }
-//
-//        @Override
-//        public void getAuthenticationDetails(AuthenticationContinuation authenticationContinuation, String username) {
-//            closeWaitDialog();
-//            Locale.setDefault(Locale.US);
-//            getUserAuthentication(authenticationContinuation, username);
-//        }
-//
-//        @Override
-//        public void getMFACode(MultiFactorAuthenticationContinuation multiFactorAuthenticationContinuation) {
-//            closeWaitDialog();
-//            mfaAuth(multiFactorAuthenticationContinuation);
-//        }
-//
-//        @Override
-//        public void onFailure(Exception e) {
-//            closeWaitDialog();
-//            TextView label = (TextView) findViewById(R.id.textViewUserIdMessage);
-//            label.setText("Sign-in failed");
-//            inPassword.setBackground(getDrawable(R.drawable.text_border_error));
-//
-//            label = (TextView) findViewById(R.id.textViewUserIdMessage);
-//            label.setText("Sign-in failed");
-//            inUsername.setBackground(getDrawable(R.drawable.text_border_error));
-//
-//            showDialogMessage("Sign-in failed", AppHelper.formatException(e));
-//        }
-//
-//        @Override
-//        public void authenticationChallenge(ChallengeContinuation continuation) {
-//            /**
-//             * For Custom authentication challenge, implement your logic to present challenge to the
-//             * user and pass the user's responses to the continuation.
-//             */
-//            if ("NEW_PASSWORD_REQUIRED".equals(continuation.getChallengeName())) {
-//                // This is the first sign-in attempt for an admin created user
-//                newPasswordContinuation = (NewPasswordContinuation) continuation;
-//                AppHelper.setUserAttributeForDisplayFirstLogIn(newPasswordContinuation.getCurrentUserAttributes(),
-//                        newPasswordContinuation.getRequiredAttributes());
-//                closeWaitDialog();
-//                firstTimeSignIn();
-//            } else if ("SELECT_MFA_TYPE".equals(continuation.getChallengeName())) {
-//                closeWaitDialog();
-//                mfaOptionsContinuation = (ChooseMfaContinuation) continuation;
-//                List<String> mfaOptions = mfaOptionsContinuation.getMfaOptions();
-//                selectMfaToSignIn(mfaOptions, continuation.getParameters());
-//            }
-//        }
-//    };
 }
