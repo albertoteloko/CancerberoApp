@@ -24,6 +24,9 @@
     <string name="title_installation">Installation</string>
     <string name="title_node">Node</string>
 
+    <string name="title_tab_card">Card</string>
+    <string name="title_tab_alarm">Alarm</string>
+
     <string name="label_email">E-Mail</string>
     <string name="label_password">Password</string>
     <string name="label_name">Name</string>
