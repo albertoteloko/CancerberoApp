@@ -1,7 +1,6 @@
 package com.at.cancerbero.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,21 +45,6 @@ public class InstallationsAdapter extends ArrayAdapter<Installation> {
     }
 
     private int getImage(Installation installation) {
-        switch (installation.getAlarmStatus()) {
-            case SABOTAGE:
-                return R.drawable.status_sabotage;
-            case SAFETY:
-                return R.drawable.status_safety;
-            case ALARMED:
-                return R.drawable.status_alarmed;
-            case SUSPICIOUS:
-                return R.drawable.status_suspicious;
-            case ACTIVATED:
-                return R.drawable.status_activated;
-            case ACTIVATING:
-                return R.drawable.status_activating;
-            default:
-                return R.drawable.status_idle;
-        }
+        return ImageUtils.getImage(installation.getAlarmStatus());
     }
 }

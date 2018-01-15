@@ -6,22 +6,45 @@
     <string name="nav_drawer_open">Open navigation drawer</string>
     <string name="nav_drawer_close">Close navigation drawer</string>
     <string name="title_activity_user">UserActivity</string>
-    <string name="Username">Username</string>
-    <string name="email">E-Mail</string>
-    <string name="Password">Password</string>
-    <string name="Menu">Menu</string>
-    <string name="pick_MFA">MFA Options</string>
+    <string name="label_menu">Menu</string>
     <string name="title_activity_about_app">AboutApp</string>
     <string name="about">Cancerbero Domo management app 1.0</string>
     <string name="more_info">https://github.com/albertoteloko/CancerberoApp</string>
-    <string name="title_activity_sign_up_confirm">SignUpConfirm</string>
-    <string name="title_activity_mfa">MFAActivity</string>
-    <string name="title_activity_choose_mfa">ChooseMFA</string>
-    <string name="title_activity_forgot_password">ForgotPasswordActivity</string>
-    <string name="title_activity_settings">SettingsActivity</string>
-    <string name="title_activity_change_password">ChangePasswordActivity</string>
-    <string name="title_activity_verify">VerifyActivity</string>
-    <string name="title_activity_add_attribute">AddAttributeActivity</string>
-    <string name="title_activity_device_settings">DeviceSettings</string>
-    <string name="title_activity_new_password">NewPassword</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="menu_save">Save</string>
+    <string name="menu_cancel">Cancel</string>
+
+    <string name="label_loading">Loading</string>
+    <string name="label_singUp">Signing Up</string>
+
+    <string name="title_installations">Installations</string>
+    <string name="title_installation">Installation</string>
+    <string name="title_node">Node</string>
+
+    <string name="label_email">E-Mail</string>
+    <string name="label_password">Password</string>
+    <string name="label_name">Name</string>
+
+    <string name="label_email_empty">Email cannot be empty</string>
+    <string name="label_password_empty">Password cannot be empty</string>
+
+
+    <string name="message_invalid_credentials">Invalid credentials</string>
+    <string name="message_user_cant_be_created">User cant be created</string>
+    <string name="message_unable_to_connect_with_the_server">Unable to connect with the server</string>
+    <string name="message_saving_food">Saving food...</string>
+    <string name="message_unable_to_save_food">Unable to save food, please try it again later</string>
+    <string name="label_no_items">No Shared Food</string>
+    <string name="menu_edit_food">Edit Food</string>
+    <string name="menu_accept_food">Accept Food</string>
+    <string name="menu_details_food">Food Details</string>
+    <string name="menu_delete_food">Delete Food</string>
+    <string name="message_deleting_food">Deleting Food...</string>
+    <string name="message_unable_to_delete_food">Unable to delete food, try it later</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="action_profile">Profile</string>
 </resources>

@@ -11,7 +11,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.activities.MainActivity;
 import com.at.cancerbero.service.MainService;
 import com.at.cancerbero.service.events.Event;
@@ -90,8 +92,8 @@ public abstract class AppFragment extends Fragment implements Handler {
 //        tabLayout.setOnTabSelectedListener(null);
 
         getSupportActionBar().hide();
-//        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(false);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+
 
 
         getMainActivity().invalidateOptionsMenu();

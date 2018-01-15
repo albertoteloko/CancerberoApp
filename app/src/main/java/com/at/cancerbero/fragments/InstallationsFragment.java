@@ -88,6 +88,8 @@ public class InstallationsFragment extends AppFragment {
 
         loadInstallations(view);
 
+        getMainActivity().setActivityTitle(R.string.title_installations);
+
         return view;
     }
 

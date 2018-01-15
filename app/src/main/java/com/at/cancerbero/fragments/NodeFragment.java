@@ -7,9 +7,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.at.cancerbero.CancerberoApp.R;
+import com.at.cancerbero.adapter.ImageUtils;
+import com.at.cancerbero.installations.model.common.AlarmStatus;
 import com.at.cancerbero.installations.model.domain.Node;
 import com.at.cancerbero.service.events.Event;
 import com.at.cancerbero.service.events.NodeLoaded;
@@ -18,6 +22,10 @@ import com.at.cancerbero.service.events.ServerError;
 import java.util.UUID;
 
 public class NodeFragment extends AppFragment {
+
+    private TextView nodeName;
+
+    private ImageView statusImage;
 
     private ListView listView;
 
@@ -33,6 +41,14 @@ public class NodeFragment extends AppFragment {
     }
 
     public void showItem(Node node) {
+        getMainActivity().setActivityTitle(node.name);
+        if(nodeName != null){
+            nodeName.setText(node.name);
+        }
+
+        if(statusImage != null){
+            statusImage.setImageResource(getImage(node));
+        }
 //        if (listView != null) {
 //            if (node.nodes.isEmpty()) {
 //                listView.setVisibility(View.GONE);
@@ -44,6 +60,16 @@ public class NodeFragment extends AppFragment {
 //                listView.setAdapter(new NodeAdapter(getContext(), values));
 //            }
 //        }
+    }
+
+    private int getImage(Node node) {
+        AlarmStatus status = AlarmStatus.IDLE;
+
+        if ((node.modules.alarm != null) && (node.modules.alarm.status != null)) {
+            status = node.modules.alarm.status.value;
+        }
+
+        return ImageUtils.getImage(status);
     }
 
 
@@ -73,6 +99,10 @@ public class NodeFragment extends AppFragment {
 
         getSupportActionBar().show();
 
+        nodeName = view.findViewById(R.id.node_name);
+
+        statusImage = view.findViewById(R.id.node_status);
+
         listView = view.findViewById(R.id.list_pins);
         registerForContextMenu(listView);
 
@@ -96,6 +126,8 @@ public class NodeFragment extends AppFragment {
 
         loadNode(view);
 
+        getMainActivity().setActivityTitle(R.string.title_node);
+
         return view;
     }
 
@@ -115,7 +147,7 @@ public class NodeFragment extends AppFragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         if (nodeId != null) {
-            outState.putString("nodeId", nodeId.toString());
+            outState.putString("nodeId", nodeId);
         }
     }
 

@@ -48,7 +48,7 @@ public class LoginFragment extends AppFragment {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 if (s.length() == 0) {
                     TextView label = (TextView) view.findViewById(R.id.textViewUserIdLabel);
-                    label.setText(R.string.email);
+                    label.setText(R.string.label_email);
                 }
             }
 
@@ -73,7 +73,7 @@ public class LoginFragment extends AppFragment {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 if (s.length() == 0) {
                     TextView label = (TextView) view.findViewById(R.id.textViewUserPasswordLabel);
-                    label.setText(R.string.Password);
+                    label.setText(R.string.label_password);
                 }
             }
 

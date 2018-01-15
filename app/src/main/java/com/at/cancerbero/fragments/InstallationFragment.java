@@ -37,6 +37,7 @@ public class InstallationFragment extends AppFragment {
     }
 
     public void showItems(Installation installation) {
+        getMainActivity().setActivityTitle(installation.name);
         if (listView != null) {
             if (installation.nodes.isEmpty()) {
                 listView.setVisibility(View.GONE);
@@ -100,6 +101,8 @@ public class InstallationFragment extends AppFragment {
         });
 
         loadInstallation(view);
+
+        getMainActivity().setActivityTitle(R.string.title_installation);
 
         return view;
     }

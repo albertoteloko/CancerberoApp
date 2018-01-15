@@ -119,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements Handler {
             if (currentFragment != null) {
                 currentFragment.onSaveInstanceState(bundle);
             }
+            setActivityTitle(R.string.app_name);
             Log.i(TAG, "Changing fragment to: " + fragmentClass.getName());
             currentFragment = fragmentClass.newInstance();
             currentFragment.afterCreation(this, params);
@@ -130,6 +131,16 @@ public class MainActivity extends AppCompatActivity implements Handler {
         } catch (Exception e) {
             Log.e(TAG, "Unable to create new fragment: " + fragmentClass.getName(), e);
         }
+    }
+
+    public void setActivityTitle(int resourceId) {
+        TextView main_title =findViewById(R.id.main_toolbar_title);
+        main_title.setText(resourceId);
+    }
+
+    public void setActivityTitle(String value) {
+        TextView main_title =findViewById(R.id.main_toolbar_title);
+        main_title.setText(value);
     }
 
 

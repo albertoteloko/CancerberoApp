@@ -43,7 +43,7 @@
                 android:layout_centerHorizontal="true"
                 android:textAlignment="center"
                 android:id="@+id/main_toolbar_title"
-                android:text="@string/Menu"
+                android:text="@string/label_menu"
                 android:textColor="@color/toolbar_items"
                 android:textSize="@dimen/action_bar_text" />
         </android.support.v7.widget.Toolbar>

@@ -53,21 +53,6 @@ public class InstallationAdapter extends ArrayAdapter<Node> {
             status = node.modules.alarm.status.value;
         }
 
-        switch (status) {
-            case SABOTAGE:
-                return R.drawable.status_sabotage;
-            case SAFETY:
-                return R.drawable.status_safety;
-            case ALARMED:
-                return R.drawable.status_alarmed;
-            case SUSPICIOUS:
-                return R.drawable.status_suspicious;
-            case ACTIVATED:
-                return R.drawable.status_activated;
-            case ACTIVATING:
-                return R.drawable.status_activating;
-            default:
-                return R.drawable.status_idle;
-        }
+        return ImageUtils.getImage(status);
     }
 }
