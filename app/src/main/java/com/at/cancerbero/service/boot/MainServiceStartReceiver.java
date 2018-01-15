@@ -1,4 +1,4 @@
-package com.at.cancerbero.service.receivers;
+package com.at.cancerbero.service.boot;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

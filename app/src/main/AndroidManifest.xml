@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.at.cancerbero.CancerberoApp">
 
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
@@ -24,14 +25,41 @@
         <service
             android:name="com.at.cancerbero.service.MainService"
             android:enabled="true"
-            android:exported="true"/>
+            android:exported="true" />
 
-        <receiver android:name="com.at.cancerbero.service.receivers.MainServiceStartBootReceiver">
+        <receiver android:name="com.at.cancerbero.service.boot.MainServiceStartBootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <receiver android:name="com.at.cancerbero.service.receivers.MainServiceStartReceiver"/>
+        <receiver android:name="com.at.cancerbero.service.boot.MainServiceStartReceiver" />
+
+        <receiver
+            android:name="com.google.android.gms.gcm.GcmReceiver"
+            android:exported="true"
+            android:permission="com.google.android.c2dm.permission.SEND">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <category android:name="com.at.cancerbero" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name="com.at.cancerbero.service.push.MyGcmListenerService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.at.cancerbero.service.push.MyInstanceIDListenerService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.android.gms.iid.InstanceID" />
+            </intent-filter>
+        </service>
+        <service android:name="com.at.cancerbero.service.push.RegistrationIntentService" android:exported="false"/>
+
     </application>
 
 </manifest>

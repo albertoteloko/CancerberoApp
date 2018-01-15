@@ -1,15 +1,20 @@
 package com.at.cancerbero.activities;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
@@ -38,6 +43,10 @@ import com.at.cancerbero.service.events.LogInSuccess;
 import com.at.cancerbero.service.events.Logout;
 import com.at.cancerbero.service.events.ServerError;
 import com.at.cancerbero.service.events.UserDetailsSuccess;
+import com.at.cancerbero.service.push.QuickstartPreferences;
+import com.at.cancerbero.service.push.RegistrationIntentService;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 
 public class MainActivity extends AppCompatActivity implements Handler {
 
@@ -48,6 +57,11 @@ public class MainActivity extends AppCompatActivity implements Handler {
     }
 
     private static final String CURRENT_FRAGMENT = "CurrentFragment";
+
+    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+
+    private BroadcastReceiver mRegistrationBroadcastReceiver;
+    private boolean isReceiverRegistered;
 
     protected final String TAG = getClass().getSimpleName();
 
@@ -134,12 +148,12 @@ public class MainActivity extends AppCompatActivity implements Handler {
     }
 
     public void setActivityTitle(int resourceId) {
-        TextView main_title =findViewById(R.id.main_toolbar_title);
+        TextView main_title = findViewById(R.id.main_toolbar_title);
         main_title.setText(resourceId);
     }
 
     public void setActivityTitle(String value) {
-        TextView main_title =findViewById(R.id.main_toolbar_title);
+        TextView main_title = findViewById(R.id.main_toolbar_title);
         main_title.setText(value);
     }
 
@@ -162,8 +176,8 @@ public class MainActivity extends AppCompatActivity implements Handler {
 
         setContentView(R.layout.activity_main);
 
-        Intent intent = new Intent(this, MainService.class);
-        startService(intent);
+        Intent serviceIntent = new Intent(this, MainService.class);
+        startService(serviceIntent);
 
         toolbar = (Toolbar) findViewById(R.id.main_toolbar);
         toolbar.setTitle("");
@@ -182,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements Handler {
 
         changeFragment(LoadingFragment.class);
 
-        bindService(intent, new ServiceConnection() {
+        bindService(serviceIntent, new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
                 onRestoreInstanceState(savedInstanceState);
@@ -195,6 +209,24 @@ public class MainActivity extends AppCompatActivity implements Handler {
 
             }
         }, Context.BIND_AUTO_CREATE);
+
+        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+                boolean sentToken = sharedPreferences
+                        .getBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, false);
+                showErrorDialog("Sent toke: " + sentToken);
+            }
+        };
+        // Registering BroadcastReceiver
+        registerReceiver();
+
+        if (checkPlayServices()) {
+            // Start IntentService to register this application with GCM.
+            Intent intent = new Intent(this, RegistrationIntentService.class);
+            startService(intent);
+        }
     }
 
 
@@ -268,21 +300,44 @@ public class MainActivity extends AppCompatActivity implements Handler {
         }
     }
 
-    private boolean isMainFragment() {
-        Class<?>[] mainFragments = {LoadingFragment.class, LoginFragment.class, InstallationsFragment.class};
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
+        isReceiverRegistered = false;
 
-        boolean result = false;
+        super.onPause();
+    }
 
-        if (currentFragment != null) {
-            for (Class<?> fragmentClass : mainFragments) {
-                if (fragmentClass.isAssignableFrom(currentFragment.getClass())) {
-                    result = true;
-                    break;
-                }
-            }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver();
+    }
+
+    private void registerReceiver() {
+        if (!isReceiverRegistered) {
+            LocalBroadcastManager.getInstance(this).registerReceiver(
+                    mRegistrationBroadcastReceiver,
+                    new IntentFilter(QuickstartPreferences.REGISTRATION_COMPLETE)
+            );
+            isReceiverRegistered = true;
         }
+    }
 
-        return result;
+    private boolean checkPlayServices() {
+        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+        int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (apiAvailability.isUserResolvableError(resultCode)) {
+                apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST)
+                        .show();
+            } else {
+                Log.i(TAG, "This device is not supported.");
+                finish();
+            }
+            return false;
+        }
+        return true;
     }
 
     private boolean handleEventMyOwn(Event event) {
