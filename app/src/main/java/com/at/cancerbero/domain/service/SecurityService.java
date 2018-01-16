@@ -1,10 +1,6 @@
 package com.at.cancerbero.domain.service;
 
-import android.app.Service;
 import android.content.Context;
-import android.content.Intent;
-import android.os.Binder;
-import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -26,16 +22,7 @@ import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.GenericHa
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.GetDetailsHandler;
 import com.amazonaws.regions.Regions;
 import com.at.cancerbero.CancerberoApp.R;
-import com.at.cancerbero.app.activities.MainActivity;
-import com.at.cancerbero.domain.data.repository.BackEndClient;
-import com.at.cancerbero.domain.data.repository.InstallationRepository;
-import com.at.cancerbero.domain.data.repository.NodesRepository;
-import com.at.cancerbero.domain.data.repository.server.Installation;
 import com.at.cancerbero.domain.model.domain.User;
-import com.at.cancerbero.installations.async.LoadInstallation;
-import com.at.cancerbero.installations.async.LoadInstallations;
-import com.at.cancerbero.installations.async.LoadNode;
-import com.at.cancerbero.service.async.AsyncGateway;
 import com.at.cancerbero.service.events.AuthenticationChallenge;
 import com.at.cancerbero.service.events.ChangePasswordFail;
 import com.at.cancerbero.service.events.ChangePasswordSuccess;
@@ -49,14 +36,11 @@ import com.at.cancerbero.service.events.Logout;
 import com.at.cancerbero.service.events.MultiFactorAuthentication;
 import com.at.cancerbero.service.events.UserDetailsFail;
 import com.at.cancerbero.service.events.UserDetailsSuccess;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 
+import java.util.HashSet;
 import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
+
+import java8.util.concurrent.CompletableFuture;
 
 public class SecurityService {
 
@@ -138,6 +122,7 @@ public class SecurityService {
 
     public void login(final String email, final String password) {
         CompletableFuture<User> completableFuture = new CompletableFuture<>();
+        completableFuture.completeAsync(()-> new User("", "", new HashSet<>()));
         AuthenticationHandler handler = getAuthenticationHandler(email, password);
         userPool.getUser(email).getSessionInBackground(handler);
     }
@@ -154,6 +139,10 @@ public class SecurityService {
                 sendEvent(new ChangePasswordFail(exception));
             }
         });
+    }
+
+    private void sendEvent(Event changePasswordSuccess) {
+
     }
 
     public void logout() {

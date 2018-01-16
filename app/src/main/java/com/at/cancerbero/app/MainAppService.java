@@ -91,16 +91,6 @@ public class MainAppService extends Service implements AsyncGateway {
 
     private BackEndClient serverClient;
 
-    private LoadingCache<String, Installation> graphs = CacheBuilder.newBuilder()
-            .maximumSize(1000)
-            .expireAfterWrite(1, TimeUnit.MINUTES)
-            .build(
-                    new CacheLoader<String, Installation>() {
-                        public Installation load(String key)  {
-                            return null;
-                        }
-                    });
-
     public void loadInstallations(boolean force) {
         new LoadInstallations(this).execute();
     }
@@ -215,10 +205,10 @@ public class MainAppService extends Service implements AsyncGateway {
         }
     }
 
-    public void login() {
-        AuthenticationHandler handler = getAuthenticationHandler(null, null);
-        userPool.getCurrentUser().getSessionInBackground(handler);
-    }
+//    public void login() {
+//        AuthenticationHandler handler = getAuthenticationHandler(null, null);
+//        userPool.getCurrentUser().getSessionInBackground(handler);
+//    }
 
     public void login(final String email, final String password) {
         AuthenticationHandler handler = getAuthenticationHandler(email, password);
