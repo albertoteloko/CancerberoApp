@@ -6,7 +6,7 @@
     android:layout_marginLeft="@dimen/activity_horizontal_margin"
     android:layout_marginRight="@dimen/activity_horizontal_margin"
     android:layout_marginTop="@dimen/activity_vertical_margin"
-    tools:newPasswordFragment="com.at.cancerbero.fragments.LoginFirstTimeFragment">
+    tools:newPasswordFragment="com.at.cancerbero.fragments.login.LoginFirstTimeFragment">
 
     <TextView
         android:layout_width="match_parent"

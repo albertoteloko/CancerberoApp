@@ -1,4 +1,4 @@
-package com.at.cancerbero.fragments;
+package com.at.cancerbero.fragments.login;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.at.cancerbero.CancerberoApp.R;
+import com.at.cancerbero.fragments.AppFragment;
 import com.at.cancerbero.service.events.Event;
 import com.at.cancerbero.service.events.ForgotPasswordFail;
 import com.at.cancerbero.service.events.ForgotPasswordStart;

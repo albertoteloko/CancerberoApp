@@ -1,4 +1,4 @@
-package com.at.cancerbero.fragments;
+package com.at.cancerbero.fragments.installation;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,6 +11,8 @@ import android.widget.ListView;
 
 import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.adapter.InstallationAdapter;
+import com.at.cancerbero.fragments.AppFragment;
+import com.at.cancerbero.fragments.node.NodeFragment;
 import com.at.cancerbero.installations.model.domain.Installation;
 import com.at.cancerbero.installations.model.domain.Node;
 import com.at.cancerbero.service.events.Event;

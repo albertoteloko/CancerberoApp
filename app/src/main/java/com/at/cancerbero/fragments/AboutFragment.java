@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.at.cancerbero.CancerberoApp.R;
+import com.at.cancerbero.fragments.installation.InstallationsFragment;
 
 public class AboutFragment extends AppFragment {
 

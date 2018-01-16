@@ -1,4 +1,4 @@
-package com.at.cancerbero.fragments;
+package com.at.cancerbero.fragments.login;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -12,6 +12,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.at.cancerbero.CancerberoApp.R;
+import com.at.cancerbero.fragments.AppFragment;
+import com.at.cancerbero.fragments.installation.InstallationsFragment;
 import com.at.cancerbero.service.events.ChangePasswordFail;
 import com.at.cancerbero.service.events.ChangePasswordSuccess;
 import com.at.cancerbero.service.events.Event;

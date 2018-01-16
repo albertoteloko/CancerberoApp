@@ -1,4 +1,4 @@
-package com.at.cancerbero.fragments;
+package com.at.cancerbero.fragments.node;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;

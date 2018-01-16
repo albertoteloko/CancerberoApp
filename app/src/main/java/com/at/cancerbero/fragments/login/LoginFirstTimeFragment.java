@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.at.cancerbero.fragments;
+package com.at.cancerbero.fragments.login;
 
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -29,6 +29,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.at.cancerbero.CancerberoApp.R;
+import com.at.cancerbero.fragments.AppFragment;
 import com.at.cancerbero.service.events.Event;
 import com.at.cancerbero.service.events.LogInFail;
 

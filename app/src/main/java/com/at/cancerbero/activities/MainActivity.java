@@ -22,6 +22,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,11 +32,11 @@ import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.Chal
 import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.fragments.AboutFragment;
 import com.at.cancerbero.fragments.AppFragment;
-import com.at.cancerbero.fragments.ChangePasswordFragment;
-import com.at.cancerbero.fragments.InstallationsFragment;
+import com.at.cancerbero.fragments.login.ChangePasswordFragment;
+import com.at.cancerbero.fragments.installation.InstallationsFragment;
 import com.at.cancerbero.fragments.LoadingFragment;
-import com.at.cancerbero.fragments.LoginFirstTimeFragment;
-import com.at.cancerbero.fragments.LoginFragment;
+import com.at.cancerbero.fragments.login.LoginFirstTimeFragment;
+import com.at.cancerbero.fragments.login.LoginFragment;
 import com.at.cancerbero.service.MainService;
 import com.at.cancerbero.service.events.AuthenticationChallenge;
 import com.at.cancerbero.service.events.Event;
@@ -98,6 +101,16 @@ public class MainActivity extends AppCompatActivity implements Handler {
 
     private Bundle bundle = new Bundle();
 
+    public void setRefreshing(boolean value){
+        ProgressBar spinner = findViewById(R.id.loading);
+
+        if(spinner != null){
+            spinner.setVisibility(value ? View.VISIBLE : View.GONE);
+        }
+
+
+    }
+
 
     public void changeFragment(Class<? extends AppFragment> fragmentClass) {
         changeFragment(fragmentClass, Bundle.EMPTY);
@@ -133,6 +146,8 @@ public class MainActivity extends AppCompatActivity implements Handler {
             if (currentFragment != null) {
                 currentFragment.onSaveInstanceState(bundle);
             }
+            getSupportActionBar().hide();
+            setRefreshing(false);
             setActivityTitle(R.string.app_name);
             Log.i(TAG, "Changing fragment to: " + fragmentClass.getName());
             currentFragment = fragmentClass.newInstance();

@@ -1,4 +1,4 @@
-package com.at.cancerbero.fragments;
+package com.at.cancerbero.fragments.node;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -6,6 +6,7 @@ import android.support.v7.app.ActionBar;
 import android.view.View;
 
 import com.at.cancerbero.activities.MainActivity;
+import com.at.cancerbero.fragments.AppFragment;
 import com.at.cancerbero.service.MainService;
 import com.at.cancerbero.service.events.Event;
 

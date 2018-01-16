@@ -1,4 +1,4 @@
-package com.at.cancerbero.fragments;
+package com.at.cancerbero.fragments.node;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,14 +11,14 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.adapter.ImageUtils;
+import com.at.cancerbero.fragments.AppFragment;
+import com.at.cancerbero.fragments.installation.InstallationFragment;
 import com.at.cancerbero.installations.model.common.AlarmStatus;
 import com.at.cancerbero.installations.model.domain.Node;
 import com.at.cancerbero.service.events.Event;
