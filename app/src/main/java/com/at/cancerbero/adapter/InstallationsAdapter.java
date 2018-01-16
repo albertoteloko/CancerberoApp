@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.at.cancerbero.CancerberoApp.R;
-import com.at.cancerbero.installations.model.domain.Installation;
+import com.at.cancerbero.domain.model.domain.Installation;
 
 import java.util.List;
 

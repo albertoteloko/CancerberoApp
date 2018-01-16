@@ -11,8 +11,8 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.at.cancerbero.CancerberoApp.R;
-import com.at.cancerbero.activities.MainActivity;
-import com.at.cancerbero.service.MainService;
+import com.at.cancerbero.app.activities.MainActivity;
+import com.at.cancerbero.app.MainAppService;
 import com.google.android.gms.gcm.GcmListenerService;
 
 public class MyGcmListenerService extends GcmListenerService {
@@ -28,7 +28,7 @@ public class MyGcmListenerService extends GcmListenerService {
         Log.d(TAG, "Title: " + title);
         Log.d(TAG, "Message: " + message);
 
-        MainService service = MainService.getInstance();
+        MainAppService service = MainAppService.getInstance();
 
         if (service != null) {
 //            service.onNodeStatusChange()

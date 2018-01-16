@@ -1,6 +1,6 @@
 package com.at.cancerbero.service.events;
 
-import com.at.cancerbero.installations.model.domain.Installation;
+import com.at.cancerbero.domain.model.domain.Installation;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

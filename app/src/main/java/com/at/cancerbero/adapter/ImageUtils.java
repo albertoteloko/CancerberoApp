@@ -1,7 +1,7 @@
 package com.at.cancerbero.adapter;
 
 import com.at.cancerbero.CancerberoApp.R;
-import com.at.cancerbero.installations.model.common.AlarmStatus;
+import com.at.cancerbero.domain.model.common.AlarmStatus;
 
 public class ImageUtils {
 

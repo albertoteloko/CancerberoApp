@@ -9,8 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.at.cancerbero.CancerberoApp.R;
-import com.at.cancerbero.installations.model.common.AlarmStatus;
-import com.at.cancerbero.installations.model.domain.Node;
+import com.at.cancerbero.domain.model.common.AlarmStatus;
+import com.at.cancerbero.domain.model.domain.Node;
 
 import java.util.List;
 

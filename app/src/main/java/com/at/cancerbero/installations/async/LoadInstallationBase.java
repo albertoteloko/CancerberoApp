@@ -1,12 +1,12 @@
 package com.at.cancerbero.installations.async;
 
-import com.at.cancerbero.installations.model.domain.AlarmModule;
-import com.at.cancerbero.installations.model.domain.AlarmPin;
-import com.at.cancerbero.installations.model.domain.AlarmPinChangeEvent;
-import com.at.cancerbero.installations.model.domain.AlarmStatusChangeEvent;
-import com.at.cancerbero.installations.model.domain.Installation;
-import com.at.cancerbero.installations.model.domain.Node;
-import com.at.cancerbero.installations.model.domain.NodeModules;
+import com.at.cancerbero.domain.model.domain.AlarmModule;
+import com.at.cancerbero.domain.model.domain.AlarmPin;
+import com.at.cancerbero.domain.model.domain.AlarmPinChangeEvent;
+import com.at.cancerbero.domain.model.domain.AlarmStatusChangeEvent;
+import com.at.cancerbero.domain.model.domain.Installation;
+import com.at.cancerbero.domain.model.domain.Node;
+import com.at.cancerbero.domain.model.domain.NodeModules;
 import com.at.cancerbero.service.async.AsyncGateway;
 import com.at.cancerbero.service.async.ServiceAsyncTask;
 
@@ -22,7 +22,7 @@ public abstract class LoadInstallationBase extends ServiceAsyncTask {
         super(asyncGateway);
     }
 
-    protected Installation convertInstallation(com.at.cancerbero.installations.model.server.Installation input) {
+    protected Installation convertInstallation(com.at.cancerbero.domain.data.repository.server.Installation input) {
         return new Installation(
                 input.getId(),
                 input.getName(),
@@ -41,7 +41,7 @@ public abstract class LoadInstallationBase extends ServiceAsyncTask {
         return result;
     }
 
-    protected Node convertNode(com.at.cancerbero.installations.model.server.Node input) {
+    protected Node convertNode(com.at.cancerbero.domain.data.repository.server.Node input) {
         return new Node(
                 input.getId(),
                 input.getName(),
@@ -51,20 +51,20 @@ public abstract class LoadInstallationBase extends ServiceAsyncTask {
         );
     }
 
-    protected NodeModules convertModules(com.at.cancerbero.installations.model.server.NodeModules input) {
+    protected NodeModules convertModules(com.at.cancerbero.domain.data.repository.server.NodeModules input) {
         return new NodeModules(
                 convertAlarmModule(input.getAlarm())
         );
     }
 
-    protected AlarmModule convertAlarmModule(com.at.cancerbero.installations.model.server.AlarmModule input) {
+    protected AlarmModule convertAlarmModule(com.at.cancerbero.domain.data.repository.server.AlarmModule input) {
         return new AlarmModule(
                 convert(input.getStatus()),
                 convertPins(input.getPins())
         );
     }
 
-    protected Map<String, AlarmPin> convertPins(Map<String, com.at.cancerbero.installations.model.server.AlarmPin> input) {
+    protected Map<String, AlarmPin> convertPins(Map<String, com.at.cancerbero.domain.data.repository.server.AlarmPin> input) {
         Map<String, AlarmPin> result = new HashMap<>();
 
         for (String pinId : input.keySet()) {
@@ -74,7 +74,7 @@ public abstract class LoadInstallationBase extends ServiceAsyncTask {
         return result;
     }
 
-    protected AlarmPin convertPin(com.at.cancerbero.installations.model.server.AlarmPin input) {
+    protected AlarmPin convertPin(com.at.cancerbero.domain.data.repository.server.AlarmPin input) {
         return new AlarmPin(
                 input.getId(),
                 input.getType(),
@@ -86,7 +86,7 @@ public abstract class LoadInstallationBase extends ServiceAsyncTask {
         );
     }
 
-    protected AlarmPinChangeEvent convert(com.at.cancerbero.installations.model.server.AlarmPinChangeEvent input) {
+    protected AlarmPinChangeEvent convert(com.at.cancerbero.domain.data.repository.server.AlarmPinChangeEvent input) {
         return new AlarmPinChangeEvent(
                 input.getId(),
                 input.getTimestamp(),
@@ -94,7 +94,7 @@ public abstract class LoadInstallationBase extends ServiceAsyncTask {
         );
     }
 
-    protected AlarmStatusChangeEvent convert(com.at.cancerbero.installations.model.server.AlarmStatusChangeEvent input) {
+    protected AlarmStatusChangeEvent convert(com.at.cancerbero.domain.data.repository.server.AlarmStatusChangeEvent input) {
         return new AlarmStatusChangeEvent(
                 input.getId(),
                 input.getSource(),

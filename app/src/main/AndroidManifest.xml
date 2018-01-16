@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.at.cancerbero.activities.MainActivity"
+            android:name="com.at.cancerbero.app.activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,7 +23,7 @@
         </activity>
 
         <service
-            android:name="com.at.cancerbero.service.MainService"
+            android:name="com.at.cancerbero.app.MainAppService"
             android:enabled="true"
             android:exported="true" />
 
