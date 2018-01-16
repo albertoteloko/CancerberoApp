@@ -36,4 +36,5 @@
 
 
     <string name="menu_refresh">Refresh</string>
+    <string name="message_no_items">You have no installation attached</string>
 </resources>

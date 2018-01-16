@@ -37,6 +37,10 @@ dependencies {
     implementation 'com.amazonaws:aws-android-sdk-cognitoidentityprovider:2.6.12'
 
     compile 'com.fasterxml.jackson.core:jackson-databind:2.9.3'
+    compile('com.google.guava:guava:23.6-android') {
+        exclude group: 'com.google.code.findbugs'
+    }
+
     compileOnly "org.projectlombok:lombok:1.16.18"
 
     compile "com.google.android.gms:play-services-gcm:11.8.0"

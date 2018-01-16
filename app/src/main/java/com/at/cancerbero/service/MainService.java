@@ -30,6 +30,7 @@ import com.at.cancerbero.activities.MainActivity;
 import com.at.cancerbero.installations.async.LoadInstallation;
 import com.at.cancerbero.installations.async.LoadInstallations;
 import com.at.cancerbero.installations.async.LoadNode;
+import com.at.cancerbero.installations.model.server.Installation;
 import com.at.cancerbero.installations.repository.BackEndClient;
 import com.at.cancerbero.installations.repository.InstallationRepository;
 import com.at.cancerbero.installations.repository.NodesRepository;
@@ -47,9 +48,13 @@ import com.at.cancerbero.service.events.Logout;
 import com.at.cancerbero.service.events.MultiFactorAuthentication;
 import com.at.cancerbero.service.events.UserDetailsFail;
 import com.at.cancerbero.service.events.UserDetailsSuccess;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class MainService extends Service implements AsyncGateway {
 
@@ -83,7 +88,17 @@ public class MainService extends Service implements AsyncGateway {
 
     private BackEndClient serverClient;
 
-    public void loadInstallations() {
+    private LoadingCache<String, Installation> graphs = CacheBuilder.newBuilder()
+            .maximumSize(1000)
+            .expireAfterWrite(1, TimeUnit.MINUTES)
+            .build(
+                    new CacheLoader<String, Installation>() {
+                        public Installation load(String key)  {
+                            return null;
+                        }
+                    });
+
+    public void loadInstallations(boolean force) {
         new LoadInstallations(this).execute();
     }
 

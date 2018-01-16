@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.installations.model.common.AlarmStatus;
-import com.at.cancerbero.installations.model.domain.Installation;
 import com.at.cancerbero.installations.model.domain.Node;
 
 import java.util.List;
@@ -33,7 +32,7 @@ public class InstallationAdapter extends ArrayAdapter<Node> {
         View rowView = convertView;
 
         if (convertView == null) {
-            rowView = inflater.inflate(R.layout.layout_installations, parent, false);
+            rowView = inflater.inflate(R.layout.layout_list_item, parent, false);
         }
 
 

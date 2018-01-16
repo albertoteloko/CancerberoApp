@@ -30,6 +30,10 @@ public abstract class AppFragment extends Fragment implements Handler {
         getMainActivity().showErrorDialog(error);
     }
 
+    protected void setRefreshing(boolean value) {
+        getMainActivity().setRefreshing(value);
+    }
+
     public AlertDialog showDialogMessage(String title, String body) {
         return getMainActivity().showDialogMessage(title, body);
     }

@@ -31,7 +31,7 @@ public class InstallationsAdapter extends ArrayAdapter<Installation> {
         View rowView = convertView;
 
         if (convertView == null) {
-            rowView = inflater.inflate(R.layout.layout_installations, parent, false);
+            rowView = inflater.inflate(R.layout.layout_list_item, parent, false);
         }
 
 

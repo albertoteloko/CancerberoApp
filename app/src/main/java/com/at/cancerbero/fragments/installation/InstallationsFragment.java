@@ -28,8 +28,6 @@ public class InstallationsFragment extends AppFragment {
 
     private ListView listView;
 
-    private SwipeRefreshLayout swipeRefreshLayout;
-
     public InstallationsFragment() {
     }
 
@@ -39,14 +37,15 @@ public class InstallationsFragment extends AppFragment {
 
         if (event instanceof InstallationsLoaded) {
             showItems(((InstallationsLoaded) event).installations);
-            swipeRefreshLayout.setRefreshing(false);
+            setRefreshing(false);
             result = true;
-        }else  if (event instanceof ServerError) {
-            swipeRefreshLayout.setRefreshing(false);
+        } else if (event instanceof ServerError) {
+            setRefreshing(false);
         }
 
         return result;
     }
+
 
     private void showItems(Set<Installation> installations) {
         if (listView != null) {
@@ -79,15 +78,6 @@ public class InstallationsFragment extends AppFragment {
         listView = view.findViewById(R.id.list_installations);
         registerForContextMenu(listView);
 
-        swipeRefreshLayout = view.findViewById(R.id.layout_swipe);
-
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                loadInstallations(view);
-            }
-        });
-
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
@@ -97,8 +87,6 @@ public class InstallationsFragment extends AppFragment {
             }
 
         });
-
-        loadInstallations(view);
 
         getMainActivity().setActivityTitle(R.string.title_installations);
 
@@ -110,7 +98,7 @@ public class InstallationsFragment extends AppFragment {
         int id = item.getItemId();
 
         if (id == R.id.menu_refresh) {
-            showErrorDialog("Refresh!");
+            loadInstallations(true);
             return true;
         }
 
@@ -125,20 +113,16 @@ public class InstallationsFragment extends AppFragment {
         currentFragment.showItems(itemValue);
     }
 
-    private void loadInstallations(View view) {
-        view.post(new Runnable() {
-            @Override
-            public void run() {
-                swipeRefreshLayout.setRefreshing(true);
-            }
-        });
-        getMainService().loadInstallations();
+    private void loadInstallations(boolean force) {
+        getMainActivity().setRefreshing(true);
+        getMainService().loadInstallations(force);
     }
 
 
     @Override
     public void onResume() {
         super.onResume();
+        loadInstallations(false);
         getMainService().loadUserDetails();
     }
 }
