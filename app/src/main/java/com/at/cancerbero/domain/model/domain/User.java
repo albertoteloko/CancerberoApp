@@ -12,5 +12,6 @@ import lombok.EqualsAndHashCode;
 public class User {
     private final String userId;
     private final String name;
+    private final String token;
     private final Set<String> groups;
 }

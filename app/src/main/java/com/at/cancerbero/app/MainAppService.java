@@ -30,8 +30,8 @@ import com.at.cancerbero.app.activities.MainActivity;
 import com.at.cancerbero.domain.data.repository.BackEndClient;
 import com.at.cancerbero.domain.data.repository.InstallationRepository;
 import com.at.cancerbero.domain.data.repository.NodesRepository;
-import com.at.cancerbero.domain.data.repository.server.Installation;
 import com.at.cancerbero.domain.service.SecurityService;
+import com.at.cancerbero.domain.service.SecurityServiceCognito;
 import com.at.cancerbero.installations.async.LoadInstallation;
 import com.at.cancerbero.installations.async.LoadInstallations;
 import com.at.cancerbero.installations.async.LoadNode;
@@ -49,13 +49,9 @@ import com.at.cancerbero.service.events.Logout;
 import com.at.cancerbero.service.events.MultiFactorAuthentication;
 import com.at.cancerbero.service.events.UserDetailsFail;
 import com.at.cancerbero.service.events.UserDetailsSuccess;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 public class MainAppService extends Service implements AsyncGateway {
 
@@ -73,7 +69,7 @@ public class MainAppService extends Service implements AsyncGateway {
 
     protected final String TAG = getClass().getSimpleName();
 
-    private final SecurityService securityService  = new SecurityService();
+    private final SecurityService securityService  = new SecurityServiceCognito();
 
     private final IBinder mBinder = new MainBinder();
 
@@ -90,6 +86,10 @@ public class MainAppService extends Service implements AsyncGateway {
     private ChooseMfaContinuation mfaOptionsContinuation;
 
     private BackEndClient serverClient;
+
+    public SecurityService getSecurityService() {
+        return securityService;
+    }
 
     public void loadInstallations(boolean force) {
         new LoadInstallations(this).execute();
@@ -129,14 +129,16 @@ public class MainAppService extends Service implements AsyncGateway {
 
         securityService.start(getApplicationContext());
 
-        Context context = getApplicationContext();
-        String userPoolId = context.getResources().getString(R.string.userPoolId);
-        String clientId = context.getResources().getString(R.string.clientId);
-        String clientSecret = context.getResources().getString(R.string.clientSecret);
-        Regions cognitoRegion = Regions.fromName(context.getResources().getString(R.string.region));
+        securityService.login();
 
-        // Create a user pool with default ClientConfiguration
-        userPool = new CognitoUserPool(context, userPoolId, clientId, clientSecret, cognitoRegion);
+        Context context = getApplicationContext();
+//        String userPoolId = context.getResources().getString(R.string.userPoolId);
+//        String clientId = context.getResources().getString(R.string.clientId);
+//        String clientSecret = context.getResources().getString(R.string.clientSecret);
+//        Regions cognitoRegion = Regions.fromName(context.getResources().getString(R.string.region));
+//
+//        // Create a user pool with default ClientConfiguration
+//        userPool = new CognitoUserPool(context, userPoolId, clientId, clientSecret, cognitoRegion);
 
         String baseUrl = context.getResources().getString(R.string.backEndUrl);
         serverClient = new BackEndClient(baseUrl, false);

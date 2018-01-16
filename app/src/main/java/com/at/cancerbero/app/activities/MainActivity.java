@@ -37,6 +37,7 @@ import com.at.cancerbero.app.fragments.LoadingFragment;
 import com.at.cancerbero.app.fragments.login.LoginFirstTimeFragment;
 import com.at.cancerbero.app.fragments.login.LoginFragment;
 import com.at.cancerbero.app.MainAppService;
+import com.at.cancerbero.domain.service.SecurityService;
 import com.at.cancerbero.service.events.AuthenticationChallenge;
 import com.at.cancerbero.service.events.Event;
 import com.at.cancerbero.service.events.Handler;
@@ -100,10 +101,10 @@ public class MainActivity extends AppCompatActivity implements Handler {
 
     private Bundle bundle = new Bundle();
 
-    public void setRefreshing(boolean value){
+    public void setRefreshing(boolean value) {
         ProgressBar spinner = findViewById(R.id.loading);
 
-        if(spinner != null){
+        if (spinner != null) {
             spinner.setVisibility(value ? View.VISIBLE : View.GONE);
         }
 
@@ -193,19 +194,19 @@ public class MainActivity extends AppCompatActivity implements Handler {
         Intent serviceIntent = new Intent(this, MainAppService.class);
         startService(serviceIntent);
 
-        toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        toolbar = findViewById(R.id.main_toolbar);
         toolbar.setTitle("");
-        TextView main_title = (TextView) findViewById(R.id.main_toolbar_title);
+        TextView main_title = findViewById(R.id.main_toolbar_title);
         main_title.setText(R.string.app_name);
         setSupportActionBar(toolbar);
 
         // Set navigation drawer for this screen
-        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawer = findViewById(R.id.drawer_layout);
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.nav_drawer_open, R.string.nav_drawer_close);
         mDrawer.addDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
 
-        nDrawer = (NavigationView) findViewById(R.id.nav_view);
+        nDrawer = findViewById(R.id.nav_view);
         setNavDrawer();
 
         changeFragment(LoadingFragment.class);
@@ -215,7 +216,7 @@ public class MainActivity extends AppCompatActivity implements Handler {
             public void onServiceConnected(ComponentName name, IBinder service) {
                 onRestoreInstanceState(savedInstanceState);
                 unbindService(this);
-                getMainService().login();
+                initialLogin();
             }
 
             @Override
@@ -241,6 +242,17 @@ public class MainActivity extends AppCompatActivity implements Handler {
             Intent intent = new Intent(this, RegistrationIntentService.class);
             startService(intent);
         }
+    }
+
+    private void initialLogin() {
+
+        SecurityService securityService = getMainService().getSecurityService();
+        securityService.login().handle((u, t) -> {
+            if(t != null){
+
+            }
+            return null;
+        });
     }
 
 
