@@ -2,26 +2,17 @@ package com.at.cancerbero.domain.service;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
-import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoDevice;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserDetails;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserPool;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserSession;
-import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.AuthenticationContinuation;
-import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.AuthenticationDetails;
-import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.ChallengeContinuation;
-import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.ChooseMfaContinuation;
-import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.MultiFactorAuthenticationContinuation;
-import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.NewPasswordContinuation;
-import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.AuthenticationHandler;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.GetDetailsHandler;
 import com.amazonaws.regions.Regions;
 import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.domain.model.domain.User;
-import com.at.cancerbero.domain.service.exceptions.ChooseMfaContinuationRequired;
-import com.at.cancerbero.domain.service.exceptions.MFAAuthenticationRequired;
-import com.at.cancerbero.domain.service.exceptions.NewPasswordRequired;
+import com.at.cancerbero.domain.service.exceptions.AuthenticationContinuationRequired;
+import com.at.cancerbero.domain.service.handlers.AuthenticationContinuations;
+import com.at.cancerbero.domain.service.handlers.AuthenticationHandler;
 import com.at.cancerbero.domain.service.handlers.ForgotPasswordHandler;
 
 import java.util.HashMap;
@@ -34,7 +25,6 @@ import java8.util.concurrent.CompletableFuture;
 
 public class SecurityServiceCognito implements SecurityService {
 
-
     protected final String TAG = getClass().getSimpleName();
 
     private Context context;
@@ -42,23 +32,15 @@ public class SecurityServiceCognito implements SecurityService {
     private CognitoUserPool cognitoUserPool;
 
     private CognitoUserSession cognitoUserSession;
-    private CognitoUserDetails cognitoUserDetails;
 
-    private MultiFactorAuthenticationContinuation multiFactorAuthenticationContinuation;
-    private NewPasswordContinuation newPasswordContinuation;
-    private ChooseMfaContinuation mfaOptionsContinuation;
-
-    private Optional<User> currentUser;
-
+    private final Map<String, AuthenticationHandler> authenticationHandlers = new HashMap<>();
     private final Map<String, ForgotPasswordHandler> forgotPasswordHandlers = new HashMap<>();
 
-    private CompletableFuture<User> loginFuture;
-    private String currentUserId;
-    private String currentUsePassword;
-
-    private ReentrantLock lock = new ReentrantLock();
+    private ReentrantLock authenticationLock = new ReentrantLock();
 
     private ReentrantLock forgotPasswordLock = new ReentrantLock();
+
+    private ReentrantLock getCurrentUserDetailsLock = new ReentrantLock();
 
     @Override
     public void start(Context context) {
@@ -76,6 +58,8 @@ public class SecurityServiceCognito implements SecurityService {
     @Override
     public void stop() {
         cognitoUserPool = null;
+        authenticationHandlers.clear();
+        forgotPasswordHandlers.clear();
     }
 
     @Override
@@ -85,7 +69,7 @@ public class SecurityServiceCognito implements SecurityService {
 
     @Override
     public CompletableFuture<User> getCurrentUser() {
-        return lock.get(this::getCurrentUserInt);
+        return getCurrentUserDetailsLock.get(this::getCurrentUserInt);
     }
 
     @Override
@@ -94,30 +78,87 @@ public class SecurityServiceCognito implements SecurityService {
     }
 
     @Override
-    public CompletableFuture<User> login(String email, String password) {
-        return lock.get(() -> {
-            CompletableFuture<User> result = new CompletableFuture<>();
-            if (loginFuture == null) {
-                this.currentUserId = email;
-                this.currentUsePassword = password;
+    public CompletableFuture<User> login(String userId, String password) {
+        return authenticationLock.get(() -> {
+            CompletableFuture<User> result;
 
-                cognitoUserPool.getCurrentUser().getSessionInBackground(authenticationHandler);
-                loginFuture = result;
+            if (authenticationHandlers.containsKey(userId)) {
+                AuthenticationHandler handler = authenticationHandlers.get(userId);
+
+                result = new CompletableFuture<>();
+                if (handler.continuationRequired() != null) {
+                    result.completeExceptionally(new AuthenticationContinuationRequired(handler.continuationRequired()));
+                } else {
+                    result.completeExceptionally(new IllegalStateException("Already login with: " + userId));
+
+                }
             } else {
-                result.completeExceptionally(new IllegalStateException("Already being logging in"));
+                AuthenticationHandler handler = new AuthenticationHandler(cognitoUserPool, userId, password);
+                authenticationHandlers.put(userId, handler);
+
+                result = handler.login().thenCompose(session -> {
+                    this.cognitoUserSession = session;
+                    return getCurrentUser();
+                }).handle((u, t) -> {
+                    if (t != null) {
+                        if (!(t instanceof AuthenticationContinuationRequired)) {
+                            forgotPasswordHandlers.remove(userId);
+                        }
+                        throwRuntimeException(t);
+                        return null;
+                    } else {
+                        return u;
+                    }
+                });
             }
             return result;
         });
     }
 
     @Override
-    public CompletableFuture<User> firstLogin(String newPassword, String name) {
-        return null;
+    public CompletableFuture<User> firstLogin(String userId, String newPassword, String name) {
+        return authenticationLock.get(() -> {
+            CompletableFuture<User> result = new CompletableFuture<>();
+
+            if (!authenticationHandlers.containsKey(userId)) {
+                result.completeExceptionally(new IllegalStateException("User not login with: " + userId));
+            } else {
+                AuthenticationHandler handler = authenticationHandlers.get(userId);
+
+                AuthenticationContinuations authenticationContinuations = handler.continuationRequired();
+                if (authenticationContinuations != null) {
+                    if (authenticationContinuations == AuthenticationContinuations.NewPassword) {
+                        result = handler.firstLogin(newPassword, name).thenCompose(session -> {
+                            this.cognitoUserSession = session;
+                            return getCurrentUser();
+                        });
+                    } else {
+                        result.completeExceptionally(new AuthenticationContinuationRequired(authenticationContinuations));
+                    }
+                } else {
+                    result.completeExceptionally(new IllegalStateException("Login does not require continuation"));
+                }
+            }
+
+
+            return result.handle((u, t) -> {
+                if (t != null) {
+                    if (!(t instanceof AuthenticationContinuationRequired)) {
+                        forgotPasswordHandlers.remove(userId);
+                    }
+                    throwRuntimeException(t);
+                    return null;
+                } else {
+                    forgotPasswordHandlers.remove(userId);
+                    return u;
+                }
+            });
+        });
     }
 
     @Override
     public CompletableFuture<Boolean> logout() {
-        return lock.get(() -> {
+        return authenticationLock.get(() -> {
             CompletableFuture<Boolean> result = new CompletableFuture<>();
             if (isLogged()) {
                 cognitoUserPool.getCurrentUser().signOut();
@@ -152,13 +193,6 @@ public class SecurityServiceCognito implements SecurityService {
         });
     }
 
-    private void throwRuntimeException(Throwable t) throws RuntimeException {
-        if (t instanceof RuntimeException) {
-            throw (RuntimeException) t;
-        } else {
-            throw new RuntimeException(t);
-        }
-    }
 
     @Override
     public CompletableFuture<Void> changePasswordForgotten(String userId, String newPassword, String verCode) {
@@ -183,30 +217,20 @@ public class SecurityServiceCognito implements SecurityService {
         });
     }
 
+
+    private void throwRuntimeException(Throwable t) throws RuntimeException {
+        if (t instanceof RuntimeException) {
+            throw (RuntimeException) t;
+        } else {
+            throw new RuntimeException(t);
+        }
+    }
+
     @Override
     public CompletableFuture<Boolean> changePassword(String oldPassword, String newPassword) {
         return null;
     }
 
-
-    private void onFailureInt(Exception exception) {
-        if (loginFuture != null) {
-            loginFuture.completeExceptionally(exception);
-            loginFuture = null;
-        } else {
-            Log.e(TAG, "Exception without login future", exception);
-        }
-    }
-
-    private void clean() {
-
-    }
-
-    private void cleanContinuation() {
-        newPasswordContinuation = null;
-        mfaOptionsContinuation = null;
-        multiFactorAuthenticationContinuation = null;
-    }
 
     private User toUser(CognitoUserDetails cognitoUserDetails) {
         String userId = cognitoUserSession.getUsername();
@@ -237,78 +261,78 @@ public class SecurityServiceCognito implements SecurityService {
         return result;
     }
 
-    private final AuthenticationHandler authenticationHandler = new AuthenticationHandler() {
-        @Override
-        public void onSuccess(CognitoUserSession userSession, CognitoDevice newDevice) {
-            lock.run(() -> {
-                SecurityServiceCognito.this.cognitoUserSession = userSession;
-
-                if (loginFuture != null) {
-                    getCurrentUserInt().handle((u, t) -> {
-                        if (t != null) {
-                            loginFuture.completeExceptionally(t);
-                        } else {
-                            loginFuture.complete(u);
-                        }
-                        cleanContinuation();
-                        loginFuture = null;
-                        return null;
-                    });
-                } else {
-                    Log.e(TAG, "onSuccess without login future");
-                }
-            });
-        }
-
-        @Override
-        public void getAuthenticationDetails(AuthenticationContinuation authenticationContinuation, String userId) {
-            lock.run(() -> {
-                if (loginFuture != null) {
-                    AuthenticationDetails authenticationDetails = new AuthenticationDetails(currentUserId, currentUsePassword, null);
-                    authenticationContinuation.setAuthenticationDetails(authenticationDetails);
-                    authenticationContinuation.continueTask();
-                } else {
-                    Log.e(TAG, "getAuthenticationDetails without login future");
-                }
-            });
-        }
-
-        @Override
-        public void getMFACode(MultiFactorAuthenticationContinuation continuation) {
-            lock.run(() -> {
-                if (loginFuture != null) {
-                    multiFactorAuthenticationContinuation = continuation;
-                    loginFuture.completeExceptionally(new MFAAuthenticationRequired("MFA required"));
-                } else {
-                    Log.e(TAG, "MFA Continuation without login future");
-                }
-            });
-        }
-
-        @Override
-        public void authenticationChallenge(ChallengeContinuation continuation) {
-            lock.run(() -> {
-                if (loginFuture != null) {
-                    if (continuation instanceof NewPasswordContinuation) {
-                        newPasswordContinuation = (NewPasswordContinuation) continuation;
-                        onFailureInt(new NewPasswordRequired("New Password required"));
-                    } else if (continuation instanceof ChooseMfaContinuation) {
-                        mfaOptionsContinuation = (ChooseMfaContinuation) continuation;
-                        onFailureInt(new ChooseMfaContinuationRequired("Choose MFA required"));
-                    } else {
-                        Log.e(TAG, "Authentication Challenge not handle " + continuation);
-                    }
-                } else {
-                    Log.e(TAG, "Authentication Challenge without login future");
-                }
-            });
-        }
-
-        @Override
-        public void onFailure(Exception exception) {
-            lock.run(() -> onFailureInt(exception));
-        }
-    };
+//    private final AuthenticationHandler authenticationHandler = new AuthenticationHandler() {
+//        @Override
+//        public void onSuccess(CognitoUserSession userSession, CognitoDevice newDevice) {
+//            authenticationLock.run(() -> {
+//                SecurityServiceCognito.this.cognitoUserSession = userSession;
+//
+//                if (loginFuture != null) {
+//                    getCurrentUserInt().handle((u, t) -> {
+//                        if (t != null) {
+//                            loginFuture.completeExceptionally(t);
+//                        } else {
+//                            loginFuture.complete(u);
+//                        }
+//                        cleanContinuation();
+//                        loginFuture = null;
+//                        return null;
+//                    });
+//                } else {
+//                    Log.e(TAG, "onSuccess without login future");
+//                }
+//            });
+//        }
+//
+//        @Override
+//        public void getAuthenticationDetails(AuthenticationContinuation authenticationContinuation, String userId) {
+//            authenticationLock.run(() -> {
+//                if (loginFuture != null) {
+//                    AuthenticationDetails authenticationDetails = new AuthenticationDetails(currentUserId, currentUsePassword, null);
+//                    authenticationContinuation.setAuthenticationDetails(authenticationDetails);
+//                    authenticationContinuation.continueTask();
+//                } else {
+//                    Log.e(TAG, "getAuthenticationDetails without login future");
+//                }
+//            });
+//        }
+//
+//        @Override
+//        public void getMFACode(MultiFactorAuthenticationContinuation continuation) {
+//            authenticationLock.run(() -> {
+//                if (loginFuture != null) {
+//                    multiFactorAuthenticationContinuation = continuation;
+//                    loginFuture.completeExceptionally(new MFAAuthenticationRequired("MFA required"));
+//                } else {
+//                    Log.e(TAG, "MFA Continuation without login future");
+//                }
+//            });
+//        }
+//
+//        @Override
+//        public void authenticationChallenge(ChallengeContinuation continuation) {
+//            authenticationLock.run(() -> {
+//                if (loginFuture != null) {
+//                    if (continuation instanceof NewPasswordContinuation) {
+//                        newPasswordContinuation = (NewPasswordContinuation) continuation;
+//                        onFailureInt(new NewPasswordRequired("New Password required"));
+//                    } else if (continuation instanceof ChooseMfaContinuation) {
+//                        mfaOptionsContinuation = (ChooseMfaContinuation) continuation;
+//                        onFailureInt(new ChooseMfaContinuationRequired("Choose MFA required"));
+//                    } else {
+//                        Log.e(TAG, "Authentication Challenge not handle " + continuation);
+//                    }
+//                } else {
+//                    Log.e(TAG, "Authentication Challenge without login future");
+//                }
+//            });
+//        }
+//
+//        @Override
+//        public void onFailure(Exception exception) {
+//            authenticationLock.run(() -> onFailureInt(exception));
+//        }
+//    };
 
 
     //    private Context context;
@@ -359,7 +383,7 @@ public class SecurityServiceCognito implements SecurityService {
 //    }
 //
 //
-//    public void forgotPassword(final String userId) {
+//    public void login(final String userId) {
 //        cognitoUserPool.getUser(userId).forgotPasswordInBackground(new ForgotPasswordHandler() {
 //            @Override
 //            public void onSuccess() {
@@ -456,10 +480,10 @@ public class SecurityServiceCognito implements SecurityService {
 //            }
 //
 //            @Override
-//            public void getAuthenticationDetails(AuthenticationContinuation authenticationContinuation, String userId) {
+//            public void getAuthenticationDetails(AuthenticationContinuations authenticationContinuations, String userId) {
 //                AuthenticationDetails authenticationDetails = new AuthenticationDetails(email, password, null);
-//                authenticationContinuation.setAuthenticationDetails(authenticationDetails);
-//                authenticationContinuation.continueTask();
+//                authenticationContinuations.setAuthenticationDetails(authenticationDetails);
+//                authenticationContinuations.continueTask();
 //            }
 //
 //            @Override

@@ -43,7 +43,7 @@
         android:layout_below="@+id/textViewNewPassPassLabel"
         android:layout_centerHorizontal="true"
         android:background="@drawable/text_border_selector"
-        android:hint="New password"
+        android:hint="New userPassword"
         android:inputType="textPassword"/>
 
     <TextView

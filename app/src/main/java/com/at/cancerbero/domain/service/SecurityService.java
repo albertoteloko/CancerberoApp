@@ -23,7 +23,7 @@ public interface SecurityService {
 
     CompletableFuture<User> login(String email, String password);
 
-    CompletableFuture<User> firstLogin(String newPassword, String name);
+    CompletableFuture<User> firstLogin(String userId, String newPassword, String name);
 
     CompletableFuture<Boolean> logout();
 

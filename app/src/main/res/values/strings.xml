@@ -41,9 +41,9 @@
     <string name="message_title_unable_to_login">Unable to login</string>
     <string name="message_title_unable_to_logout">Unable to log out</string>
     <string name="message_title_signing">Signing in...</string>
-    <string name="message_title_unable_forgot_password">Unable to forgot password</string>
+    <string name="message_title_unable_forgot_password">Unable to forgot userPassword</string>
     <string name="label_code_empty">Code cannot be empty</string>
-    <string name="label_unable_to_change_password">Unable to change the password</string>
+    <string name="label_unable_to_change_password">Unable to change the userPassword</string>
     <string name="label_password_changed">Password changed</string>
-    <string name="label_changing_password">Changing password</string>
+    <string name="label_changing_password">Changing userPassword</string>
 </resources>
