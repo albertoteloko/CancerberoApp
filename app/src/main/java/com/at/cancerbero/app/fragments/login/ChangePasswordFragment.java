@@ -120,7 +120,7 @@ public class ChangePasswordFragment extends AppFragment {
 
         closeProgressDialog();
         progressDialog = showProgressMessage("Changing password...");
-        getMainService().changePassword(cPass, nPass);
+        getMainService().getSecurityService().changePassword(cPass, nPass);
     }
 
     private void closeProgressDialog() {

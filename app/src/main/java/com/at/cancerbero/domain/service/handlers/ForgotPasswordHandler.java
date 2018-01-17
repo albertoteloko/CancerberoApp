@@ -49,8 +49,10 @@ public class ForgotPasswordHandler implements com.amazonaws.mobileconnectors.cog
     public void onFailure(Exception exception) {
         if (!forgotPasswordStartFuture.isDone()) {
             forgotPasswordStartFuture.completeExceptionally(exception);
+            forgotPasswordStartFuture = new CompletableFuture<>();
         } else if (!forgotPasswordSuccessFuture.isDone()) {
             forgotPasswordSuccessFuture.completeExceptionally(exception);
+            forgotPasswordSuccessFuture = new CompletableFuture<>();
         } else {
             Log.e(TAG, "Unexpected status", exception);
         }

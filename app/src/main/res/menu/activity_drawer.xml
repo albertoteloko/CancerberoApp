@@ -6,7 +6,7 @@
         android:checkableBehavior="single">
         <item
             android:id="@+id/nav_user_change_password"
-            android:title="Change userPassword" />
+            android:title="@string/label_change_password" />
     </group>
 
 
@@ -15,7 +15,7 @@
         android:checkableBehavior="single">
         <item
             android:id="@+id/nav_user_about"
-            android:title="About" />
+            android:title="@string/label_about" />
     </group>
 
     <group
@@ -23,7 +23,7 @@
         android:checkableBehavior="single">
         <item
             android:id="@+id/nav_user_sign_out"
-            android:title="Sign out" />
+            android:title="@string/label_sign_out" />
     </group>
 
     <group

@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserDetails;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserPool;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserSession;
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.GenericHandler;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.GetDetailsHandler;
 import com.amazonaws.regions.Regions;
 import com.at.cancerbero.CancerberoApp.R;
@@ -14,6 +15,8 @@ import com.at.cancerbero.domain.service.exceptions.AuthenticationContinuationReq
 import com.at.cancerbero.domain.service.handlers.AuthenticationContinuations;
 import com.at.cancerbero.domain.service.handlers.AuthenticationHandler;
 import com.at.cancerbero.domain.service.handlers.ForgotPasswordHandler;
+import com.at.cancerbero.service.events.ChangePasswordFail;
+import com.at.cancerbero.service.events.ChangePasswordSuccess;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -39,6 +42,8 @@ public class SecurityServiceCognito implements SecurityService {
     private ReentrantLock authenticationLock = new ReentrantLock();
 
     private ReentrantLock forgotPasswordLock = new ReentrantLock();
+
+    private ReentrantLock changePasswordLock = new ReentrantLock();
 
     private ReentrantLock getCurrentUserDetailsLock = new ReentrantLock();
 
@@ -99,19 +104,21 @@ public class SecurityServiceCognito implements SecurityService {
                 result = handler.login().thenCompose(session -> {
                     this.cognitoUserSession = session;
                     return getCurrentUser();
-                }).handle((u, t) -> {
-                    if (t != null) {
-                        if (!(t instanceof AuthenticationContinuationRequired)) {
-                            forgotPasswordHandlers.remove(userId);
-                        }
-                        throwRuntimeException(t);
-                        return null;
-                    } else {
-                        return u;
-                    }
                 });
             }
-            return result;
+
+            return result.handle((u, t) -> {
+                if (t != null) {
+                    if (!(t.getCause() instanceof AuthenticationContinuationRequired)) {
+                        authenticationHandlers.remove(userId);
+                    }
+                    throwRuntimeException(t);
+                    return null;
+                } else {
+                    authenticationHandlers.remove(userId);
+                    return u;
+                }
+            });
         });
     }
 
@@ -143,13 +150,13 @@ public class SecurityServiceCognito implements SecurityService {
 
             return result.handle((u, t) -> {
                 if (t != null) {
-                    if (!(t instanceof AuthenticationContinuationRequired)) {
-                        forgotPasswordHandlers.remove(userId);
+                    if (!(t.getCause() instanceof AuthenticationContinuationRequired)) {
+                        authenticationHandlers.remove(userId);
                     }
                     throwRuntimeException(t);
                     return null;
                 } else {
-                    forgotPasswordHandlers.remove(userId);
+                    authenticationHandlers.remove(userId);
                     return u;
                 }
             });
@@ -227,8 +234,22 @@ public class SecurityServiceCognito implements SecurityService {
     }
 
     @Override
-    public CompletableFuture<Boolean> changePassword(String oldPassword, String newPassword) {
-        return null;
+    public CompletableFuture<Void> changePassword(String oldPassword, String newPassword) {
+        return changePasswordLock.get(() -> {
+            CompletableFuture<Void> result = new CompletableFuture<>();
+            cognitoUserPool.getCurrentUser().changePasswordInBackground(oldPassword, newPassword, new GenericHandler() {
+                @Override
+                public void onSuccess() {
+                    result.complete(null);
+                }
+
+                @Override
+                public void onFailure(Exception exception) {
+                    result.completeExceptionally(exception);
+                }
+            });
+            return result;
+        });
     }
 
 

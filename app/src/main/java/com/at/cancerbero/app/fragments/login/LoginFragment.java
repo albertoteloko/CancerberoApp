@@ -15,6 +15,8 @@ import android.widget.TextView;
 import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.app.fragments.AppFragment;
 import com.at.cancerbero.app.fragments.installation.InstallationsFragment;
+import com.at.cancerbero.domain.service.exceptions.AuthenticationContinuationRequired;
+import com.at.cancerbero.domain.service.handlers.AuthenticationContinuations;
 import com.at.cancerbero.service.events.Event;
 import com.at.cancerbero.service.events.ForgotPasswordFail;
 import com.at.cancerbero.service.events.ForgotPasswordStart;
@@ -114,8 +116,14 @@ public class LoginFragment extends AppFragment {
             showToast(R.string.message_title_signing);
             getMainService().getSecurityService().login(email, password).handle((u, t) -> {
                 if (t != null) {
-                    showAlertMessage(R.string.message_title_unable_to_login, t.getMessage());
-                    Log.e(TAG, "Unable to log in", t);
+                    if ((t.getCause() instanceof AuthenticationContinuationRequired) && (((AuthenticationContinuationRequired) t.getCause()).authenticationContinuations == AuthenticationContinuations.NewPassword)) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString("userId", email);
+                        changeFragment(LoginFirstTimeFragment.class, bundle);
+                    } else {
+                        showAlertMessage(R.string.message_title_unable_to_login, t.getMessage());
+                        Log.e(TAG, "Unable to log in", t);
+                    }
                 } else {
                     changeFragment(InstallationsFragment.class);
                 }

@@ -290,7 +290,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void failSafeWorkflow() {
-        if (getMainService().getCurrentUser() != null) {
+        if (getMainService().getSecurityService().isLogged()) {
             changeFragment(InstallationsFragment.class);
         } else {
             changeFragment(LoginFragment.class);

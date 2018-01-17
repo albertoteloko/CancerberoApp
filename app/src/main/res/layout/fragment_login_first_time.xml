@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Complete the following to continue"
+        android:text="@string/label_continue_login"
         android:textStyle="bold"
         android:id="@+id/newPassMessage"
         android:layout_alignParentStart="true" />
@@ -43,7 +43,7 @@
         android:layout_below="@+id/textViewNewPassPassLabel"
         android:layout_centerHorizontal="true"
         android:background="@drawable/text_border_selector"
-        android:hint="New userPassword"
+        android:hint="@string/label_new_password"
         android:inputType="textPassword"/>
 
     <TextView
@@ -96,7 +96,7 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Continue"
+        android:text="@string/label_continue"
         android:textAllCaps="false"
         android:textSize="@dimen/activity_button_text_size"
         android:textColor="@color/white"

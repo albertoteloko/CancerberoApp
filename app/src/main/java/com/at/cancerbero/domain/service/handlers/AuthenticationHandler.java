@@ -96,15 +96,17 @@ public class AuthenticationHandler implements com.amazonaws.mobileconnectors.cog
     public void onFailure(Exception exception) {
         if (!loginStartFuture.isDone()) {
             loginStartFuture.completeExceptionally(exception);
+            loginStartFuture = new CompletableFuture<>();
         } else if (!loginContinueFuture.isDone()) {
             loginContinueFuture.completeExceptionally(exception);
+            loginContinueFuture = new CompletableFuture<>();
         } else {
             Log.e(TAG, "Unexpected status", exception);
         }
     }
 
     public CompletableFuture<CognitoUserSession> login() {
-        cognitoUserPool.getCurrentUser().getSessionInBackground(this);
+        cognitoUserPool.getUser(userId).getSessionInBackground(this);
         return loginStartFuture;
     }
 

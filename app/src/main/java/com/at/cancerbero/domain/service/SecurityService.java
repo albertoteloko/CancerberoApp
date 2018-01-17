@@ -31,7 +31,7 @@ public interface SecurityService {
 
     CompletableFuture<Void> changePasswordForgotten(String userId, String newPassword, String verCode);
 
-    CompletableFuture<Boolean> changePassword(String oldPassword, String newPassword);
+    CompletableFuture<Void> changePassword(String oldPassword, String newPassword);
 
 
 }

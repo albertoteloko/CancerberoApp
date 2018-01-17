@@ -17,10 +17,13 @@
 
 package com.at.cancerbero.app.fragments.login;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +33,7 @@ import android.widget.TextView;
 
 import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.app.fragments.AppFragment;
+import com.at.cancerbero.app.fragments.installation.InstallationsFragment;
 import com.at.cancerbero.service.events.Event;
 import com.at.cancerbero.service.events.LogInFail;
 
@@ -37,12 +41,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class LoginFirstTimeFragment extends AppFragment {
-    private String TAG = "NewPassword";
-    private EditText newPassword;
-    private EditText newName;
+    private String TAG = "LoginFirstTimeFragment";
 
-    private Button continueSignIn;
-    private AlertDialog userDialog;
+    private String userId;
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        restoreFromBundle(savedInstanceState);
+    }
 
 
     @Override
@@ -50,74 +57,81 @@ public class LoginFirstTimeFragment extends AppFragment {
         final View view = inflater.inflate(R.layout.fragment_login_first_time, container, false);
         super.onCreate(savedInstanceState);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        restoreFromBundle(savedInstanceState);
 
-        newPassword = (EditText) view.findViewById(R.id.editTextNewPassPass);
+
+        TextView newPassword = view.findViewById(R.id.editTextNewPassPass);
         newPassword.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 if (s.length() == 0) {
-                    TextView label = (TextView) view.findViewById(R.id.textViewNewPassPassLabel);
-                    label.setText(newPassword.getHint());
+                    TextView label = view.findViewById(R.id.textViewNewPassPassLabel);
+                    label.setText(R.string.label_password_empty);
                     newPassword.setBackground(view.getResources().getDrawable(R.drawable.text_border_selector));
                 }
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                TextView label = (TextView) view.findViewById(R.id.textViewNewPassPassMessage);
+                TextView label = view.findViewById(R.id.textViewNewPassPassMessage);
                 label.setText("");
             }
 
             @Override
             public void afterTextChanged(Editable s) {
                 if (s.length() == 0) {
-                    TextView label = (TextView) view.findViewById(R.id.textViewNewPassPassLabel);
+                    TextView label = view.findViewById(R.id.textViewNewPassPassLabel);
                     label.setText("");
                 }
             }
         });
 
-        newName = (EditText) view.findViewById(R.id.editTextName);
+        EditText newName = view.findViewById(R.id.editTextName);
         newName.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 if (s.length() == 0) {
-                    TextView label = (TextView) view.findViewById(R.id.textViewNewNameLabel);
-                    label.setText(newName.getHint());
+                    TextView label = view.findViewById(R.id.textViewNewNameLabel);
+                    label.setText(R.string.label_name_empty);
                     newPassword.setBackground(view.getResources().getDrawable(R.drawable.text_border_selector));
                 }
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                TextView label = (TextView) view.findViewById(R.id.textViewNewNameLabel);
+                TextView label = view.findViewById(R.id.textViewNewNameLabel);
                 label.setText("");
             }
 
             @Override
             public void afterTextChanged(Editable s) {
                 if (s.length() == 0) {
-                    TextView label = (TextView) view.findViewById(R.id.textViewNewNameLabel);
+                    TextView label = view.findViewById(R.id.textViewNewNameLabel);
                     label.setText("");
                 }
             }
         });
 
-        continueSignIn = (Button) view.findViewById(R.id.buttonNewPass);
-        continueSignIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String newUserPassword = newPassword.getText().toString();
-                String newNameValue = newName.getText().toString();
-                Map<String, String> userParams = new HashMap<>();
-                userParams.put("given_name", newNameValue);
-                if (checkString(newUserPassword) && checkString(newNameValue)) {
-                    getMainService().continueWithFirstTimeSignIn(newUserPassword, userParams);
-                } else {
-                    showDialogMessage("Error", "Enter all required attributed");
-                }
+        Button continueSignIn =  view.findViewById(R.id.buttonNewPass);
+        continueSignIn.setOnClickListener((v) -> {
+            String newUserPassword = newPassword.getText().toString();
+            String newNameValue = newName.getText().toString();
+
+            if (checkString(newUserPassword) && checkString(newNameValue)) {
+
+                ProgressDialog dialog = showProgressMessage(R.string.label_logging);
+                getMainService().getSecurityService().firstLogin(userId, newUserPassword, newNameValue).handle((vo, t) -> {
+                    if (t != null) {
+                        showToast(R.string.message_title_unable_to_login);
+                        Log.e(TAG, "Unable to login", t);
+                    } else {
+                        changeFragment(InstallationsFragment.class);
+                    }
+                    dialog.dismiss();
+                    return null;
+                });
+            } else {
+                showToast(R.string.message_missing_fields);
             }
         });
 
@@ -130,19 +144,18 @@ public class LoginFirstTimeFragment extends AppFragment {
         return (newUserPassword != null) && (!newUserPassword.isEmpty());
     }
 
-    @Override
-    public boolean handle(Event event) {
-        boolean result = false;
-
-        if (event instanceof LogInFail) {
-            Exception exception = ((LogInFail) event).exception;
-
-            if (!exception.getMessage().equals("user ID cannot be null")) {
-                showToast("Unable to log in");
+    private void restoreFromBundle(Bundle extras) {
+        if (extras != null) {
+            if (extras.containsKey("userId")) {
+                userId = extras.getString("userId");
             }
-            result = true;
         }
+    }
 
-        return result;
+
+    @Override
+    public boolean onBackPressed() {
+        changeFragment(LoginFragment.class);
+        return true;
     }
 }
