@@ -52,6 +52,9 @@ import com.at.cancerbero.service.events.UserDetailsSuccess;
 
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+
+import java8.util.concurrent.CompletableFuture;
 
 public class MainAppService extends Service implements AsyncGateway {
 
@@ -69,7 +72,7 @@ public class MainAppService extends Service implements AsyncGateway {
 
     protected final String TAG = getClass().getSimpleName();
 
-    private final SecurityService securityService  = new SecurityServiceCognito();
+    private final SecurityService securityService = new SecurityServiceCognito();
 
     private final IBinder mBinder = new MainBinder();
 
@@ -129,7 +132,9 @@ public class MainAppService extends Service implements AsyncGateway {
 
         securityService.start(getApplicationContext());
 
-        securityService.login();
+        securityService.login().thenAccept(user ->
+                Log.i(TAG, "User: " + user)
+        );
 
         Context context = getApplicationContext();
 //        String userPoolId = context.getResources().getString(R.string.userPoolId);
@@ -164,7 +169,7 @@ public class MainAppService extends Service implements AsyncGateway {
     public void sendEvent(Event event) {
         MainActivity mainActivity = MainActivity.getInstance();
         if ((mainActivity != null) && (event != null)) {
-            mainActivity.handle(event);
+//            mainActivity.handle(event);
         }
     }
 
@@ -172,39 +177,9 @@ public class MainAppService extends Service implements AsyncGateway {
         final MainActivity mainActivity = MainActivity.getInstance();
         mainActivity.runOnUiThread(new Runnable() {
             public void run() {
-                mainActivity.handle(event);
+//                mainActivity.handle(event);
             }
         });
-    }
-
-    public void forgotPassword(final String userId) {
-        userPool.getUser(userId).forgotPasswordInBackground(new ForgotPasswordHandler() {
-            @Override
-            public void onSuccess() {
-                forgotPasswordContinuation = null;
-                sendEvent(new ForgotPasswordSuccess(userId));
-            }
-
-            @Override
-            public void getResetCode(ForgotPasswordContinuation continuation) {
-                forgotPasswordContinuation = continuation;
-                sendEvent(new ForgotPasswordStart(userId, continuation));
-            }
-
-            @Override
-            public void onFailure(Exception exception) {
-                sendEvent(new ForgotPasswordFail(userId, exception));
-            }
-        });
-    }
-
-
-    public void changePasswordForgotten(String newPassword, String verCode) {
-        if (forgotPasswordContinuation != null) {
-            forgotPasswordContinuation.setPassword(newPassword);
-            forgotPasswordContinuation.setVerificationCode(verCode);
-            forgotPasswordContinuation.continueTask();
-        }
     }
 
 //    public void login() {
@@ -262,7 +237,7 @@ public class MainAppService extends Service implements AsyncGateway {
                 MainAppService.this.device = newDevice;
                 newPasswordContinuation = null;
                 sendEvent(new LogInSuccess(userSession, newDevice));
-                loadUserDetails();
+//                loadUserDetails();
             }
 
             @Override
@@ -290,20 +265,20 @@ public class MainAppService extends Service implements AsyncGateway {
         };
     }
 
-    public void loadUserDetails() {
-        userPool.getCurrentUser().getDetailsInBackground(new GetDetailsHandler() {
-            @Override
-            public void onSuccess(CognitoUserDetails cognitoUserDetails) {
-                MainAppService.this.userDetails = cognitoUserDetails;
-                sendEvent(new UserDetailsSuccess(cognitoUserDetails));
-            }
-
-            @Override
-            public void onFailure(Exception exception) {
-                sendEvent(new UserDetailsFail(exception));
-            }
-        });
-    }
+//    public void loadUserDetails() {
+//        userPool.getCurrentUser().getDetailsInBackground(new GetDetailsHandler() {
+//            @Override
+//            public void onSuccess(CognitoUserDetails cognitoUserDetails) {
+//                MainAppService.this.userDetails = cognitoUserDetails;
+//                sendEvent(new UserDetailsSuccess(cognitoUserDetails));
+//            }
+//
+//            @Override
+//            public void onFailure(Exception exception) {
+//                sendEvent(new UserDetailsFail(exception));
+//            }
+//        });
+//    }
 
     public NewPasswordContinuation getNewPasswordContinuation() {
         return newPasswordContinuation;

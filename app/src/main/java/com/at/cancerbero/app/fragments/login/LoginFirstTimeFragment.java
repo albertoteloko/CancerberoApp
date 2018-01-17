@@ -138,7 +138,7 @@ public class LoginFirstTimeFragment extends AppFragment {
             Exception exception = ((LogInFail) event).exception;
 
             if (!exception.getMessage().equals("user ID cannot be null")) {
-                showErrorDialog("Unable to log in");
+                showToast("Unable to log in");
             }
             result = true;
         }

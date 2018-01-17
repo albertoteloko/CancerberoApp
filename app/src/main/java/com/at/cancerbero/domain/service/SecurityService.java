@@ -21,15 +21,15 @@ public interface SecurityService {
 
     CompletableFuture<User> login();
 
-    CompletableFuture<User> login(final String email, final String password);
+    CompletableFuture<User> login(String email, String password);
 
     CompletableFuture<User> firstLogin(String newPassword, String name);
 
     CompletableFuture<Boolean> logout();
 
-    CompletableFuture<ForgotPasswordStart> forgotPassword(String userId);
+    CompletableFuture<Void> forgotPassword(String userId);
 
-    CompletableFuture<ForgotPasswordSuccess> changePasswordForgotten(String newPassword, String verCode);
+    CompletableFuture<Void> changePasswordForgotten(String userId, String newPassword, String verCode);
 
     CompletableFuture<Boolean> changePassword(String oldPassword, String newPassword);
 

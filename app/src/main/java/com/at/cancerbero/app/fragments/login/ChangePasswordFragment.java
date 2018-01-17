@@ -134,11 +134,11 @@ public class ChangePasswordFragment extends AppFragment {
         boolean result = false;
 
         if (event instanceof ChangePasswordFail) {
-            showErrorDialog("Unable to change the password");
+            showToast("Unable to change the password");
             closeProgressDialog();
             result = true;
         } else if (event instanceof ChangePasswordSuccess) {
-            showErrorDialog("Password changed");
+            showToast("Password changed");
             changeFragment(InstallationsFragment.class);
             closeProgressDialog();
             result = true;

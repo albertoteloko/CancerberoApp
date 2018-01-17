@@ -9,10 +9,8 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class ForgotPasswordStart implements Event {
     public final String userId;
-    public final ForgotPasswordContinuation continuation;
 
-    public ForgotPasswordStart(String userId, ForgotPasswordContinuation continuation) {
+    public ForgotPasswordStart(String userId) {
         this.userId = userId;
-        this.continuation = continuation;
     }
 }

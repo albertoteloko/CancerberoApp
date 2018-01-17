@@ -46,7 +46,7 @@ public abstract class TabFragment extends Fragment {
 
     protected void sendEvent(Event event) {
         if (event != null) {
-            getMainActivity().handle(event);
+//            getMainActivity().handle(event);
         }
     }
 

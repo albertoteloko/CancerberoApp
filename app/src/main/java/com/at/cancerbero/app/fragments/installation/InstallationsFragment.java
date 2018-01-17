@@ -120,7 +120,7 @@ public class InstallationsFragment extends AppFragment {
     @Override
     public void onResume() {
         super.onResume();
-        loadInstallations(false);
-        getMainService().loadUserDetails();
+//        loadInstallations(false);
+//        getMainService().loadUserDetails();
     }
 }

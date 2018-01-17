@@ -24,8 +24,24 @@ public abstract class AppFragment extends Fragment implements Handler {
     private MainActivity mainActivity;
 
 
-    public void showErrorDialog(String error) {
-        getMainActivity().showErrorDialog(error);
+    public void showToast(int message) {
+        getMainActivity().showToast(message);
+    }
+
+    public void showToast(String message) {
+        getMainActivity().showToast(message);
+    }
+
+    public AlertDialog showAlertMessage(int title, int body) {
+        return getMainActivity().showAlertMessage(title, body);
+    }
+
+    public AlertDialog showAlertMessage(int title, String body) {
+        return getMainActivity().showAlertMessage(title, body);
+    }
+
+    public AlertDialog showAlertMessage(String title, String body) {
+        return getMainActivity().showAlertMessage(title, body);
     }
 
     protected void setRefreshing(boolean value) {
@@ -33,7 +49,11 @@ public abstract class AppFragment extends Fragment implements Handler {
     }
 
     public AlertDialog showDialogMessage(String title, String body) {
-        return getMainActivity().showDialogMessage(title, body);
+        return getMainActivity().showAlertMessage(title, body);
+    }
+
+    public ProgressDialog showProgressMessage(int message) {
+        return getMainActivity().showProgressMessage(message);
     }
 
     public ProgressDialog showProgressMessage(String message) {
@@ -106,7 +126,7 @@ public abstract class AppFragment extends Fragment implements Handler {
 
     protected void sendEvent(Event event) {
         if (event != null) {
-            getMainActivity().handle(event);
+//            getMainActivity().handle(event);
         }
     }
 
