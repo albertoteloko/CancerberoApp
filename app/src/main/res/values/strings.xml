@@ -60,4 +60,5 @@
     <string name="label_current_password">Current Password</string>
     <string name="label_current_password_empty">The current password cannot be empty</string>
     <string name="label_new_password_empty">The new password cannot be empty</string>
+    <string name="label_unable_to_load_installations">Unable to load installations</string>
 </resources>

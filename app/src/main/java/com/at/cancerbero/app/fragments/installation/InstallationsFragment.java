@@ -7,16 +7,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.adapter.InstallationsAdapter;
 import com.at.cancerbero.app.fragments.AppFragment;
 import com.at.cancerbero.domain.model.domain.Installation;
-import com.at.cancerbero.service.events.Event;
-import com.at.cancerbero.service.events.InstallationsLoaded;
-import com.at.cancerbero.service.events.ServerError;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,22 +24,6 @@ public class InstallationsFragment extends AppFragment {
 
     public InstallationsFragment() {
     }
-
-    @Override
-    public boolean handle(Event event) {
-        boolean result = false;
-
-        if (event instanceof InstallationsLoaded) {
-            showItems(((InstallationsLoaded) event).installations);
-            setRefreshing(false);
-            result = true;
-        } else if (event instanceof ServerError) {
-            setRefreshing(false);
-        }
-
-        return result;
-    }
-
 
     private void showItems(Set<Installation> installations) {
         if (listView != null) {
@@ -76,13 +56,9 @@ public class InstallationsFragment extends AppFragment {
         listView = view.findViewById(R.id.list_installations);
         registerForContextMenu(listView);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Installation installation = (Installation) listView.getItemAtPosition(position);
-                selectInstallation(installation);
-            }
+        listView.setOnItemClickListener((parent, v, position, id) -> {
+            Installation installation = (Installation) listView.getItemAtPosition(position);
+            selectInstallation(installation);
 
         });
 
@@ -96,7 +72,7 @@ public class InstallationsFragment extends AppFragment {
         int id = item.getItemId();
 
         if (id == R.id.menu_refresh) {
-            loadInstallations(true);
+            loadInstallations();
             return true;
         }
 
@@ -104,23 +80,29 @@ public class InstallationsFragment extends AppFragment {
     }
 
 
-    private void selectInstallation(Installation itemValue) {
-        changeFragment(InstallationFragment.class);
-        InstallationFragment currentFragment = (InstallationFragment) getCurrentFragment();
-        currentFragment.setInstallationId(itemValue.id);
-        currentFragment.showItems(itemValue);
+    private void selectInstallation(Installation installation) {
+        Bundle bundle = new Bundle();
+        bundle.putString("installationId", installation.id.toString());
+        changeFragment(InstallationFragment.class, bundle);
     }
 
-    private void loadInstallations(boolean force) {
-        getMainActivity().setRefreshing(true);
-        getMainService().loadInstallations(force);
+    private void loadInstallations() {
+        setRefreshing(true);
+        getMainService().getInstallationService().loadInstallations().handle((installations, t) -> {
+            if (t != null) {
+                showToast(R.string.label_unable_to_load_installations);
+            } else {
+                showItems(installations);
+            }
+            setRefreshing(false);
+            return null;
+        });
     }
 
 
     @Override
     public void onResume() {
         super.onResume();
-//        loadInstallations(false);
-//        getMainService().loadUserDetails();
+        loadInstallations();
     }
 }
