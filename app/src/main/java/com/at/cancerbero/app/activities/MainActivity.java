@@ -350,40 +350,40 @@ public class MainActivity extends AppCompatActivity {
 
         Log.i(TAG, "Event: " + event.toString());
 
-        if (event instanceof Logout) {
-            changeFragment(LoginFragment.class);
-            result = true;
-        } else if (event instanceof LogInSuccess) {
-            changeFragment(InstallationsFragment.class);
-            result = true;
-        } else if (event instanceof LogInFail) {
-            Exception exception = ((LogInFail) event).exception;
-
-            if (!exception.getMessage().equals("user ID cannot be null")) {
-                showToast("Unable to log in");
-            }
-            changeFragment(LoginFragment.class);
-            result = true;
-        } else if (event instanceof AuthenticationChallenge) {
-            ChallengeContinuation continuation = ((AuthenticationChallenge) event).continuation;
-            if ("NEW_PASSWORD_REQUIRED".equals(continuation.getChallengeName())) {
-                changeFragment(LoginFirstTimeFragment.class);
-            } else if ("SELECT_MFA_TYPE".equals(continuation.getChallengeName())) {
-            }
-            result = true;
-        } else if (event instanceof UserDetailsSuccess) {
-            TextView usernameDetails = (TextView) findViewById(R.id.textViewNavUserSub);
-            if (usernameDetails != null) {
-                UserDetailsSuccess input = (UserDetailsSuccess) event;
-                usernameDetails.setText(input.userDetails.getAttributes().getAttributes().get("given_name"));
-            }
-
-            result = true;
-        } else if (event instanceof ServerError) {
-            ServerError input = (ServerError) event;
-            showAlertMessage("Server error", input.exception.getMessage());
-            result = true;
-        }
+//        if (event instanceof Logout) {
+//            changeFragment(LoginFragment.class);
+//            result = true;
+//        } else if (event instanceof LogInSuccess) {
+//            changeFragment(InstallationsFragment.class);
+//            result = true;
+//        } else if (event instanceof LogInFail) {
+//            Exception exception = ((LogInFail) event).exception;
+//
+//            if (!exception.getMessage().equals("user ID cannot be null")) {
+//                showToast("Unable to log in");
+//            }
+//            changeFragment(LoginFragment.class);
+//            result = true;
+//        } else if (event instanceof AuthenticationChallenge) {
+//            ChallengeContinuation continuation = ((AuthenticationChallenge) event).continuation;
+//            if ("NEW_PASSWORD_REQUIRED".equals(continuation.getChallengeName())) {
+//                changeFragment(LoginFirstTimeFragment.class);
+//            } else if ("SELECT_MFA_TYPE".equals(continuation.getChallengeName())) {
+//            }
+//            result = true;
+//        } else if (event instanceof UserDetailsSuccess) {
+//            TextView usernameDetails = (TextView) findViewById(R.id.textViewNavUserSub);
+//            if (usernameDetails != null) {
+//                UserDetailsSuccess input = (UserDetailsSuccess) event;
+//                usernameDetails.setText(input.userDetails.getAttributes().getAttributes().get("given_name"));
+//            }
+//
+//            result = true;
+//        } else if (event instanceof ServerError) {
+//            ServerError input = (ServerError) event;
+//            showAlertMessage("Server error", input.exception.getMessage());
+//            result = true;
+//        }
 
         return result;
     }

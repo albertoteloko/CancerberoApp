@@ -3,6 +3,7 @@ package com.at.cancerbero.service.async;
 import android.os.AsyncTask;
 
 import com.at.cancerbero.service.events.Event;
+import com.at.cancerbero.service.events.ServerError;
 
 public abstract class ServiceAsyncTask extends AsyncTask<Void, Void, Event> {
 

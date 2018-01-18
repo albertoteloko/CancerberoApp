@@ -17,7 +17,6 @@ import com.at.cancerbero.app.fragments.AppFragment;
 import com.at.cancerbero.app.fragments.installation.InstallationsFragment;
 import com.at.cancerbero.domain.service.exceptions.AuthenticationContinuationRequired;
 import com.at.cancerbero.domain.service.handlers.AuthenticationContinuations;
-import com.at.cancerbero.service.events.Event;
 
 public class LoginFragment extends AppFragment {
 
@@ -154,31 +153,5 @@ public class LoginFragment extends AppFragment {
         emailEditText.requestFocus();
 
         return view;
-    }
-
-    @Override
-    public boolean handle(Event event) {
-        boolean result = false;
-
-        if (event instanceof LogInFail) {
-            Exception exception = ((LogInFail) event).exception;
-
-            if (!exception.getMessage().equals("user ID cannot be null")) {
-                showToast("Unable to log in");
-            }
-            result = true;
-        } else if (event instanceof ForgotPasswordStart) {
-            ForgotPasswordStart input = ((ForgotPasswordStart) event);
-
-            Bundle bundle = new Bundle();
-            bundle.putString("userId", input.userId);
-            changeFragment(ForgotPasswordFragment.class, bundle);
-            result = true;
-        } else if (event instanceof ForgotPasswordFail) {
-            showToast("Unable to reset password");
-            result = true;
-        }
-
-        return result;
     }
 }

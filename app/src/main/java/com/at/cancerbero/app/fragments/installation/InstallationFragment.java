@@ -17,6 +17,7 @@ import com.at.cancerbero.domain.model.Installation;
 import com.at.cancerbero.domain.model.Node;
 import com.at.cancerbero.service.events.Event;
 import com.at.cancerbero.service.events.InstallationLoaded;
+import com.at.cancerbero.service.events.ServerError;
 
 import java.util.ArrayList;
 import java.util.List;

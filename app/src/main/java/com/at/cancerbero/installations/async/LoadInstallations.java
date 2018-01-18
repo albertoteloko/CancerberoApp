@@ -19,7 +19,8 @@ public class LoadInstallations extends LoadInstallationBase {
     public Event run() {
         Set<Installation> serverInstallation = convertInstallations(asyncGateway.getiInstallationRepository().loadInstallations());
         Log.i(TAG, "Load installations: " + serverInstallation);
-        return new InstallationsLoaded(serverInstallation);
+        return null;
+//        return new InstallationsLoaded(serverInstallation);
     }
 
     private Set<Installation> convertInstallations(Set<com.at.cancerbero.domain.data.repository.server.Installation> input) {

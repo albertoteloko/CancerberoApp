@@ -9,6 +9,8 @@ import com.at.cancerbero.domain.data.repository.NodesRepository;
 import com.at.cancerbero.domain.model.Installation;
 import com.at.cancerbero.domain.model.Node;
 import com.at.cancerbero.domain.model.User;
+import com.at.cancerbero.domain.service.converters.InstallationConverter;
+import com.at.cancerbero.domain.service.converters.NodeConverter;
 
 import java.util.Set;
 import java.util.UUID;
@@ -20,6 +22,9 @@ public class InstallationServiceRemote implements InstallationService {
     private static final boolean IGNORE_HOST_VERIFICATION = false;
 
     protected final String TAG = getClass().getSimpleName();
+
+    private final NodeConverter nodeConverter = new NodeConverter();
+    private final InstallationConverter installationConverter = new InstallationConverter(nodeConverter);
 
     private final SecurityService securityService;
 
@@ -42,7 +47,8 @@ public class InstallationServiceRemote implements InstallationService {
 
     @Override
     public CompletableFuture<Set<Installation>> loadInstallations() {
-        return null;
+        return securityService.getCurrentUser()
+                .thenApplyAsync(user -> installationConverter.convert(getInstallationRepository(user).loadInstallations(), getNodesRepository(user)));
     }
 
     @Override

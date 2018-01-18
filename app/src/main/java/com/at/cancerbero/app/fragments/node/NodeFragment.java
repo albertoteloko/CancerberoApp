@@ -23,6 +23,7 @@ import com.at.cancerbero.domain.model.AlarmStatus;
 import com.at.cancerbero.domain.model.Node;
 import com.at.cancerbero.service.events.Event;
 import com.at.cancerbero.service.events.NodeLoaded;
+import com.at.cancerbero.service.events.ServerError;
 
 import java.util.ArrayList;
 import java.util.List;

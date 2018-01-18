@@ -40,7 +40,7 @@ public class LoadingFragment extends AppFragment {
     public View onCreateViewApp(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_loading, container, false);
 
-        textView = (TextView) view.findViewById(R.id.text);
+        textView = view.findViewById(R.id.text);
         setText(R.string.label_loading);
 
         timerHandler.postDelayed(updateText, 1000);
