@@ -2,8 +2,8 @@ package com.at.cancerbero.domain.service;
 
 import android.content.Context;
 
-import com.at.cancerbero.domain.model.domain.Installation;
-import com.at.cancerbero.domain.model.domain.Node;
+import com.at.cancerbero.domain.model.Installation;
+import com.at.cancerbero.domain.model.Node;
 
 import java.util.Set;
 import java.util.UUID;

@@ -12,7 +12,7 @@ import android.widget.ListView;
 import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.adapter.InstallationsAdapter;
 import com.at.cancerbero.app.fragments.AppFragment;
-import com.at.cancerbero.domain.model.domain.Installation;
+import com.at.cancerbero.domain.model.Installation;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -10,7 +10,7 @@ import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.GenericHa
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.GetDetailsHandler;
 import com.amazonaws.regions.Regions;
 import com.at.cancerbero.CancerberoApp.R;
-import com.at.cancerbero.domain.model.domain.User;
+import com.at.cancerbero.domain.model.User;
 import com.at.cancerbero.domain.service.exceptions.AuthenticationContinuationRequired;
 import com.at.cancerbero.domain.service.handlers.AuthenticationContinuations;
 import com.at.cancerbero.domain.service.handlers.AuthenticationHandler;

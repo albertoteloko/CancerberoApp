@@ -1,4 +1,4 @@
-package com.at.cancerbero.domain.model.common;
+package com.at.cancerbero.domain.model;
 
 public enum PinInput {
     DIGITAL,

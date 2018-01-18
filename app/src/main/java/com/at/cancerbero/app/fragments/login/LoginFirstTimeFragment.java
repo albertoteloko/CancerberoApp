@@ -20,7 +20,6 @@ package com.at.cancerbero.app.fragments.login;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -34,11 +33,6 @@ import android.widget.TextView;
 import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.app.fragments.AppFragment;
 import com.at.cancerbero.app.fragments.installation.InstallationsFragment;
-import com.at.cancerbero.service.events.Event;
-import com.at.cancerbero.service.events.LogInFail;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class LoginFirstTimeFragment extends AppFragment {
     private String TAG = "LoginFirstTimeFragment";

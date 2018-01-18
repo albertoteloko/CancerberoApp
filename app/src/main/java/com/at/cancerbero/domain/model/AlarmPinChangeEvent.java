@@ -1,6 +1,4 @@
-package com.at.cancerbero.domain.model.domain;
-
-import com.at.cancerbero.domain.model.common.AlarmStatus;
+package com.at.cancerbero.domain.model;
 
 import java.util.Date;
 import java.util.UUID;
@@ -12,9 +10,9 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 @AllArgsConstructor
-public class AlarmStatusChangeEvent {
+public class AlarmPinChangeEvent {
     public final UUID id;
-    public final String source;
     public final Date timestamp;
-    public final AlarmStatus value;
+    public final int value;
 }
+

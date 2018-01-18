@@ -1,8 +1,4 @@
-package com.at.cancerbero.domain.model.domain;
-
-import com.at.cancerbero.domain.model.common.PinInput;
-import com.at.cancerbero.domain.model.common.PinMode;
-import com.at.cancerbero.domain.model.common.PinType;
+package com.at.cancerbero.domain.model;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;

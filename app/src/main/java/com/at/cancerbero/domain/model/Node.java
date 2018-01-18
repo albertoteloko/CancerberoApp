@@ -1,6 +1,4 @@
-package com.at.cancerbero.domain.model.domain;
-
-import com.at.cancerbero.domain.model.common.NodeType;
+package com.at.cancerbero.domain.model;
 
 import java.util.Date;
 

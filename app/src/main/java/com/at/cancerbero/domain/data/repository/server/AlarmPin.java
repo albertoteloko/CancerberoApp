@@ -1,8 +1,8 @@
 package com.at.cancerbero.domain.data.repository.server;
 
-import com.at.cancerbero.domain.model.common.PinInput;
-import com.at.cancerbero.domain.model.common.PinMode;
-import com.at.cancerbero.domain.model.common.PinType;
+import com.at.cancerbero.domain.model.PinInput;
+import com.at.cancerbero.domain.model.PinMode;
+import com.at.cancerbero.domain.model.PinType;
 
 import lombok.Data;
 

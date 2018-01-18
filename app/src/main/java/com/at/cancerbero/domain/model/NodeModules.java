@@ -1,4 +1,4 @@
-package com.at.cancerbero.domain.model.domain;
+package com.at.cancerbero.domain.model;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;

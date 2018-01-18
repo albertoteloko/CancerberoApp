@@ -18,9 +18,6 @@ import com.at.cancerbero.app.fragments.installation.InstallationsFragment;
 import com.at.cancerbero.domain.service.exceptions.AuthenticationContinuationRequired;
 import com.at.cancerbero.domain.service.handlers.AuthenticationContinuations;
 import com.at.cancerbero.service.events.Event;
-import com.at.cancerbero.service.events.ForgotPasswordFail;
-import com.at.cancerbero.service.events.ForgotPasswordStart;
-import com.at.cancerbero.service.events.LogInFail;
 
 public class LoginFragment extends AppFragment {
 

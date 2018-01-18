@@ -1,4 +1,4 @@
-package com.at.cancerbero.service.boot;
+package com.at.cancerbero.domain.service.receivers;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;

@@ -2,10 +2,9 @@ package com.at.cancerbero.installations.async;
 
 import android.util.Log;
 
-import com.at.cancerbero.domain.model.domain.Installation;
+import com.at.cancerbero.domain.model.Installation;
 import com.at.cancerbero.service.async.AsyncGateway;
 import com.at.cancerbero.service.events.Event;
-import com.at.cancerbero.service.events.InstallationsLoaded;
 
 import java.util.HashSet;
 import java.util.Set;

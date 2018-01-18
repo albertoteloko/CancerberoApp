@@ -6,9 +6,9 @@ import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.domain.data.repository.BackEndClient;
 import com.at.cancerbero.domain.data.repository.InstallationRepository;
 import com.at.cancerbero.domain.data.repository.NodesRepository;
-import com.at.cancerbero.domain.model.domain.Installation;
-import com.at.cancerbero.domain.model.domain.Node;
-import com.at.cancerbero.domain.model.domain.User;
+import com.at.cancerbero.domain.model.Installation;
+import com.at.cancerbero.domain.model.Node;
+import com.at.cancerbero.domain.model.User;
 
 import java.util.Set;
 import java.util.UUID;

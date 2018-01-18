@@ -27,12 +27,12 @@
             android:enabled="true"
             android:exported="true" />
 
-        <receiver android:name="com.at.cancerbero.service.boot.MainServiceStartBootReceiver">
+        <receiver android:name="com.at.cancerbero.domain.service.receivers.MainServiceStartBootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <receiver android:name="com.at.cancerbero.service.boot.MainServiceStartReceiver" />
+        <receiver android:name="com.at.cancerbero.domain.service.receivers.MainServiceStartReceiver" />
 
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"

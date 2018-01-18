@@ -19,11 +19,10 @@ import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.adapter.ImageUtils;
 import com.at.cancerbero.app.fragments.AppFragment;
 import com.at.cancerbero.app.fragments.installation.InstallationFragment;
-import com.at.cancerbero.domain.model.common.AlarmStatus;
-import com.at.cancerbero.domain.model.domain.Node;
+import com.at.cancerbero.domain.model.AlarmStatus;
+import com.at.cancerbero.domain.model.Node;
 import com.at.cancerbero.service.events.Event;
 import com.at.cancerbero.service.events.NodeLoaded;
-import com.at.cancerbero.service.events.ServerError;
 
 import java.util.ArrayList;
 import java.util.List;

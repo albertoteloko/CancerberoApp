@@ -1,12 +1,12 @@
 package com.at.cancerbero.installations.async;
 
-import com.at.cancerbero.domain.model.domain.AlarmModule;
-import com.at.cancerbero.domain.model.domain.AlarmPin;
-import com.at.cancerbero.domain.model.domain.AlarmPinChangeEvent;
-import com.at.cancerbero.domain.model.domain.AlarmStatusChangeEvent;
-import com.at.cancerbero.domain.model.domain.Installation;
-import com.at.cancerbero.domain.model.domain.Node;
-import com.at.cancerbero.domain.model.domain.NodeModules;
+import com.at.cancerbero.domain.model.AlarmModule;
+import com.at.cancerbero.domain.model.AlarmPin;
+import com.at.cancerbero.domain.model.AlarmPinChangeEvent;
+import com.at.cancerbero.domain.model.AlarmStatusChangeEvent;
+import com.at.cancerbero.domain.model.Installation;
+import com.at.cancerbero.domain.model.Node;
+import com.at.cancerbero.domain.model.NodeModules;
 import com.at.cancerbero.service.async.AsyncGateway;
 import com.at.cancerbero.service.async.ServiceAsyncTask;
 

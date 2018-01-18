@@ -1,6 +1,6 @@
 package com.at.cancerbero.domain.data.repository.server;
 
-import com.at.cancerbero.domain.model.common.AlarmStatus;
+import com.at.cancerbero.domain.model.AlarmStatus;
 
 import java.util.Date;
 import java.util.UUID;

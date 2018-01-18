@@ -2,11 +2,8 @@ package com.at.cancerbero.domain.service;
 
 import android.content.Context;
 
-import com.at.cancerbero.domain.model.domain.User;
-import com.at.cancerbero.service.events.ForgotPasswordStart;
-import com.at.cancerbero.service.events.ForgotPasswordSuccess;
+import com.at.cancerbero.domain.model.User;
 
-import java8.util.Optional;
 import java8.util.concurrent.CompletableFuture;
 
 public interface SecurityService {
