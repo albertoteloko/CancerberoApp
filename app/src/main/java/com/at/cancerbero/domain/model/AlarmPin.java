@@ -9,9 +9,11 @@ import lombok.ToString;
 @AllArgsConstructor
 public class AlarmPin {
     public final String id;
+    public final String name;
     public final PinType type;
     public final PinInput input;
     public final PinMode mode;
+    public final String unit;
     public final int threshold;
     public final AlarmPinChangeEvent activations;
     public final AlarmPinChangeEvent readings;

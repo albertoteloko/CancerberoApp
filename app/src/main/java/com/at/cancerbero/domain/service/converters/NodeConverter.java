@@ -49,9 +49,11 @@ public class NodeConverter {
     private AlarmPin convertPin(com.at.cancerbero.domain.data.repository.model.AlarmPin input) {
         return new AlarmPin(
                 input.getId(),
+                input.getName(),
                 input.getType(),
                 input.getInput(),
                 input.getMode(),
+                input.getUnit(),
                 input.getThreshold(),
                 convert(input.getActivations()),
                 convert(input.getReadings())

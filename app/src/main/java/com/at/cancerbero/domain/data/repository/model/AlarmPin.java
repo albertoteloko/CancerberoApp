@@ -9,9 +9,11 @@ import lombok.Data;
 @Data
 public class AlarmPin {
     private String id;
+    private String name;
     private PinType type;
     private PinInput input;
     private PinMode mode;
+    private String unit;
     private int threshold;
     private AlarmPinChangeEvent activations;
     private AlarmPinChangeEvent readings;

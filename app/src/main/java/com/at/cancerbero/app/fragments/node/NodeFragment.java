@@ -148,6 +148,8 @@ public class NodeFragment extends AppFragment implements TabLayout.OnTabSelected
         viewPager.setCurrentItem(0);
 
         StreamSupport.stream(items).forEach(i -> i.showItem(node));
+
+        tabLayout.setVisibility(items.size() > 1 ? View.VISIBLE : View.GONE);
     }
 
     void loadNode() {
