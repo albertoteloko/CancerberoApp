@@ -1,7 +1,7 @@
 package com.at.cancerbero.domain.data.repository;
 
-import com.at.cancerbero.domain.data.repository.server.Installation;
-import com.at.cancerbero.domain.data.repository.server.Installations;
+import com.at.cancerbero.domain.data.repository.model.Installation;
+import com.at.cancerbero.domain.data.repository.model.Installations;
 
 import java.util.Set;
 import java.util.UUID;

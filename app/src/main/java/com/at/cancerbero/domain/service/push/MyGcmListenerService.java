@@ -1,4 +1,4 @@
-package com.at.cancerbero.service.push;
+package com.at.cancerbero.domain.service.push;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;

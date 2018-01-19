@@ -1,4 +1,4 @@
-package com.at.cancerbero.utils.server;
+package com.at.cancerbero.domain.data.repository.server;
 
 import android.util.Log;
 
@@ -6,7 +6,6 @@ import com.amazonaws.ClientConfiguration;
 import com.amazonaws.http.ApacheHttpClient;
 import com.amazonaws.http.HttpRequest;
 import com.amazonaws.http.HttpResponse;
-import com.at.cancerbero.utils.ExceptionUtils;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

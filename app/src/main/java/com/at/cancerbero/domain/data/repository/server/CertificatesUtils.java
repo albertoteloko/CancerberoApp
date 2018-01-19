@@ -1,4 +1,4 @@
-package com.at.cancerbero.utils.server;
+package com.at.cancerbero.domain.data.repository.server;
 
 import android.util.Log;
 

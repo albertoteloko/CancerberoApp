@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class NodeConverter {
-    public Node convert(com.at.cancerbero.domain.data.repository.server.Node input) {
+    public Node convert(com.at.cancerbero.domain.data.repository.model.Node input) {
         return new Node(
                 input.getId(),
                 input.getName(),
@@ -22,20 +22,20 @@ public class NodeConverter {
         );
     }
 
-    private NodeModules convertModules(com.at.cancerbero.domain.data.repository.server.NodeModules input) {
+    private NodeModules convertModules(com.at.cancerbero.domain.data.repository.model.NodeModules input) {
         return new NodeModules(
                 convertAlarmModule(input.getAlarm())
         );
     }
 
-    private AlarmModule convertAlarmModule(com.at.cancerbero.domain.data.repository.server.AlarmModule input) {
+    private AlarmModule convertAlarmModule(com.at.cancerbero.domain.data.repository.model.AlarmModule input) {
         return new AlarmModule(
                 convert(input.getStatus()),
                 convertPins(input.getPins())
         );
     }
 
-    private Map<String, AlarmPin> convertPins(Map<String, com.at.cancerbero.domain.data.repository.server.AlarmPin> input) {
+    private Map<String, AlarmPin> convertPins(Map<String, com.at.cancerbero.domain.data.repository.model.AlarmPin> input) {
         Map<String, AlarmPin> result = new HashMap<>();
 
         for (String pinId : input.keySet()) {
@@ -45,7 +45,7 @@ public class NodeConverter {
         return result;
     }
 
-    private AlarmPin convertPin(com.at.cancerbero.domain.data.repository.server.AlarmPin input) {
+    private AlarmPin convertPin(com.at.cancerbero.domain.data.repository.model.AlarmPin input) {
         return new AlarmPin(
                 input.getId(),
                 input.getType(),
@@ -57,7 +57,7 @@ public class NodeConverter {
         );
     }
 
-    private AlarmPinChangeEvent convert(com.at.cancerbero.domain.data.repository.server.AlarmPinChangeEvent input) {
+    private AlarmPinChangeEvent convert(com.at.cancerbero.domain.data.repository.model.AlarmPinChangeEvent input) {
         return new AlarmPinChangeEvent(
                 input.getId(),
                 input.getTimestamp(),
@@ -65,7 +65,7 @@ public class NodeConverter {
         );
     }
 
-    private AlarmStatusChangeEvent convert(com.at.cancerbero.domain.data.repository.server.AlarmStatusChangeEvent input) {
+    private AlarmStatusChangeEvent convert(com.at.cancerbero.domain.data.repository.model.AlarmStatusChangeEvent input) {
         return new AlarmStatusChangeEvent(
                 input.getId(),
                 input.getSource(),

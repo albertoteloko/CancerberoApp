@@ -10,7 +10,6 @@ import android.widget.ListView;
 import android.widget.Spinner;
 
 import com.at.cancerbero.CancerberoApp.R;
-import com.at.cancerbero.service.events.Event;
 
 public class TabAlarmFragment extends TabFragment {
 
@@ -36,18 +35,6 @@ public class TabAlarmFragment extends TabFragment {
 //        }
 //    }
 
-    @Override
-    public boolean handle(Event event) {
-        boolean result = false;
-
-//        if (event instanceof FoodSearchDone) {
-//            showItems(((FoodSearchDone) event).food);
-//            swipeRefreshLayout.setRefreshing(false);
-//            result = true;
-//        }
-
-        return result;
-    }
 
 //    private void acceptFood(Food itemValue) {
 //        changeFragment(FoodDetailFragment.class);

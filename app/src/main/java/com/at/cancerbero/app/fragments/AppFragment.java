@@ -12,18 +12,16 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.at.cancerbero.app.activities.MainActivity;
 import com.at.cancerbero.app.MainAppService;
-import com.at.cancerbero.service.events.Event;
-import com.at.cancerbero.service.events.Handler;
+import com.at.cancerbero.app.activities.MainActivity;
 
-public abstract class AppFragment extends Fragment implements Handler {
+public abstract class AppFragment extends Fragment {
 
     protected final String TAG = getClass().getSimpleName();
 
     private MainActivity mainActivity;
 
-    public void runOnUiThread(Runnable runnable){
+    public void runOnUiThread(Runnable runnable) {
         getMainActivity().runOnUiThread(runnable);
     }
 
@@ -92,9 +90,6 @@ public abstract class AppFragment extends Fragment implements Handler {
         return getMainActivity().getSupportActionBar();
     }
 
-//    public TabLayout getTabLayout() {
-//        return (TabLayout) getMainActivity().findViewById(R.id.layout_tabs);
-//    }
 
     @Override
     public final void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -111,14 +106,8 @@ public abstract class AppFragment extends Fragment implements Handler {
     public final View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(false);
 
-//        TabLayout tabLayout = getTabLayout();
-//        tabLayout.removeAllTabs();
-//        tabLayout.setVisibility(View.GONE);
-//        tabLayout.setOnTabSelectedListener(null);
-
         getSupportActionBar().hide();
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-
 
 
         getMainActivity().invalidateOptionsMenu();
@@ -127,18 +116,7 @@ public abstract class AppFragment extends Fragment implements Handler {
 
     public abstract View onCreateViewApp(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState);
 
-    protected void sendEvent(Event event) {
-        if (event != null) {
-//            getMainActivity().handle(event);
-        }
-    }
-
-    @Override
-    public boolean handle(Event event) {
-        return false;
-    }
-
-    public boolean onBackPressed(){
+    public boolean onBackPressed() {
         return false;
     }
 }

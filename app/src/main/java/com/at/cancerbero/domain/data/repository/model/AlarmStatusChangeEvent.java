@@ -1,4 +1,4 @@
-package com.at.cancerbero.domain.data.repository.server;
+package com.at.cancerbero.domain.data.repository.model;
 
 import com.at.cancerbero.domain.model.AlarmStatus;
 

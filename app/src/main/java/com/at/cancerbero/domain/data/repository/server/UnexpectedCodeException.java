@@ -1,4 +1,4 @@
-package com.at.cancerbero.utils.server;
+package com.at.cancerbero.domain.data.repository.server;
 
 public class UnexpectedCodeException extends RuntimeException {
     public final int code;

@@ -1,4 +1,4 @@
-package com.at.cancerbero.utils;
+package com.at.cancerbero.domain.data.repository.server;
 
 public class ExceptionUtils {
     public static void throwRuntimeException(Exception e) throws RuntimeException {

@@ -5,10 +5,9 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.view.View;
 
+import com.at.cancerbero.app.MainAppService;
 import com.at.cancerbero.app.activities.MainActivity;
 import com.at.cancerbero.app.fragments.AppFragment;
-import com.at.cancerbero.app.MainAppService;
-import com.at.cancerbero.service.events.Event;
 
 public abstract class TabFragment extends Fragment {
 
@@ -42,16 +41,6 @@ public abstract class TabFragment extends Fragment {
 
     public MainAppService getMainService() {
         return getMainActivity().getMainService();
-    }
-
-    protected void sendEvent(Event event) {
-        if (event != null) {
-//            getMainActivity().handle(event);
-        }
-    }
-
-    public boolean handle(Event event) {
-        return false;
     }
 
     @Override

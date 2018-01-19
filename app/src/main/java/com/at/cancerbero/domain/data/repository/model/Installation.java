@@ -1,4 +1,4 @@
-package com.at.cancerbero.domain.data.repository.server;
+package com.at.cancerbero.domain.data.repository.model;
 
 import java.util.Set;
 import java.util.UUID;

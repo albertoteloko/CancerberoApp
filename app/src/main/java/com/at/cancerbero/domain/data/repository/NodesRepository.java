@@ -1,7 +1,7 @@
 package com.at.cancerbero.domain.data.repository;
 
-import com.at.cancerbero.domain.data.repository.server.Node;
-import com.at.cancerbero.domain.data.repository.server.Nodes;
+import com.at.cancerbero.domain.data.repository.model.Node;
+import com.at.cancerbero.domain.data.repository.model.Nodes;
 
 import java.util.Set;
 

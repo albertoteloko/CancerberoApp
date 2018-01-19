@@ -45,20 +45,20 @@
         </receiver>
 
         <service
-            android:name="com.at.cancerbero.service.push.MyGcmListenerService"
+            android:name="com.at.cancerbero.domain.service.push.MyGcmListenerService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
             </intent-filter>
         </service>
         <service
-            android:name="com.at.cancerbero.service.push.MyInstanceIDListenerService"
+            android:name="com.at.cancerbero.domain.service.push.MyInstanceIDListenerService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.android.gms.iid.InstanceID" />
             </intent-filter>
         </service>
-        <service android:name="com.at.cancerbero.service.push.RegistrationIntentService" android:exported="false"/>
+        <service android:name="com.at.cancerbero.domain.service.push.RegistrationIntentService" android:exported="false"/>
 
     </application>
 

@@ -1,6 +1,6 @@
 package com.at.cancerbero.domain.data.repository;
 
-import com.at.cancerbero.utils.server.ServerConnector;
+import com.at.cancerbero.domain.data.repository.server.ServerConnector;
 
 public class BackEndClient extends ServerConnector {
 

@@ -21,9 +21,6 @@ import com.at.cancerbero.app.fragments.AppFragment;
 import com.at.cancerbero.app.fragments.installation.InstallationFragment;
 import com.at.cancerbero.domain.model.AlarmStatus;
 import com.at.cancerbero.domain.model.Node;
-import com.at.cancerbero.service.events.Event;
-import com.at.cancerbero.service.events.NodeLoaded;
-import com.at.cancerbero.service.events.ServerError;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,27 +83,6 @@ public class NodeFragment extends AppFragment implements TabLayout.OnTabSelected
 
         return ImageUtils.getImage(status);
     }
-
-
-    @Override
-    public boolean handle(Event event) {
-        boolean result = false;
-
-        if (event instanceof NodeLoaded) {
-            Node node = ((NodeLoaded) event).node;
-
-            if (node.id.equals(nodeId)) {
-                showItem(node);
-            }
-            swipeRefreshLayout.setRefreshing(false);
-            result = true;
-        } else if (event instanceof ServerError) {
-            swipeRefreshLayout.setRefreshing(false);
-        }
-
-        return result;
-    }
-
 
     @Override
     public View onCreateViewApp(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

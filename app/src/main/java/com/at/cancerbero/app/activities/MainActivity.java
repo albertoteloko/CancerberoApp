@@ -32,9 +32,8 @@ import com.at.cancerbero.app.fragments.login.ChangePasswordFragment;
 import com.at.cancerbero.app.fragments.login.LoginFragment;
 import com.at.cancerbero.domain.model.User;
 import com.at.cancerbero.domain.service.SecurityService;
-import com.at.cancerbero.service.events.Event;
-import com.at.cancerbero.service.push.QuickstartPreferences;
-import com.at.cancerbero.service.push.RegistrationIntentService;
+import com.at.cancerbero.domain.service.push.QuickstartPreferences;
+import com.at.cancerbero.domain.service.push.RegistrationIntentService;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
@@ -279,14 +278,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-//    private void failSafeWorkflow() {
-//        if (getMainService().getSecurityService().isLogged()) {
-//            changeFragment(InstallationsFragment.class);
-//        } else {
-//            changeFragment(LoginFragment.class);
-//        }
-//    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -339,48 +330,5 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
         return true;
-    }
-
-    private boolean handleEventMyOwn(Event event) {
-        boolean result = false;
-
-        Log.i(TAG, "Event: " + event.toString());
-
-//        if (event instanceof Logout) {
-//            changeFragment(LoginFragment.class);
-//            result = true;
-//        } else if (event instanceof LogInSuccess) {
-//            changeFragment(InstallationsFragment.class);
-//            result = true;
-//        } else if (event instanceof LogInFail) {
-//            Exception exception = ((LogInFail) event).exception;
-//
-//            if (!exception.getMessage().equals("user ID cannot be null")) {
-//                showToast("Unable to log in");
-//            }
-//            changeFragment(LoginFragment.class);
-//            result = true;
-//        } else if (event instanceof AuthenticationChallenge) {
-//            ChallengeContinuation continuation = ((AuthenticationChallenge) event).continuation;
-//            if ("NEW_PASSWORD_REQUIRED".equals(continuation.getChallengeName())) {
-//                changeFragment(LoginFirstTimeFragment.class);
-//            } else if ("SELECT_MFA_TYPE".equals(continuation.getChallengeName())) {
-//            }
-//            result = true;
-//        } else if (event instanceof UserDetailsSuccess) {
-//            TextView usernameDetails = (TextView) findViewById(R.id.textViewNavUserSub);
-//            if (usernameDetails != null) {
-//                UserDetailsSuccess input = (UserDetailsSuccess) event;
-//                usernameDetails.setText(input.userDetails.getAttributes().getAttributes().get("given_name"));
-//            }
-//
-//            result = true;
-//        } else if (event instanceof ServerError) {
-//            ServerError input = (ServerError) event;
-//            showAlertMessage("Server error", input.exception.getMessage());
-//            result = true;
-//        }
-
-        return result;
     }
 }
