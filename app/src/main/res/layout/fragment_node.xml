@@ -5,60 +5,51 @@
     android:layout_height="match_parent"
     android:layout_marginTop="@dimen/activity_vertical_margin">
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/layout_swipe"
+    <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:gravity="center_horizontal"
+        android:layout_height="match_parent"
+        android:gravity="start"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="match_parent"
-            android:gravity="start"
-            android:orientation="vertical">
+            android:layout_height="60dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="60dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/node_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_weight="0.9"
-                    android:paddingBottom="10dp"
-                    android:paddingTop="10dp"
-                    android:textIsSelectable="false"
-                    android:textSize="28sp" />
-
-                <ImageView
-                    android:id="@+id/node_status"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_gravity="right|center_horizontal"
-                    android:layout_weight="0.1"
-                    android:src="@drawable/status_idle" />
-            </LinearLayout>
-
-            <android.support.design.widget.TabLayout
-                android:id="@+id/layout_tabs"
+            <TextView
+                android:id="@+id/node_name"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:tabGravity="fill"
-                app:tabMode="fixed"/>
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.9"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"
+                android:textIsSelectable="false"
+                android:textSize="28sp" />
 
-            <android.support.v4.view.ViewPager
-                android:id="@+id/pager_viewer"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-            </android.support.v4.view.ViewPager>
+            <ImageView
+                android:id="@+id/node_status"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="right|center_horizontal"
+                android:layout_weight="0.1"
+                android:src="@drawable/status_idle" />
         </LinearLayout>
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+        <android.support.design.widget.TabLayout
+            android:id="@+id/layout_tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tabGravity="fill"
+            app:tabMode="fixed" />
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/pager_viewer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </android.support.v4.view.ViewPager>
+    </LinearLayout>
 
 </RelativeLayout>

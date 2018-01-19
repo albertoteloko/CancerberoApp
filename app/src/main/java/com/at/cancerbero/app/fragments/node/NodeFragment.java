@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,15 +28,13 @@ public class NodeFragment extends AppFragment implements TabLayout.OnTabSelected
 
     private static final String TAB_SELECTED = "TAB_SELECTED";
 
+    private String nodeId;
+
     private TextView nodeName;
 
     private ImageView statusImage;
 
     private ListView listView;
-
-    private SwipeRefreshLayout swipeRefreshLayout;
-
-    private String nodeId;
 
     private TabLayout tabLayout;
 
@@ -48,41 +45,6 @@ public class NodeFragment extends AppFragment implements TabLayout.OnTabSelected
     public NodeFragment() {
     }
 
-    public void setNodeId(String nodeId) {
-        this.nodeId = nodeId;
-    }
-
-    public void showItem(Node node) {
-        getMainActivity().setActivityTitle(node.name);
-        if(nodeName != null){
-            nodeName.setText(node.name);
-        }
-
-        if(statusImage != null){
-            statusImage.setImageResource(getImage(node));
-        }
-//        if (listView != null) {
-//            if (node.nodes.isEmpty()) {
-//                listView.setVisibility(View.GONE);
-//            } else {
-//                listView.setVisibility(View.VISIBLE);
-//                listView.setItemChecked(-1, true);
-//
-//                List<Node> values = new ArrayList<>(node.nodes);
-//                listView.setAdapter(new NodeAdapter(getContext(), values));
-//            }
-//        }
-    }
-
-    private int getImage(Node node) {
-        AlarmStatus status = AlarmStatus.IDLE;
-
-        if ((node.modules.alarm != null) && (node.modules.alarm.status != null)) {
-            status = node.modules.alarm.status.value;
-        }
-
-        return ImageUtils.getImage(status);
-    }
 
     @Override
     public View onCreateViewApp(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -94,34 +56,12 @@ public class NodeFragment extends AppFragment implements TabLayout.OnTabSelected
 
         statusImage = view.findViewById(R.id.node_status);
 
-//        listView = view.findViewById(R.id.list_pins);
-//        registerForContextMenu(listView);
-
-        swipeRefreshLayout = view.findViewById(R.id.layout_swipe);
-
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                loadNode(view);
-            }
-        });
-
         mSectionsPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
 
-        // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) view.findViewById(R.id.pager_viewer);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         mViewPager.addOnPageChangeListener(this);
-
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                listView.showContextMenuForChild(view);
-//            }
-//
-//        });
 
         tabLayout = view.findViewById(R.id.layout_tabs);
         tabLayout.removeAllTabs();
@@ -131,37 +71,12 @@ public class NodeFragment extends AppFragment implements TabLayout.OnTabSelected
         tabLayout.addTab(createTab(tabLayout, R.string.title_tab_alarm, R.drawable.ic_settings_remote_black_24dp));
         tabLayout.addTab(createTab(tabLayout, R.string.title_tab_card, R.drawable.ic_payment_black_24dp));
 
-        loadNode(view);
+        selectTab(0);
+        restoreFromBundle(savedInstanceState);
 
         getMainActivity().setActivityTitle(R.string.title_node);
 
         return view;
-    }
-
-    private TabLayout.Tab createTab(TabLayout tabLayout, Integer title, Integer icon) {
-        TabLayout.Tab result = tabLayout.newTab();
-
-        if (title != null) {
-            result.setText(title);
-        }
-
-        if (icon != null) {
-            result.setIcon(icon);
-        }
-
-        return result;
-    }
-
-    private void loadNode(View view) {
-        if (nodeId != null) {
-            view.post(new Runnable() {
-                @Override
-                public void run() {
-                    swipeRefreshLayout.setRefreshing(true);
-                }
-            });
-            getMainService().loadNode(nodeId);
-        }
     }
 
 
@@ -178,18 +93,62 @@ public class NodeFragment extends AppFragment implements TabLayout.OnTabSelected
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
+        restoreFromBundle(savedInstanceState);
+    }
 
-        if((savedInstanceState != null)  && (savedInstanceState.containsKey("nodeId"))){
-            nodeId = savedInstanceState.getString("nodeId");
-            loadNode(getView());
+    private TabLayout.Tab createTab(TabLayout tabLayout, Integer title, Integer icon) {
+        TabLayout.Tab result = tabLayout.newTab();
 
+        if (title != null) {
+            result.setText(title);
         }
-            int tabIndex = 0;
 
-            if (savedInstanceState != null) {
-                tabIndex = savedInstanceState.getInt(TAB_SELECTED, 0);
+        if (icon != null) {
+            result.setIcon(icon);
+        }
+
+        return result;
+    }
+
+    private void showItem(Node node) {
+        getMainActivity().setActivityTitle(node.name);
+        if (nodeName != null) {
+            nodeName.setText(node.name);
+        }
+
+        if (statusImage != null) {
+            statusImage.setImageResource(getImage(node));
+        }
+    }
+
+    private void loadNode() {
+        if (nodeId != null) {
+            setRefreshing(true);
+            getMainService().getInstallationService().loadNode(nodeId).handle((node, t) -> {
+                runOnUiThread(() -> {
+                    if (t != null) {
+                        showToast(R.string.label_unable_to_load_node);
+                    } else {
+                        showItem(node);
+                    }
+                    setRefreshing(false);
+                });
+                return null;
+            });
+        }
+    }
+
+    private void restoreFromBundle(Bundle extras) {
+        if (extras != null) {
+            if (extras.containsKey("nodeId")) {
+                nodeId = extras.getString("nodeId");
+                loadNode();
             }
-            selectTab(tabIndex);
+
+            if (extras.containsKey("TAB_SELECTED")) {
+                selectTab(extras.getInt(TAB_SELECTED, 0));
+            }
+        }
     }
 
     private void selectTab(int position) {
@@ -199,6 +158,16 @@ public class NodeFragment extends AppFragment implements TabLayout.OnTabSelected
             tab.select();
         }
 
+    }
+
+    private int getImage(Node node) {
+        AlarmStatus status = AlarmStatus.IDLE;
+
+        if ((node.modules.alarm != null) && (node.modules.alarm.status != null)) {
+            status = node.modules.alarm.status.value;
+        }
+
+        return ImageUtils.getImage(status);
     }
 
 
