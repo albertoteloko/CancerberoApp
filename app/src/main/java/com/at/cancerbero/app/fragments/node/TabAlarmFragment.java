@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.at.cancerbero.CancerberoApp.R;
-import com.at.cancerbero.adapter.ImageUtils;
+import com.at.cancerbero.adapter.NodeUtils;
 import com.at.cancerbero.domain.model.AlarmStatus;
 import com.at.cancerbero.domain.model.Node;
 
@@ -17,10 +17,11 @@ public class TabAlarmFragment extends TabFragment {
     private TextView nodeName;
 
     private ImageView statusImage;
+
     @Override
     public void showItem(Node node) {
         if (nodeName != null) {
-            nodeName.setText(node.name);
+            nodeName.setText(getStatusText(node));
         }
 
         if (statusImage != null) {
@@ -46,7 +47,17 @@ public class TabAlarmFragment extends TabFragment {
             status = node.modules.alarm.status.value;
         }
 
-        return ImageUtils.getImage(status);
+        return NodeUtils.getImage(status);
+    }
+
+    private int getStatusText(Node node) {
+        AlarmStatus status = AlarmStatus.IDLE;
+
+        if ((node.modules.alarm != null) && (node.modules.alarm.status != null)) {
+            status = node.modules.alarm.status.value;
+        }
+
+        return NodeUtils.getText(status);
     }
 
 }

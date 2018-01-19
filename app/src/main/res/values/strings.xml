@@ -62,4 +62,11 @@
     <string name="label_new_password_empty">The new password cannot be empty</string>
     <string name="label_unable_to_load_installations">Unable to load installations</string>
     <string name="label_unable_to_load_node">Unable to load node</string>
+    <string name="label_status_sabotage">Sabotage</string>
+    <string name="label_status_safety">Safety</string>
+    <string name="label_status_alarmed">Alarmed</string>
+    <string name="label_status_suspicious">Suspicious</string>
+    <string name="label_status_activated">Activated</string>
+    <string name="label_status_activating">Activating</string>
+    <string name="label_status_idle">Iddle</string>
 </resources>

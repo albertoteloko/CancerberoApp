@@ -52,6 +52,6 @@ public class InstallationAdapter extends ArrayAdapter<Node> {
             status = node.modules.alarm.status.value;
         }
 
-        return ImageUtils.getImage(status);
+        return NodeUtils.getImage(status);
     }
 }

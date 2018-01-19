@@ -45,6 +45,6 @@ public class InstallationsAdapter extends ArrayAdapter<Installation> {
     }
 
     private int getImage(Installation installation) {
-        return ImageUtils.getImage(installation.getAlarmStatus());
+        return NodeUtils.getImage(installation.getAlarmStatus());
     }
 }
