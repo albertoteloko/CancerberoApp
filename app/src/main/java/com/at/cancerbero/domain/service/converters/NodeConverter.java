@@ -24,7 +24,8 @@ public class NodeConverter {
 
     private NodeModules convertModules(com.at.cancerbero.domain.data.repository.model.NodeModules input) {
         return new NodeModules(
-                convertAlarmModule(input.getAlarm())
+                convertAlarmModule(input.getAlarm()),
+                null
         );
     }
 

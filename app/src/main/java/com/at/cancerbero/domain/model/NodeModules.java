@@ -9,4 +9,5 @@ import lombok.ToString;
 @AllArgsConstructor
 public class NodeModules {
     public final AlarmModule alarm;
+    public final AlarmModule card;
 }

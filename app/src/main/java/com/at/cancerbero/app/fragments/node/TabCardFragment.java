@@ -10,6 +10,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 
 import com.at.cancerbero.CancerberoApp.R;
+import com.at.cancerbero.domain.model.Node;
 
 public class TabCardFragment extends TabFragment {
 
@@ -21,7 +22,12 @@ public class TabCardFragment extends TabFragment {
 
     private ProgressDialog deletingDialog;
 
-//    public void showItems(Set<Food> foods) {
+    @Override
+    public void showItem(Node node) {
+
+    }
+
+    //    public void showItems(Set<Food> foods) {
 //        if (listView != null) {
 //            if (foods.isEmpty()) {
 //                listView.setVisibility(View.GONE);

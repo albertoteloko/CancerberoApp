@@ -8,68 +8,56 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.TextView;
 
 import com.at.cancerbero.CancerberoApp.R;
-import com.at.cancerbero.adapter.ImageUtils;
 import com.at.cancerbero.app.fragments.AppFragment;
 import com.at.cancerbero.app.fragments.installation.InstallationFragment;
-import com.at.cancerbero.domain.model.AlarmStatus;
 import com.at.cancerbero.domain.model.Node;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import java8.util.stream.StreamSupport;
+
 public class NodeFragment extends AppFragment implements TabLayout.OnTabSelectedListener, ViewPager.OnPageChangeListener {
 
     private static final String TAB_SELECTED = "TAB_SELECTED";
 
+    private final List<TabFragment> items = new ArrayList<>();
+
     private String nodeId;
-
-    private TextView nodeName;
-
-    private ImageView statusImage;
-
-    private ListView listView;
 
     private TabLayout tabLayout;
 
-    private ViewPager mViewPager;
+    private ViewPager viewPager;
 
-    private SectionsPagerAdapter mSectionsPagerAdapter;
-
-    public NodeFragment() {
-    }
+    private SectionsPagerAdapter sectionsPagerAdapter;
 
 
     @Override
     public View onCreateViewApp(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
+
         final View view = inflater.inflate(R.layout.fragment_node, container, false);
 
         getSupportActionBar().show();
 
-        nodeName = view.findViewById(R.id.node_name);
+        sectionsPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
 
-        statusImage = view.findViewById(R.id.node_status);
+        viewPager = view.findViewById(R.id.pager_viewer);
+        viewPager.setAdapter(sectionsPagerAdapter);
 
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
-
-        mViewPager = (ViewPager) view.findViewById(R.id.pager_viewer);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
-
-        mViewPager.addOnPageChangeListener(this);
+        viewPager.addOnPageChangeListener(this);
 
         tabLayout = view.findViewById(R.id.layout_tabs);
         tabLayout.removeAllTabs();
         tabLayout.setVisibility(View.VISIBLE);
         tabLayout.addOnTabSelectedListener(this);
-
-        tabLayout.addTab(createTab(tabLayout, R.string.title_tab_alarm, R.drawable.ic_settings_remote_black_24dp));
-        tabLayout.addTab(createTab(tabLayout, R.string.title_tab_card, R.drawable.ic_payment_black_24dp));
 
         selectTab(0);
         restoreFromBundle(savedInstanceState);
@@ -77,6 +65,23 @@ public class NodeFragment extends AppFragment implements TabLayout.OnTabSelected
         getMainActivity().setActivityTitle(R.string.title_node);
 
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenuApp(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_actions, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.menu_refresh) {
+            loadNode();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
 
@@ -96,7 +101,7 @@ public class NodeFragment extends AppFragment implements TabLayout.OnTabSelected
         restoreFromBundle(savedInstanceState);
     }
 
-    private TabLayout.Tab createTab(TabLayout tabLayout, Integer title, Integer icon) {
+    private TabLayout.Tab createTab(TabLayout tabLayout, Integer title, Integer icon, Class<? extends TabFragment> tabFragmentClass) {
         TabLayout.Tab result = tabLayout.newTab();
 
         if (title != null) {
@@ -107,21 +112,45 @@ public class NodeFragment extends AppFragment implements TabLayout.OnTabSelected
             result.setIcon(icon);
         }
 
+        try {
+            TabFragment fragment = tabFragmentClass.newInstance();
+            fragment.setNodeFragment(this);
+            items.add(fragment);
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
         return result;
+    }
+
+    private void clearTabs() {
+        tabLayout.removeAllTabs();
+        items.clear();
     }
 
     private void showItem(Node node) {
         getMainActivity().setActivityTitle(node.name);
-        if (nodeName != null) {
-            nodeName.setText(node.name);
+
+        viewPager.setCurrentItem(-1);
+        clearTabs();
+
+        if (node.modules.alarm != null) {
+            tabLayout.addTab(createTab(tabLayout, R.string.title_tab_alarm, R.drawable.ic_settings_remote_black_24dp, TabAlarmFragment.class), false);
+        }
+        if (node.modules.card != null) {
+            tabLayout.addTab(createTab(tabLayout, R.string.title_tab_card, R.drawable.ic_payment_black_24dp, TabCardFragment.class), false);
         }
 
-        if (statusImage != null) {
-            statusImage.setImageResource(getImage(node));
-        }
+        sectionsPagerAdapter.notifyDataSetChanged();
+        selectTab(0);
+        viewPager.setCurrentItem(0);
+
+        StreamSupport.stream(items).forEach(i -> i.showItem(node));
     }
 
-    private void loadNode() {
+    void loadNode() {
         if (nodeId != null) {
             setRefreshing(true);
             getMainService().getInstallationService().loadNode(nodeId).handle((node, t) -> {
@@ -160,17 +189,6 @@ public class NodeFragment extends AppFragment implements TabLayout.OnTabSelected
 
     }
 
-    private int getImage(Node node) {
-        AlarmStatus status = AlarmStatus.IDLE;
-
-        if ((node.modules.alarm != null) && (node.modules.alarm.status != null)) {
-            status = node.modules.alarm.status.value;
-        }
-
-        return ImageUtils.getImage(status);
-    }
-
-
     @Override
     public boolean onBackPressed() {
         changeFragment(InstallationFragment.class);
@@ -179,12 +197,12 @@ public class NodeFragment extends AppFragment implements TabLayout.OnTabSelected
 
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
-        mViewPager.setCurrentItem(tab.getPosition());
+        viewPager.setCurrentItem(tab.getPosition());
     }
 
     @Override
     public void onTabUnselected(TabLayout.Tab tab) {
-        mViewPager.setCurrentItem(-1);
+        viewPager.setCurrentItem(-1);
     }
 
     @Override
@@ -208,19 +226,9 @@ public class NodeFragment extends AppFragment implements TabLayout.OnTabSelected
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-        List<TabFragment> items = new ArrayList<>();
-
-        public SectionsPagerAdapter(FragmentManager fm) {
+        private SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
-            items.add(new TabAlarmFragment());
-            items.add(new TabCardFragment());
-
-            for (TabFragment item : items) {
-                item.setTabsFragment(NodeFragment.this);
-            }
         }
-
 
         @Override
         public Fragment getItem(int position) {

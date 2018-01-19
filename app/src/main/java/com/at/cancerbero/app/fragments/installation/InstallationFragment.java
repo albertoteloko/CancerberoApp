@@ -28,9 +28,6 @@ public class InstallationFragment extends AppFragment {
 
     private UUID installationId;
 
-    public InstallationFragment() {
-    }
-
     public void showItems(Installation installation) {
         getMainActivity().setActivityTitle(installation.name);
         if (listView != null) {

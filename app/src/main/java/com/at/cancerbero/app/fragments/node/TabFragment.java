@@ -1,52 +1,71 @@
 package com.at.cancerbero.app.fragments.node;
 
-import android.os.Bundle;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
-import android.view.View;
+import android.support.v7.app.AlertDialog;
 
-import com.at.cancerbero.app.MainAppService;
 import com.at.cancerbero.app.activities.MainActivity;
 import com.at.cancerbero.app.fragments.AppFragment;
+import com.at.cancerbero.domain.model.Node;
 
 public abstract class TabFragment extends Fragment {
 
     protected final String TAG = getClass().getSimpleName();
 
-    private NodeFragment nodeFragment;
-
-    public void setTabsFragment(NodeFragment nodeFragment) {
-        this.nodeFragment = nodeFragment;
-    }
+    protected NodeFragment nodeFragment;
 
     public NodeFragment getNodeFragment() {
         return nodeFragment;
     }
 
+    public void setNodeFragment(NodeFragment nodeFragment) {
+        this.nodeFragment = nodeFragment;
+    }
+
+    public void loadNode(){
+        nodeFragment.loadNode();
+    }
+
+    public abstract void showItem(Node node);
+
     public MainActivity getMainActivity() {
         return nodeFragment.getMainActivity();
     }
 
-    public ActionBar getActionBar() {
-        return getMainActivity().getSupportActionBar();
+    public Context getContext() {
+        return getMainActivity().getApplicationContext();
     }
 
     public void changeFragment(Class<? extends AppFragment> fragmentClass) {
         getMainActivity().changeFragment(fragmentClass);
     }
 
-    public AppFragment getCurrentFragment() {
-        return getMainActivity().getCurrentFragment();
+    public void showToast(int message) {
+        getMainActivity().showToast(message);
     }
 
-    public MainAppService getMainService() {
-        return getMainActivity().getMainService();
+    public void showToast(String message) {
+        getMainActivity().showToast(message);
     }
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public AlertDialog showAlertMessage(int title, int body) {
+        return getMainActivity().showAlertMessage(title, body);
+    }
 
-        getActionBar().show();
+    public AlertDialog showAlertMessage(int title, String body) {
+        return getMainActivity().showAlertMessage(title, body);
+    }
+
+    public AlertDialog showAlertMessage(String title, String body) {
+        return getMainActivity().showAlertMessage(title, body);
+    }
+
+    public ProgressDialog showProgressMessage(int message) {
+        return getMainActivity().showProgressMessage(message);
+    }
+
+    public ProgressDialog showProgressMessage(String message) {
+        return getMainActivity().showProgressMessage(message);
     }
 }
