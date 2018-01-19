@@ -14,13 +14,13 @@
         android:paddingTop="10dp"
         android:textSize="28sp"
         android:textIsSelectable="false"
-        android:layout_gravity="center_horizontal"/>
+        android:layout_gravity="center"/>
 
     <ImageView
         android:id="@+id/image_food"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_gravity="right|center_horizontal"
+        android:layout_gravity="end|center"
         android:layout_weight="0.1"
         android:src="@drawable/status_idle" />
 </LinearLayout>

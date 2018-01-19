@@ -1,6 +1,7 @@
 package com.at.cancerbero.adapter;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,16 +11,23 @@ import android.widget.TextView;
 
 import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.domain.model.AlarmPin;
+import com.at.cancerbero.domain.model.AlarmPinChangeEvent;
 import com.at.cancerbero.domain.model.AlarmStatus;
+import com.at.cancerbero.domain.model.AlarmStatusChangeEvent;
 import com.at.cancerbero.domain.model.Node;
+import com.at.cancerbero.domain.model.PinInput;
+import com.at.cancerbero.domain.model.PinMode;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class PinsAdapter extends ArrayAdapter<AlarmPin> {
     private final Context context;
     private final List<AlarmPin> values;
 
-    public PinsAdapter(Context context, List<AlarmPin> values) {
+    public PinsAdapter(Context context, AlarmStatusChangeEvent status, List<AlarmPin> values) {
         super(context, -1, values);
         this.context = context;
         this.values = values;
@@ -38,21 +46,51 @@ public class PinsAdapter extends ArrayAdapter<AlarmPin> {
 
 
         TextView textView = rowView.findViewById(R.id.text_description);
-        ImageView imageView = rowView.findViewById(R.id.image_food);
+        TextView textValue = rowView.findViewById(R.id.text_value);
+        TextView textDate = rowView.findViewById(R.id.text_date);
 
         AlarmPin pin = values.get(position);
         textView.setText(pin.name);
-//        imageView.setImageResource(getImage(pin));
+
+        Date date = getChangeEvent(pin).timestamp;
+        DateFormat format =  new SimpleDateFormat("dd/MM/YYYY HH:mm");
+        textDate.setText(format.format(date));
+
+        if (pin.input == PinInput.DIGITAL) {
+            if (isEnable(pin)) {
+                textValue.setText(R.string.label_ko);
+            } else {
+                textValue.setText(R.string.label_ok);
+            }
+        } else {
+            textValue.setText(getChangeEvent(pin).value + " " + pin.unit);
+        }
+        if (isEnable(pin)) {
+            textValue.setTextColor(ContextCompat.getColor(context, R.color.alert));
+        } else {
+            textValue.setTextColor(ContextCompat.getColor(context, R.color.success));
+        }
         return rowView;
     }
 
-    private int getImage(Node node) {
-        AlarmStatus status = AlarmStatus.IDLE;
-
-        if ((node.modules.alarm != null) && (node.modules.alarm.status != null)) {
-            status = node.modules.alarm.status.value;
+    private boolean isEnable(AlarmPin pin) {
+        int value = getChangeEvent(pin).value;
+        if (pin.input == PinInput.DIGITAL) {
+            if (pin.mode == PinMode.LOW) {
+                return value == 0;
+            } else {
+                return value != 0;
+            }
+        } else {
+            if (pin.mode == PinMode.LOW) {
+                return value <= pin.threshold;
+            } else {
+                return value >= pin.threshold;
+            }
         }
+    }
 
-        return NodeUtils.getImage(status);
+    private AlarmPinChangeEvent getChangeEvent(AlarmPin pin) {
+        return pin.activations;
     }
 }

@@ -1,6 +1,7 @@
 package com.at.cancerbero.app.fragments.node;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -27,6 +28,7 @@ import java8.util.stream.StreamSupport;
 public class NodeFragment extends AppFragment implements TabLayout.OnTabSelectedListener, ViewPager.OnPageChangeListener {
 
     private static final String TAB_SELECTED = "TAB_SELECTED";
+    private static final int REFRESH_TIME = 30 * 1000;
 
     private final List<TabFragment> items = new ArrayList<>();
 
@@ -37,6 +39,17 @@ public class NodeFragment extends AppFragment implements TabLayout.OnTabSelected
     private ViewPager viewPager;
 
     private SectionsPagerAdapter sectionsPagerAdapter;
+
+    private Handler timerHandler = new Handler();
+
+    final Runnable updateNode = new Runnable() {
+
+        @Override
+        public void run() {
+            loadNode();
+            timerHandler.postDelayed(updateNode, REFRESH_TIME);
+        }
+    };
 
 
     @Override
@@ -63,6 +76,9 @@ public class NodeFragment extends AppFragment implements TabLayout.OnTabSelected
         restoreFromBundle(savedInstanceState);
 
         getMainActivity().setActivityTitle(R.string.title_node);
+
+        timerHandler.postDelayed(updateNode, 1000);
+
 
         return view;
     }

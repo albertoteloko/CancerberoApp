@@ -1,9 +1,11 @@
 package com.at.cancerbero.app.fragments.node;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -12,13 +14,18 @@ import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.adapter.InstallationAdapter;
 import com.at.cancerbero.adapter.NodeUtils;
 import com.at.cancerbero.adapter.PinsAdapter;
+import com.at.cancerbero.app.MainAppService;
 import com.at.cancerbero.domain.model.AlarmPin;
 import com.at.cancerbero.domain.model.AlarmStatus;
+import com.at.cancerbero.domain.model.AlarmStatusChangeEvent;
 import com.at.cancerbero.domain.model.Node;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.UUID;
 
+import java8.util.concurrent.CompletableFuture;
 import java8.util.stream.Collectors;
 import java8.util.stream.StreamSupport;
 
@@ -30,14 +37,24 @@ public class TabAlarmFragment extends TabFragment {
 
     private ListView listView;
 
+    private ImageButton imageButton;
+
+    private String nodeId;
+
+    private AlarmStatus currentStatus;
+
     @Override
     public void showItem(Node node) {
+        AlarmStatusChangeEvent status = getStatus(node);
+        nodeId = node.id;
+        currentStatus = status.value;
+
         if (nodeName != null) {
-            nodeName.setText(getStatusText(node));
+            nodeName.setText(NodeUtils.getText(currentStatus));
         }
 
         if (statusImage != null) {
-            statusImage.setImageResource(getImage(node));
+            statusImage.setImageResource(NodeUtils.getImage(currentStatus));
         }
 
         List<AlarmPin> pins = getPins(node);
@@ -48,7 +65,7 @@ public class TabAlarmFragment extends TabFragment {
                 listView.setVisibility(View.VISIBLE);
                 listView.setItemChecked(-1, true);
 
-                listView.setAdapter(new PinsAdapter(getContext(), pins));
+                listView.setAdapter(new PinsAdapter(getContext(), status, pins));
             }
         }
     }
@@ -64,32 +81,38 @@ public class TabAlarmFragment extends TabFragment {
         listView = view.findViewById(R.id.list_pins);
         registerForContextMenu(listView);
 
+        imageButton = view.findViewById(R.id.key_button);
+
+        imageButton.setOnClickListener((view1 -> {
+            CompletableFuture<Void> future;
+            ProgressDialog dialog;
+            if (currentStatus != AlarmStatus.IDLE) {
+                dialog = showProgressMessage(R.string.label_disabling_alarm);
+                future = getMainService().getInstallationService().disableAlarmNode(nodeId);
+            } else {
+                dialog = showProgressMessage(R.string.label_enabling_alarm);
+                future = getMainService().getInstallationService().enableAlarmNode(nodeId);
+            }
+
+            future.handle((v, t) -> {
+                runOnUiThread(() -> {
+                    if (t != null) {
+                        showToast(R.string.label_unable_to_perform_action);
+                    } else {
+                        loadNode();
+                    }
+                    dialog.dismiss();
+                });
+                return null;
+            });
+        }));
+
 //        listView.setOnItemClickListener((parent, v, position, id) -> {
 //            Node node = (Node) listView.getItemAtPosition(position);
 //            selectNode(node);
 //        });
 
         return view;
-    }
-
-    private int getImage(Node node) {
-        AlarmStatus status = AlarmStatus.IDLE;
-
-        if ((node.modules.alarm != null) && (node.modules.alarm.status != null)) {
-            status = node.modules.alarm.status.value;
-        }
-
-        return NodeUtils.getImage(status);
-    }
-
-    private int getStatusText(Node node) {
-        AlarmStatus status = AlarmStatus.IDLE;
-
-        if ((node.modules.alarm != null) && (node.modules.alarm.status != null)) {
-            status = node.modules.alarm.status.value;
-        }
-
-        return NodeUtils.getText(status);
     }
 
     private List<AlarmPin> getPins(Node node) {
@@ -102,4 +125,18 @@ public class TabAlarmFragment extends TabFragment {
         return result;
     }
 
+    private AlarmStatusChangeEvent getStatus(Node node) {
+        AlarmStatusChangeEvent status = new AlarmStatusChangeEvent(
+                UUID.randomUUID(),
+                "",
+                Calendar.getInstance().getTime(),
+                AlarmStatus.IDLE
+        );
+
+        if ((node.modules.alarm != null) && (node.modules.alarm.status != null)) {
+            status = node.modules.alarm.status;
+        }
+
+        return status;
+    }
 }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 
+import com.at.cancerbero.app.MainAppService;
 import com.at.cancerbero.app.activities.MainActivity;
 import com.at.cancerbero.app.fragments.AppFragment;
 import com.at.cancerbero.domain.model.Node;
@@ -23,7 +24,7 @@ public abstract class TabFragment extends Fragment {
         this.nodeFragment = nodeFragment;
     }
 
-    public void loadNode(){
+    public void loadNode() {
         nodeFragment.loadNode();
     }
 
@@ -31,6 +32,14 @@ public abstract class TabFragment extends Fragment {
 
     public MainActivity getMainActivity() {
         return nodeFragment.getMainActivity();
+    }
+
+    public MainAppService getMainService() {
+        return getMainActivity().getMainService();
+    }
+
+    public void runOnUiThread(Runnable runnable) {
+        getMainActivity().runOnUiThread(runnable);
     }
 
     public Context getContext() {

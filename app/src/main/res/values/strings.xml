@@ -70,4 +70,9 @@
     <string name="label_status_activating">Activating</string>
     <string name="label_status_idle">Iddle</string>
     <string name="label_pins">Pins:</string>
+    <string name="label_ko">KO</string>
+    <string name="label_ok">OK</string>
+    <string name="label_enabling_alarm">Enabling alarm</string>
+    <string name="label_disabling_alarm">Disabling alarm</string>
+    <string name="label_unable_to_perform_action">Unable to perform action</string>
 </resources>
