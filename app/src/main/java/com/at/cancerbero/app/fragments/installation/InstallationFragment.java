@@ -109,18 +109,20 @@ public class InstallationFragment extends AppFragment {
     }
 
     private void loadInstallation() {
-        setRefreshing(true);
-        getMainService().getInstallationService().loadInstallation(installationId).handle((installation, t) -> {
-            runOnUiThread(() -> {
-                if (t != null) {
-                    showToast(R.string.label_unable_to_load_installations);
-                } else {
-                    showItems(installation);
+        if (installationId != null) {
+            setRefreshing(true);
+            getMainService().getInstallationService().loadInstallation(installationId).handle((installation, t) -> {
+                runOnUiThread(() -> {
+                    if (t != null) {
+                        showToast(R.string.label_unable_to_load_installations);
+                    } else {
+                        showItems(installation);
+                    }
                     setRefreshing(false);
-                }
+                });
+                return null;
             });
-            return null;
-        });
+        }
     }
 
     @Override
@@ -139,6 +141,7 @@ public class InstallationFragment extends AppFragment {
         if (extras != null) {
             if (extras.containsKey("installationId")) {
                 installationId = UUID.fromString(extras.getString("installationId"));
+                loadInstallation();
             }
         }
     }

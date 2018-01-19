@@ -92,8 +92,8 @@ public class InstallationsFragment extends AppFragment {
                     showToast(R.string.label_unable_to_load_installations);
                 } else {
                     showItems(installations);
-                    setRefreshing(false);
                 }
+                setRefreshing(false);
             });
             return null;
         });
