@@ -69,4 +69,5 @@
     <string name="label_status_activated">Activated</string>
     <string name="label_status_activating">Activating</string>
     <string name="label_status_idle">Iddle</string>
+    <string name="label_pins">Pins:</string>
 </resources>
