@@ -79,29 +79,31 @@ public class SecurityServiceCognito implements SecurityService {
     @Override
     public CompletableFuture<User> login(String userId, String password) {
         return authenticationLock.get(() -> {
-            CompletableFuture<User> result;
+            CompletableFuture<CognitoUserSession> result;
 
             if (authenticationHandlers.containsKey(userId)) {
                 AuthenticationHandler handler = authenticationHandlers.get(userId);
 
-                result = new CompletableFuture<>();
-                if (handler.continuationRequired() != null) {
-                    result.completeExceptionally(new AuthenticationContinuationRequired(handler.continuationRequired()));
-                } else {
-                    result.completeExceptionally(new IllegalStateException("Already login with: " + userId));
-
+                result = handler.attach();
+                if (result == null) {
+                    result = new CompletableFuture<>();
+                    if (handler.continuationRequired() != null) {
+                        result.completeExceptionally(new AuthenticationContinuationRequired(handler.continuationRequired()));
+                    } else {
+                        result.completeExceptionally(new IllegalStateException("Already login with: " + userId));
+                    }
                 }
             } else {
                 AuthenticationHandler handler = new AuthenticationHandler(cognitoUserPool, userId, password);
                 authenticationHandlers.put(userId, handler);
 
-                result = handler.login().thenCompose(session -> {
-                    this.cognitoUserSession = session;
-                    return getCurrentUser();
-                });
+                result = handler.login();
             }
 
-            return result.handle((u, t) -> {
+            return result.thenCompose(session -> {
+                this.cognitoUserSession = session;
+                return getCurrentUser();
+            }).handle((u, t) -> {
                 if (t != null) {
                     if (!(t.getCause() instanceof AuthenticationContinuationRequired)) {
                         authenticationHandlers.remove(userId);

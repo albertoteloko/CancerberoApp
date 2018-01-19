@@ -53,12 +53,14 @@ public class InstallationServiceRemote implements InstallationService {
 
     @Override
     public CompletableFuture<Installation> loadInstallation(UUID installationId) {
-        return null;
+        return securityService.getCurrentUser()
+                .thenApplyAsync(user -> installationConverter.convert(getInstallationRepository(user).loadInstallation(installationId), getNodesRepository(user)));
     }
 
     @Override
     public CompletableFuture<Node> loadNode(String nodeId) {
-        return null;
+        return securityService.getCurrentUser()
+                .thenApplyAsync(user -> nodeConverter.convert(getNodesRepository(user).loadNode(nodeId)));
     }
 
     private InstallationRepository getInstallationRepository(User user) {

@@ -44,7 +44,6 @@ public class InstallationsFragment extends AppFragment {
         inflater.inflate(R.menu.menu_actions, menu);
     }
 
-
     @Override
     public View onCreateViewApp(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
@@ -79,7 +78,6 @@ public class InstallationsFragment extends AppFragment {
         return super.onOptionsItemSelected(item);
     }
 
-
     private void selectInstallation(Installation installation) {
         Bundle bundle = new Bundle();
         bundle.putString("installationId", installation.id.toString());
@@ -89,16 +87,17 @@ public class InstallationsFragment extends AppFragment {
     private void loadInstallations() {
         setRefreshing(true);
         getMainService().getInstallationService().loadInstallations().handle((installations, t) -> {
-            if (t != null) {
-                showToast(R.string.label_unable_to_load_installations);
-            } else {
-                showItems(installations);
-            }
-            setRefreshing(false);
+            runOnUiThread(() -> {
+                if (t != null) {
+                    showToast(R.string.label_unable_to_load_installations);
+                } else {
+                    showItems(installations);
+                    setRefreshing(false);
+                }
+            });
             return null;
         });
     }
-
 
     @Override
     public void onResume() {

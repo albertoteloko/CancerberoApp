@@ -22,7 +22,6 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.ChallengeContinuation;
 import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.app.MainAppService;
 import com.at.cancerbero.app.fragments.AboutFragment;
@@ -30,7 +29,6 @@ import com.at.cancerbero.app.fragments.AppFragment;
 import com.at.cancerbero.app.fragments.LoadingFragment;
 import com.at.cancerbero.app.fragments.installation.InstallationsFragment;
 import com.at.cancerbero.app.fragments.login.ChangePasswordFragment;
-import com.at.cancerbero.app.fragments.login.LoginFirstTimeFragment;
 import com.at.cancerbero.app.fragments.login.LoginFragment;
 import com.at.cancerbero.domain.model.User;
 import com.at.cancerbero.domain.service.SecurityService;
@@ -193,12 +191,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onReceive(Context context, Intent intent) {
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-                boolean sentToken = sharedPreferences
-                        .getBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, false);
-                showToast("Sent toke: " + sentToken);
+                sharedPreferences.getBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, false);
             }
         };
-        // Registering BroadcastReceiver
         registerReceiver();
 
         if (checkPlayServices()) {
@@ -221,6 +216,7 @@ public class MainActivity extends AppCompatActivity {
             if (t != null) {
                 showToast(R.string.message_title_unable_to_login);
                 changeFragment(LoginFragment.class);
+                Log.e(TAG, "Unable to log in", t);
             } else {
                 changeFragment(InstallationsFragment.class);
             }
@@ -278,18 +274,18 @@ public class MainActivity extends AppCompatActivity {
                     Log.d(TAG, "Unable to load saved class: " + tabClassName);
                 }
             } else {
-                failSafeWorkflow();
+                login();
             }
         }
     }
 
-    private void failSafeWorkflow() {
-        if (getMainService().getSecurityService().isLogged()) {
-            changeFragment(InstallationsFragment.class);
-        } else {
-            changeFragment(LoginFragment.class);
-        }
-    }
+//    private void failSafeWorkflow() {
+//        if (getMainService().getSecurityService().isLogged()) {
+//            changeFragment(InstallationsFragment.class);
+//        } else {
+//            changeFragment(LoginFragment.class);
+//        }
+//    }
 
     @Override
     protected void onDestroy() {

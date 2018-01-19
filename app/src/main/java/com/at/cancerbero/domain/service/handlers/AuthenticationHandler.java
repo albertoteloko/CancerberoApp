@@ -29,6 +29,7 @@ public class AuthenticationHandler implements com.amazonaws.mobileconnectors.cog
     private MultiFactorAuthenticationContinuation multiFactorAuthenticationContinuation;
     private NewPasswordContinuation newPasswordContinuation;
     private ChooseMfaContinuation mfaOptionsContinuation;
+    private boolean continuing = false;
 
     private CompletableFuture<CognitoUserSession> loginStartFuture = new CompletableFuture<>();
 
@@ -46,6 +47,7 @@ public class AuthenticationHandler implements com.amazonaws.mobileconnectors.cog
             loginStartFuture.complete(userSession);
         } else if (!loginContinueFuture.isDone()) {
             loginContinueFuture.complete(userSession);
+            continuing = false;
         } else {
             Log.e(TAG, "loginStartFuture and loginContinueFuture are done");
         }
@@ -100,29 +102,39 @@ public class AuthenticationHandler implements com.amazonaws.mobileconnectors.cog
         } else if (!loginContinueFuture.isDone()) {
             loginContinueFuture.completeExceptionally(exception);
             loginContinueFuture = new CompletableFuture<>();
+            continuing = false;
         } else {
             Log.e(TAG, "Unexpected status", exception);
         }
     }
 
     public CompletableFuture<CognitoUserSession> login() {
-        cognitoUserPool.getUser(userId).getSessionInBackground(this);
+        if (userId == null) {
+            cognitoUserPool.getCurrentUser().getSessionInBackground(this);
+        } else {
+            cognitoUserPool.getUser(userId).getSessionInBackground(this);
+        }
         return loginStartFuture;
     }
 
     public CompletableFuture<CognitoUserSession> firstLogin(String newPassword, String name) {
         CompletableFuture<CognitoUserSession> result = new CompletableFuture<>();
-        if (!loginStartFuture.isDone()) {
-            result.completeExceptionally(new IllegalStateException("loginStartFuture is not done"));
-        } else if (loginContinueFuture.isDone()) {
-            result.completeExceptionally(new IllegalStateException("loginContinueFuture is done"));
-        } else if (newPasswordContinuation == null) {
-            result.completeExceptionally(new IllegalStateException("newPasswordContinuation is null"));
+        if (continuing) {
+            result.completeExceptionally(new IllegalStateException("already continuing"));
         } else {
-            newPasswordContinuation.setPassword(newPassword);
-            newPasswordContinuation.setUserAttribute("given_name", name);
-            newPasswordContinuation.continueTask();
-            result = loginContinueFuture;
+            if (!loginStartFuture.isDone()) {
+                result.completeExceptionally(new IllegalStateException("loginStartFuture is not done"));
+            } else if (loginContinueFuture.isDone()) {
+                result.completeExceptionally(new IllegalStateException("loginContinueFuture is done"));
+            } else if (newPasswordContinuation == null) {
+                result.completeExceptionally(new IllegalStateException("newPasswordContinuation is null"));
+            } else {
+                newPasswordContinuation.setPassword(newPassword);
+                newPasswordContinuation.setUserAttribute("given_name", name);
+                newPasswordContinuation.continueTask();
+                result = loginContinueFuture;
+                continuing = true;
+            }
         }
         return result;
     }
@@ -131,4 +143,13 @@ public class AuthenticationHandler implements com.amazonaws.mobileconnectors.cog
         return authenticationContinuations;
     }
 
+    public CompletableFuture<CognitoUserSession> attach() {
+        if (!loginStartFuture.isDone()) {
+            return loginStartFuture;
+        } else if (continuing) {
+            return loginContinueFuture;
+        } else {
+            return null;
+        }
+    }
 }

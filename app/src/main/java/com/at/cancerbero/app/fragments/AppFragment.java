@@ -23,6 +23,9 @@ public abstract class AppFragment extends Fragment implements Handler {
 
     private MainActivity mainActivity;
 
+    public void runOnUiThread(Runnable runnable){
+        getMainActivity().runOnUiThread(runnable);
+    }
 
     public void showToast(int message) {
         getMainActivity().showToast(message);
