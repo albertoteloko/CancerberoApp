@@ -27,12 +27,7 @@ public class NodesRepository {
     }
 
     public Boolean alarmKey(String nodeId) {
-        try {
-            serverConnector.post("/nodes/" + nodeId + "/actions", new AlarmKey(), null, 200);
-            return true;
-        } catch (Exception e) {
-            Log.w(TAG, "Alarm key exception", e);
-            return false;
-        }
+        serverConnector.post("/nodes/" + nodeId + "/actions", new AlarmKey(), null, 200);
+        return true;
     }
 }

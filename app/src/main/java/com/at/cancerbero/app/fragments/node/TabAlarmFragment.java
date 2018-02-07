@@ -2,6 +2,7 @@ package com.at.cancerbero.app.fragments.node;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -96,6 +97,7 @@ public class TabAlarmFragment extends TabFragment {
                 runOnUiThread(() -> {
                     if (t != null) {
                         showToast(R.string.label_unable_to_perform_action);
+                        Log.e(TAG, "Unable to key", t);
                     } else {
                         loadNode();
                     }
