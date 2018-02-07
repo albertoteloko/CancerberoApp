@@ -22,7 +22,6 @@ public interface InstallationService {
 
     CompletableFuture<Node> loadNode(String nodeId);
 
-    CompletableFuture<Void> enableAlarmNode(String nodeId);
+    CompletableFuture<Boolean> alarmKey(String nodeId);
 
-    CompletableFuture<Void> disableAlarmNode(String nodeId);
 }

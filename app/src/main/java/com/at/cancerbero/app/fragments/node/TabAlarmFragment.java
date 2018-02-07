@@ -84,14 +84,12 @@ public class TabAlarmFragment extends TabFragment {
         imageButton = view.findViewById(R.id.key_button);
 
         imageButton.setOnClickListener((view1 -> {
-            CompletableFuture<Void> future;
+            CompletableFuture<Boolean> future = getMainService().getInstallationService().alarmKey(nodeId);
             ProgressDialog dialog;
             if (currentStatus != AlarmStatus.IDLE) {
                 dialog = showProgressMessage(R.string.label_disabling_alarm);
-                future = getMainService().getInstallationService().disableAlarmNode(nodeId);
             } else {
                 dialog = showProgressMessage(R.string.label_enabling_alarm);
-                future = getMainService().getInstallationService().enableAlarmNode(nodeId);
             }
 
             future.handle((v, t) -> {

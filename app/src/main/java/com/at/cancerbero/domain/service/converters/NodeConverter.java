@@ -13,13 +13,18 @@ import java.util.Map;
 
 public class NodeConverter {
     public Node convert(com.at.cancerbero.domain.data.repository.model.Node input) {
-        return new Node(
-                input.getId(),
-                input.getName(),
-                input.getType(),
-                input.getLastPing(),
-                convertModules(input.getModules())
-        );
+        Node result = null;
+
+        if (input != null) {
+            result = new Node(
+                    input.getId(),
+                    input.getName(),
+                    input.getType(),
+                    input.getLastPing(),
+                    convertModules(input.getModules())
+            );
+        }
+        return result;
     }
 
     private NodeModules convertModules(com.at.cancerbero.domain.data.repository.model.NodeModules input) {

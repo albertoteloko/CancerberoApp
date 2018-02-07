@@ -64,31 +64,9 @@ public class InstallationServiceRemote implements InstallationService {
     }
 
     @Override
-    public CompletableFuture<Void> enableAlarmNode(String nodeId) {
-        CompletableFuture<Void> result = new CompletableFuture<>();
-        result.completeAsync(() -> {
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            return null;
-        });
-        return result;
-    }
-
-    @Override
-    public CompletableFuture<Void> disableAlarmNode(String nodeId) {
-        CompletableFuture<Void> result = new CompletableFuture<>();
-        result.completeAsync(() -> {
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            return null;
-        });
-        return result;
+    public CompletableFuture<Boolean> alarmKey(String nodeId) {
+        return securityService.getCurrentUser()
+                .thenApplyAsync(user -> getNodesRepository(user).alarmKey(nodeId));
     }
 
     private InstallationRepository getInstallationRepository(User user) {

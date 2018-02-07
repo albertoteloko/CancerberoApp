@@ -13,6 +13,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URI;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -63,19 +64,19 @@ public class ServerConnector {
         return commonHeaders;
     }
 
-    public <T> T get(String relativeUrl, Class<T> outputClass, int... expectedCodes) throws UnexpectedCodeException {
+    public <T> T get(String relativeUrl, Class<T> outputClass, Integer... expectedCodes) throws UnexpectedCodeException {
         return execute(relativeUrl, "GET", null, outputClass, expectedCodes);
     }
 
-    public <T> T post(String relativeUrl, Object input, Class<T> outputClass, int... expectedCodes) throws UnexpectedCodeException {
+    public <T> T post(String relativeUrl, Object input, Class<T> outputClass, Integer... expectedCodes) throws UnexpectedCodeException {
         return execute(relativeUrl, "POST", input, outputClass, expectedCodes);
     }
 
-    public <T> T delete(String relativeUrl, Class<T> outputClass, int... expectedCodes) throws UnexpectedCodeException {
+    public <T> T delete(String relativeUrl, Class<T> outputClass, Integer... expectedCodes) throws UnexpectedCodeException {
         return execute(relativeUrl, "DELETE", null, outputClass, expectedCodes);
     }
 
-    public <T> T execute(String relativeUrl, String method, Object input, Class<T> outputClass, int... expectedCodes) throws UnexpectedCodeException {
+    public <T> T execute(String relativeUrl, String method, Object input, Class<T> outputClass, Integer... expectedCodes) throws UnexpectedCodeException {
         T result = null;
 
         long t1 = System.currentTimeMillis();
@@ -101,16 +102,21 @@ public class ServerConnector {
             responseCode = response.getStatusCode();
 
             if (!isExpectedCode(responseCode, expectedCodes)) {
-                Scanner scanner = new Scanner(response.getContent());
                 StringBuilder builder = new StringBuilder();
 
-                while (scanner.hasNextLine()) {
-                    builder.append(scanner.nextLine()).append("\n");
+                if (response.getContent() != null) {
+                    Scanner scanner = new Scanner(response.getContent());
+
+                    while (scanner.hasNextLine()) {
+                        builder.append(scanner.nextLine()).append("\n");
+                    }
                 }
                 throw new UnexpectedCodeException(responseCode, builder.toString());
             } else if (isSuccessAnswer(response.getStatusCode())) {
                 if (outputClass != null) {
-                    result = objectMapper.readValue(response.getContent(), outputClass);
+                    if (response.getContent() != null) {
+                        result = objectMapper.readValue(response.getContent(), outputClass);
+                    }
                 }
             }
         } catch (Exception e) {
@@ -125,17 +131,8 @@ public class ServerConnector {
         return result;
     }
 
-    private boolean isExpectedCode(int statusCode, int[] expectedCodes) {
-        return (expectedCodes.length == 0) || (contains(expectedCodes, statusCode));
-    }
-
-    private boolean contains(int[] expectedCodes, int statusCode) {
-        for (int expectedCode : expectedCodes) {
-            if (statusCode == expectedCode) {
-                return true;
-            }
-        }
-        return false;
+    private boolean isExpectedCode(int statusCode, Integer[] expectedCodes) {
+        return (expectedCodes.length == 0) || (Arrays.asList(expectedCodes).contains(statusCode));
     }
 
     private boolean isSuccessAnswer(int statusCode) {

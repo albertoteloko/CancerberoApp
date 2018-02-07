@@ -1,6 +1,7 @@
 package com.at.cancerbero.app.fragments.installation;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -90,6 +91,7 @@ public class InstallationsFragment extends AppFragment {
             runOnUiThread(() -> {
                 if (t != null) {
                     showToast(R.string.label_unable_to_load_installations);
+                    Log.e(TAG, "Unable to load installation", t);
                 } else {
                     showItems(installations);
                 }
