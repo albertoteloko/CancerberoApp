@@ -12,10 +12,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.at.cancerbero.CancerberoApp.R;
-import com.at.cancerbero.adapter.InstallationAdapter;
 import com.at.cancerbero.adapter.NodeUtils;
 import com.at.cancerbero.adapter.PinsAdapter;
-import com.at.cancerbero.app.MainAppService;
 import com.at.cancerbero.domain.model.AlarmPin;
 import com.at.cancerbero.domain.model.AlarmStatus;
 import com.at.cancerbero.domain.model.AlarmStatusChangeEvent;
@@ -24,6 +22,8 @@ import com.at.cancerbero.domain.model.Node;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 
 import java8.util.concurrent.CompletableFuture;
@@ -49,25 +49,17 @@ public class TabAlarmFragment extends TabFragment {
         AlarmStatusChangeEvent status = getStatus(node);
         nodeId = node.id;
         currentStatus = status.value;
-
-        if (nodeName != null) {
-            nodeName.setText(NodeUtils.getText(currentStatus));
-        }
-
-        if (statusImage != null) {
-            statusImage.setImageResource(NodeUtils.getImage(currentStatus));
-        }
+        nodeName.setText(NodeUtils.getText(currentStatus));
+        statusImage.setImageResource(NodeUtils.getImage(currentStatus));
 
         List<AlarmPin> pins = getPins(node);
-        if (listView != null) {
-            if (pins.isEmpty()) {
-                listView.setVisibility(View.GONE);
-            } else {
-                listView.setVisibility(View.VISIBLE);
-                listView.setItemChecked(-1, true);
+        if (pins.isEmpty()) {
+            listView.setVisibility(View.GONE);
+        } else {
+            listView.setVisibility(View.VISIBLE);
+            listView.setItemChecked(-1, true);
 
-                listView.setAdapter(new PinsAdapter(getContext(), status, pins));
-            }
+            listView.setAdapter(new PinsAdapter(getContext(), status, pins));
         }
     }
 
@@ -99,13 +91,23 @@ public class TabAlarmFragment extends TabFragment {
                         showToast(R.string.label_unable_to_perform_action);
                         Log.e(TAG, "Unable to key", t);
                     } else {
-                        loadNode();
+                        new Timer().schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+                                runOnUiThread(() -> {
+                                    loadNode();
+                                });
+                            }
+                        }, 500);
                     }
                     dialog.dismiss();
                 });
                 return null;
             });
         }));
+
+        getNodeFragment().addNodeListener(this::showItem);
+
 
 //        listView.setOnItemClickListener((parent, v, position, id) -> {
 //            Node node = (Node) listView.getItemAtPosition(position);

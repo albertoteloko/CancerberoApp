@@ -5,6 +5,7 @@ import com.at.cancerbero.domain.model.AlarmModule;
 import com.at.cancerbero.domain.model.AlarmPin;
 import com.at.cancerbero.domain.model.AlarmPinChangeEvent;
 import com.at.cancerbero.domain.model.AlarmStatusChangeEvent;
+import com.at.cancerbero.domain.model.CardModule;
 import com.at.cancerbero.domain.model.Node;
 import com.at.cancerbero.domain.model.NodeModules;
 
@@ -30,7 +31,7 @@ public class NodeConverter {
     private NodeModules convertModules(com.at.cancerbero.domain.data.repository.model.NodeModules input) {
         return new NodeModules(
                 convertAlarmModule(input.getAlarm()),
-                null
+                convertCardModule(input.getCard())
         );
     }
 
@@ -38,6 +39,14 @@ public class NodeConverter {
         return new AlarmModule(
                 convert(input.getStatus()),
                 convertPins(input.getPins())
+        );
+    }
+
+    private CardModule convertCardModule(com.at.cancerbero.domain.data.repository.model.CardModule input) {
+        return new CardModule(
+                input.getSpi(),
+                input.getSs(),
+                new HashMap<>(input.getEntries())
         );
     }
 

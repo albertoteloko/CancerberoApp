@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.http.ApacheHttpClient;
+import com.amazonaws.http.HttpHeader;
 import com.amazonaws.http.HttpRequest;
 import com.amazonaws.http.HttpResponse;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -84,16 +85,17 @@ public class ServerConnector {
         int responseCode = -1;
         try {
 
+            URI uri = new URI(url);
+            Map<String, String> headers = getHeaders();
             InputStream in = null;
             if (input != null) {
                 String content = objectMapper.writeValueAsString(input);
                 in = new ByteArrayInputStream(content.getBytes(Charset.forName("UTF-8")));
+                headers.put(HttpHeader.CONTENT_TYPE, "application/json");
+                headers.put(HttpHeader.CONTENT_LENGTH, Integer.toString(content.length()));
             }
 
-            URI uri = new URI(url);
-            Map<String, String> headers = getHeaders();
             HttpRequest request = new HttpRequest(method, uri, headers, in);
-
 
             HttpResponse response = client.execute(request);
             scanCookies(response);

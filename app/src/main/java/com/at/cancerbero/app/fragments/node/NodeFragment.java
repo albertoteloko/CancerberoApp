@@ -23,16 +23,22 @@ import com.at.cancerbero.domain.model.Node;
 import java.util.ArrayList;
 import java.util.List;
 
+import java8.util.function.Consumer;
 import java8.util.stream.StreamSupport;
 
 public class NodeFragment extends AppFragment implements TabLayout.OnTabSelectedListener, ViewPager.OnPageChangeListener {
 
     private static final String TAB_SELECTED = "TAB_SELECTED";
-    private static final int REFRESH_TIME = 30 * 1000;
+    private static final int REFRESH_TIME = 10 * 1000;
 
     private final List<TabFragment> items = new ArrayList<>();
 
+    private final List<Consumer<Node>> nodeHandlers = new ArrayList<>();
+    private final List<Consumer<String>> cardHandlers = new ArrayList<>();
+
     private String nodeId;
+
+    private Node node;
 
     private TabLayout tabLayout;
 
@@ -117,16 +123,23 @@ public class NodeFragment extends AppFragment implements TabLayout.OnTabSelected
         restoreFromBundle(savedInstanceState);
     }
 
+    public void addNodeListener(Consumer<Node> consumer) {
+        nodeHandlers.add(consumer);
+
+        if (node != null) {
+            consumer.accept(node);
+        }
+    }
+
+    public void addCardListener(Consumer<String> consumer) {
+        cardHandlers.add(consumer);
+    }
+
     private TabLayout.Tab createTab(TabLayout tabLayout, Integer title, Integer icon, Class<? extends TabFragment> tabFragmentClass) {
         TabLayout.Tab result = tabLayout.newTab();
 
-        if (title != null) {
-            result.setText(title);
-        }
-
-        if (icon != null) {
-            result.setIcon(icon);
-        }
+        result.setText(title);
+        result.setIcon(icon);
 
         try {
             TabFragment fragment = tabFragmentClass.newInstance();
@@ -147,7 +160,10 @@ public class NodeFragment extends AppFragment implements TabLayout.OnTabSelected
     }
 
     private void showItem(Node node) {
+        this.node = node;
         getMainActivity().setActivityTitle(node.name);
+
+        int currentTab = Math.max(tabLayout.getSelectedTabPosition(), 0);
 
         viewPager.setCurrentItem(-1);
         clearTabs();
@@ -160,12 +176,20 @@ public class NodeFragment extends AppFragment implements TabLayout.OnTabSelected
         }
 
         sectionsPagerAdapter.notifyDataSetChanged();
-        selectTab(0);
-        viewPager.setCurrentItem(0);
-
-        StreamSupport.stream(items).forEach(i -> i.showItem(node));
+        selectTab(currentTab);
+        viewPager.setCurrentItem(currentTab);
 
         tabLayout.setVisibility(items.size() > 1 ? View.VISIBLE : View.GONE);
+
+        StreamSupport.stream(nodeHandlers).forEach(handler -> handler.accept(node));
+    }
+
+    @Override
+    public void onCardIdRead(String cardId) {
+        super.onCardIdRead(cardId);
+
+        StreamSupport.stream(cardHandlers)
+                .forEach(handlers -> handlers.accept(cardId));
     }
 
     void loadNode() {

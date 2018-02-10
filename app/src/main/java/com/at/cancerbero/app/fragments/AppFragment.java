@@ -119,4 +119,8 @@ public abstract class AppFragment extends Fragment {
     public boolean onBackPressed() {
         return false;
     }
+
+    public void onCardIdRead(String cardId) {
+
+    }
 }
