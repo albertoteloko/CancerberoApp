@@ -1,6 +1,5 @@
 package com.at.cancerbero.domain.service;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserDetails;
@@ -10,6 +9,7 @@ import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.GenericHa
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.GetDetailsHandler;
 import com.amazonaws.regions.Regions;
 import com.at.cancerbero.CancerberoApp.R;
+import com.at.cancerbero.app.MainAppService;
 import com.at.cancerbero.domain.model.User;
 import com.at.cancerbero.domain.service.exceptions.AuthenticationContinuationRequired;
 import com.at.cancerbero.domain.service.handlers.AuthenticationContinuations;
@@ -44,14 +44,14 @@ public class SecurityServiceCognito implements SecurityService {
     private ReentrantLock getCurrentUserDetailsLock = new ReentrantLock();
 
     @Override
-    public void start(Context context) {
-        String userPoolId = context.getResources().getString(R.string.userPoolId);
-        String clientId = context.getResources().getString(R.string.clientId);
-        String clientSecret = context.getResources().getString(R.string.clientSecret);
-        Regions regions = Regions.fromName(context.getResources().getString(R.string.region));
+    public void start(MainAppService mainAppService) {
+        String userPoolId = mainAppService.getResources().getString(R.string.userPoolId);
+        String clientId = mainAppService.getResources().getString(R.string.clientId);
+        String clientSecret = mainAppService.getResources().getString(R.string.clientSecret);
+        Regions regions = Regions.fromName(mainAppService.getResources().getString(R.string.region));
 
         // Create a user pool with default ClientConfiguration
-        cognitoUserPool = new CognitoUserPool(context, userPoolId, clientId, clientSecret, regions);
+        cognitoUserPool = new CognitoUserPool(mainAppService.getApplicationContext(), userPoolId, clientId, clientSecret, regions);
     }
 
     @Override

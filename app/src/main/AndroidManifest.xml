@@ -71,9 +71,6 @@
                 <action android:name="com.google.android.gms.iid.InstanceID" />
             </intent-filter>
         </service>
-        <service
-            android:name="com.at.cancerbero.domain.service.push.RegistrationIntentService"
-            android:exported="false" />
     </application>
 
 </manifest>

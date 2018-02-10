@@ -1,13 +1,11 @@
 package com.at.cancerbero.app.activities;
 
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.nfc.NfcAdapter;
 import android.nfc.tech.IsoDep;
 import android.nfc.tech.MifareClassic;
@@ -19,10 +17,8 @@ import android.nfc.tech.NfcF;
 import android.nfc.tech.NfcV;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
@@ -42,8 +38,6 @@ import com.at.cancerbero.app.fragments.login.ChangePasswordFragment;
 import com.at.cancerbero.app.fragments.login.LoginFragment;
 import com.at.cancerbero.domain.model.User;
 import com.at.cancerbero.domain.service.SecurityService;
-import com.at.cancerbero.domain.service.push.QuickstartPreferences;
-import com.at.cancerbero.domain.service.push.RegistrationIntentService;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
@@ -207,10 +201,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }, Context.BIND_AUTO_CREATE);
 
-        if (checkPlayServices()) {
-            Intent intent = new Intent(this, RegistrationIntentService.class);
-            startService(intent);
-        }
+        checkPlayServices();
     }
 
     private void login() {

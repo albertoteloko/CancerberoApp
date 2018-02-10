@@ -2,13 +2,14 @@ package com.at.cancerbero.domain.service;
 
 import android.content.Context;
 
+import com.at.cancerbero.app.MainAppService;
 import com.at.cancerbero.domain.model.User;
 
 import java8.util.concurrent.CompletableFuture;
 
 public interface SecurityService {
 
-    void start(Context context);
+    void start(MainAppService mainAppService);
 
     void stop();
 

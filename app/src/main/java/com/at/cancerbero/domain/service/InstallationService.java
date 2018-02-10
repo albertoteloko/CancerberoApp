@@ -2,6 +2,7 @@ package com.at.cancerbero.domain.service;
 
 import android.content.Context;
 
+import com.at.cancerbero.app.MainAppService;
 import com.at.cancerbero.domain.model.Installation;
 import com.at.cancerbero.domain.model.Node;
 
@@ -12,7 +13,7 @@ import java8.util.concurrent.CompletableFuture;
 
 public interface InstallationService {
 
-    void start(Context context);
+    void start(MainAppService mainAppService);
 
     void stop();
 

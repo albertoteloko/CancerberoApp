@@ -1,8 +1,7 @@
 package com.at.cancerbero.domain.service;
 
-import android.content.Context;
-
 import com.at.cancerbero.CancerberoApp.R;
+import com.at.cancerbero.app.MainAppService;
 import com.at.cancerbero.domain.data.repository.BackEndClient;
 import com.at.cancerbero.domain.data.repository.InstallationRepository;
 import com.at.cancerbero.domain.data.repository.NodesRepository;
@@ -16,6 +15,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import java8.util.concurrent.CompletableFuture;
+import java8.util.stream.Collectors;
+import java8.util.stream.StreamSupport;
 
 public class InstallationServiceRemote implements InstallationService {
 
@@ -27,28 +28,38 @@ public class InstallationServiceRemote implements InstallationService {
     private final InstallationConverter installationConverter = new InstallationConverter(nodeConverter);
 
     private final SecurityService securityService;
+    private MainAppService mainAppService;
 
     private String baseUrl;
-
 
     public InstallationServiceRemote(SecurityService securityService) {
         this.securityService = securityService;
     }
 
     @Override
-    public void start(Context context) {
-        baseUrl = context.getResources().getString(R.string.backEndUrl);
+    public void start(MainAppService mainAppService) {
+        this.mainAppService = mainAppService;
+        baseUrl = mainAppService.getResources().getString(R.string.backEndUrl);
     }
 
     @Override
     public void stop() {
+        this.mainAppService = null;
         baseUrl = null;
     }
 
     @Override
     public CompletableFuture<Set<Installation>> loadInstallations() {
         return securityService.getCurrentUser()
-                .thenApplyAsync(user -> installationConverter.convert(getInstallationRepository(user).loadInstallations(), getNodesRepository(user)));
+                .thenApplyAsync(user -> installationConverter.convert(getInstallationRepository(user).loadInstallations(), getNodesRepository(user)))
+                .thenApplyAsync(installations -> {
+                    subscribeToPushInstallations(installations);
+                    return installations;
+                });
+    }
+
+    private void subscribeToPushInstallations(Set<Installation> installations) {
+        mainAppService.getPushService().subscribeTopics(StreamSupport.stream(installations).map(i -> "/topics/installations/" + i.id).collect(Collectors.toSet()));
     }
 
     @Override

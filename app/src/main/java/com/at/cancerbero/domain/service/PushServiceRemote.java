@@ -1,75 +1,107 @@
 package com.at.cancerbero.domain.service;
 
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.ServiceConnection;
-import android.content.SharedPreferences;
-import android.os.IBinder;
-import android.preference.PreferenceManager;
-import android.support.v4.content.LocalBroadcastManager;
+import android.os.AsyncTask;
+import android.util.Log;
 
+import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.app.MainAppService;
-import com.at.cancerbero.domain.service.push.QuickstartPreferences;
-import com.at.cancerbero.domain.service.push.RegistrationIntentService;
+import com.google.android.gms.gcm.GcmPubSub;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.android.gms.iid.InstanceID;
+
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 public class PushServiceRemote implements PushService {
 
+    private static final String GLOBAL_TOPIC = "/topics/global";
+
     protected final String TAG = getClass().getSimpleName();
 
-    private BroadcastReceiver mRegistrationBroadcastReceiver;
-
-    private boolean isReceiverRegistered;
+    private String token;
 
     private MainAppService mainAppService;
+
+    private Set<String> topics = new HashSet<>();
 
     @Override
     public void start(MainAppService mainAppService) {
         this.mainAppService = mainAppService;
 
-        Intent serviceIntent = new Intent(mainAppService, RegistrationIntentService.class);
-        mainAppService.startService(serviceIntent);
-
-        mainAppService.bindService(serviceIntent, new ServiceConnection() {
+        new AsyncTask<Void, Void, Void>() {
             @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-                mainAppService.unbindService(this);
-
-                mRegistrationBroadcastReceiver = new BroadcastReceiver() {
-                    @Override
-                    public void onReceive(Context context, Intent intent) {
-                        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-                        sharedPreferences.getBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, false);
-                    }
-                };
-                registerReceiver();
+            protected Void doInBackground(Void... params) {
+                onTokenRefresh();
+                return null;
             }
 
             @Override
-            public void onServiceDisconnected(ComponentName name) {
-
+            protected void onPostExecute(Void msg) {
             }
-        }, Context.BIND_AUTO_CREATE);
+        }.execute(null, null, null);
+
     }
 
     @Override
     public void stop() {
         if (mainAppService != null) {
-            LocalBroadcastManager.getInstance(mainAppService).unregisterReceiver(mRegistrationBroadcastReceiver);
-            isReceiverRegistered = false;
+            unsubscribeTopics();
+            token = null;
+            topics.clear();
         }
     }
 
+    @Override
+    public void subscribeTopics(Set<String> topics) {
+        if (token != null) {
+            unsubscribeTopics();
+            this.topics = topics;
+            subscribeTopics();
+        } else {
 
-    private void registerReceiver() {
-        if (!isReceiverRegistered) {
-            LocalBroadcastManager.getInstance(mainAppService).registerReceiver(
-                    mRegistrationBroadcastReceiver,
-                    new IntentFilter(QuickstartPreferences.REGISTRATION_COMPLETE)
+            this.topics = topics;
+        }
+    }
+
+    @Override
+    public void onTokenRefresh() {
+        try {
+            InstanceID instanceID = InstanceID.getInstance(mainAppService);
+            token = instanceID.getToken(
+                    mainAppService.getString(R.string.gcm_defaultSenderId),
+                    GoogleCloudMessaging.INSTANCE_ID_SCOPE,
+                    null
             );
-            isReceiverRegistered = true;
+            Log.i(TAG, "GCM Registration Token: " + token);
+
+            subscribeTopics();
+        } catch (Exception e) {
+            Log.d(TAG, "Failed to complete token refresh", e);
+        }
+    }
+
+    private void subscribeTopics() {
+        try {
+            GcmPubSub pubSub = GcmPubSub.getInstance(mainAppService);
+            pubSub.subscribe(token, GLOBAL_TOPIC, null);
+            for (String topic : topics) {
+                pubSub.subscribe(token, topic, null);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void unsubscribeTopics() {
+        try {
+            GcmPubSub pubSub = GcmPubSub.getInstance(mainAppService);
+            pubSub.unsubscribe(token, GLOBAL_TOPIC);
+            for (String topic : topics) {
+                pubSub.unsubscribe(token, topic);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }
