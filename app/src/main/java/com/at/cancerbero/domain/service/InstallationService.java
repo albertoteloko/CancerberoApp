@@ -24,4 +24,7 @@ public interface InstallationService {
 
     CompletableFuture<Boolean> alarmKey(String nodeId);
 
+    CompletableFuture<Boolean> addCard(String nodeId, String cardId, String name);
+
+    CompletableFuture<Boolean> removeCard(String nodeId, String cardId);
 }

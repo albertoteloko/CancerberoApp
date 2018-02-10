@@ -1,7 +1,11 @@
 package com.at.cancerbero.app.fragments.node;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,12 +14,16 @@ import android.widget.ListView;
 
 import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.adapter.CardEntriesAdapter;
+import com.at.cancerbero.domain.model.AlarmStatus;
 import com.at.cancerbero.domain.model.Node;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
+import java8.util.concurrent.CompletableFuture;
 import java8.util.stream.Collectors;
 import java8.util.stream.StreamSupport;
 
@@ -26,6 +34,8 @@ public class TabCardFragment extends TabFragment {
     private ListView listView;
 
     private Map<String, String> cardEntries;
+
+    private AlertDialog alertDialog;
 
     @Override
     public void showItem(Node node) {
@@ -85,8 +95,10 @@ public class TabCardFragment extends TabFragment {
     }
 
     private void showRemoveCardEntryDialog(String cardId) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setMessage(R.string.remove_card)
+        closeAlertDialog();
+        AlertDialog.Builder builder = new AlertDialog.Builder(getMainActivity());
+        String text = getMainActivity().getResources().getString(R.string.remove_card);
+        alertDialog = builder.setMessage(text + " " +cardEntries.get(cardId) + "?")
                 .setPositiveButton(R.string.remove, (dialog, which) -> {
                     dialog.dismiss();
                     removeCardEntry(cardId);
@@ -97,12 +109,13 @@ public class TabCardFragment extends TabFragment {
     }
 
     private void showAddCardEntryDialog(String cardId) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        closeAlertDialog();
+        AlertDialog.Builder builder = new AlertDialog.Builder(getMainActivity());
         builder.setTitle(R.string.add_new_card);
-        View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.layout_text_input_dialog, (ViewGroup) getView(), false);
 
-        final EditText input = viewInflated.findViewById(R.id.input);
-        builder.setView(viewInflated);
+        final EditText input = new EditText(getContext());
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
 
         // Set up the buttons
         builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
@@ -114,15 +127,63 @@ public class TabCardFragment extends TabFragment {
             dialog.cancel();
         });
 
-        builder.show();
+        alertDialog = builder.show();
+    }
+
+    private void closeAlertDialog() {
+        if (alertDialog != null) {
+            alertDialog.dismiss();
+        }
     }
 
     private void addCardEntry(String cardId, String name) {
+        CompletableFuture<Boolean> future = getMainService().getInstallationService().addCard(nodeId, cardId, name);
+        ProgressDialog dialog = showProgressMessage(R.string.label_adding_card);
 
+        future.handle((v, t) -> {
+            runOnUiThread(() -> {
+                if (t != null) {
+                    showToast(R.string.label_unable_to_perform_action);
+                    Log.e(TAG, "Unable to add card", t);
+                } else {
+                    new Timer().schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            runOnUiThread(() -> {
+                                loadNode();
+                            });
+                        }
+                    }, 500);
+                }
+                dialog.dismiss();
+            });
+            return null;
+        });
     }
 
 
     private void removeCardEntry(String cardId) {
+        CompletableFuture<Boolean> future = getMainService().getInstallationService().removeCard(nodeId, cardId);
+        ProgressDialog dialog = showProgressMessage(R.string.label_removing_card);
 
+        future.handle((v, t) -> {
+            runOnUiThread(() -> {
+                if (t != null) {
+                    showToast(R.string.label_unable_to_perform_action);
+                    Log.e(TAG, "Unable to remove card", t);
+                } else {
+                    new Timer().schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            runOnUiThread(() -> {
+                                loadNode();
+                            });
+                        }
+                    }, 500);
+                }
+                dialog.dismiss();
+            });
+            return null;
+        });
     }
 }

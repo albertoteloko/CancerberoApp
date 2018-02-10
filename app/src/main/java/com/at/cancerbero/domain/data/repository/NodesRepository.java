@@ -2,9 +2,11 @@ package com.at.cancerbero.domain.data.repository;
 
 import android.util.Log;
 
+import com.at.cancerbero.domain.data.repository.model.AddCard;
 import com.at.cancerbero.domain.data.repository.model.AlarmKey;
 import com.at.cancerbero.domain.data.repository.model.Node;
 import com.at.cancerbero.domain.data.repository.model.Nodes;
+import com.at.cancerbero.domain.data.repository.model.RemoveCard;
 
 import java.util.Set;
 
@@ -28,6 +30,16 @@ public class NodesRepository {
 
     public Boolean alarmKey(String nodeId) {
         serverConnector.post("/nodes/" + nodeId + "/actions", new AlarmKey(), null, 200);
+        return true;
+    }
+
+    public Boolean addCard(String nodeId, String cardId, String name) {
+        serverConnector.post("/nodes/" + nodeId + "/actions", new AddCard(cardId, name), null, 200);
+        return true;
+    }
+
+    public Boolean removeCard(String nodeId, String cardId) {
+        serverConnector.post("/nodes/" + nodeId + "/actions", new RemoveCard(cardId), null, 200);
         return true;
     }
 }

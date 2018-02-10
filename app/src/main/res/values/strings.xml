@@ -77,7 +77,9 @@
     <string name="label_unable_to_perform_action">Unable to perform action</string>
     <string name="hint_card_name">Card Name</string>
     <string name="add_new_card">Add new card</string>
-    <string name="remove_card">Remove card</string>
+    <string name="remove_card">Remove card: </string>
     <string name="remove">Remove</string>
     <string name="cancel">Cancel</string>
+    <string name="label_adding_card">Adding Card</string>
+    <string name="label_removing_card">Removing card</string>
 </resources>

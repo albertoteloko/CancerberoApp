@@ -69,6 +69,18 @@ public class InstallationServiceRemote implements InstallationService {
                 .thenApplyAsync(user -> getNodesRepository(user).alarmKey(nodeId));
     }
 
+    @Override
+    public CompletableFuture<Boolean> addCard(String nodeId, String cardId, String name) {
+        return securityService.getCurrentUser()
+                .thenApplyAsync(user -> getNodesRepository(user).addCard(nodeId, cardId, name));
+    }
+
+    @Override
+    public CompletableFuture<Boolean> removeCard(String nodeId, String cardId) {
+        return securityService.getCurrentUser()
+                .thenApplyAsync(user -> getNodesRepository(user).removeCard(nodeId, cardId));
+    }
+
     private InstallationRepository getInstallationRepository(User user) {
         return new InstallationRepository(getServerClient(user));
     }
