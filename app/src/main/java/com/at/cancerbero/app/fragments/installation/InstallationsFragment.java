@@ -14,6 +14,7 @@ import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.adapter.InstallationsAdapter;
 import com.at.cancerbero.app.fragments.AppFragment;
 import com.at.cancerbero.domain.model.Installation;
+import com.at.cancerbero.domain.model.Node;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,15 +28,26 @@ public class InstallationsFragment extends AppFragment {
     }
 
     private void showItems(Set<Installation> installations) {
-        if (listView != null) {
-            if (installations.isEmpty()) {
-                listView.setVisibility(View.GONE);
-            } else {
-                listView.setVisibility(View.VISIBLE);
-                listView.setItemChecked(-1, true);
+        if (installations.size() == 1) {
+            Installation installation = installations.iterator().next();
 
-                List<Installation> values = new ArrayList<>(installations);
-                listView.setAdapter(new InstallationsAdapter(getContext(), values));
+            if (installation.nodes.size() == 1) {
+                Node node = installation.nodes.iterator().next();
+                selectNode(node);
+            } else {
+                selectInstallation(installation);
+            }
+        } else {
+            if (listView != null) {
+                if (installations.isEmpty()) {
+                    listView.setVisibility(View.GONE);
+                } else {
+                    listView.setVisibility(View.VISIBLE);
+                    listView.setItemChecked(-1, true);
+
+                    List<Installation> values = new ArrayList<>(installations);
+                    listView.setAdapter(new InstallationsAdapter(getContext(), values));
+                }
             }
         }
     }
@@ -77,12 +89,6 @@ public class InstallationsFragment extends AppFragment {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    private void selectInstallation(Installation installation) {
-        Bundle bundle = new Bundle();
-        bundle.putString("installationId", installation.id.toString());
-        changeFragment(InstallationFragment.class, bundle);
     }
 
     private void loadInstallations() {

@@ -14,6 +14,10 @@ import android.view.ViewGroup;
 
 import com.at.cancerbero.app.MainAppService;
 import com.at.cancerbero.app.activities.MainActivity;
+import com.at.cancerbero.app.fragments.installation.InstallationFragment;
+import com.at.cancerbero.app.fragments.node.NodeFragment;
+import com.at.cancerbero.domain.model.Installation;
+import com.at.cancerbero.domain.model.Node;
 
 public abstract class AppFragment extends Fragment {
 
@@ -90,6 +94,17 @@ public abstract class AppFragment extends Fragment {
         return getMainActivity().getSupportActionBar();
     }
 
+    protected void selectInstallation(Installation installation) {
+        Bundle bundle = new Bundle();
+        bundle.putString("installationId", installation.id.toString());
+        changeFragment(InstallationFragment.class, bundle);
+    }
+
+    protected void selectNode(Node node) {
+        Bundle bundle = new Bundle();
+        bundle.putString("nodeId", node.id);
+        changeFragment(NodeFragment.class, bundle);
+    }
 
     @Override
     public final void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

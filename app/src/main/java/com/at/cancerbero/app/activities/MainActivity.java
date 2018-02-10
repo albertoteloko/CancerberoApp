@@ -78,9 +78,6 @@ public class MainActivity extends AppCompatActivity {
             }
     };
 
-    private BroadcastReceiver mRegistrationBroadcastReceiver;
-    private boolean isReceiverRegistered;
-
     private Map<Class<? extends AppFragment>, Bundle> bundles = new HashMap<>();
 
     protected final String TAG = getClass().getSimpleName();
@@ -210,15 +207,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }, Context.BIND_AUTO_CREATE);
 
-        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-                sharedPreferences.getBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, false);
-            }
-        };
-        registerReceiver();
-
         if (checkPlayServices()) {
             Intent intent = new Intent(this, RegistrationIntentService.class);
             startService(intent);
@@ -318,9 +306,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
-        isReceiverRegistered = false;
-
         NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(this);
         if (nfcAdapter != null) {
             nfcAdapter.disableForegroundDispatch(this);
@@ -331,7 +316,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        registerReceiver();
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
         // creating intent receiver for NFC events:
@@ -377,16 +361,6 @@ public class MainActivity extends AppCompatActivity {
             out += hex[i];
         }
         return out;
-    }
-
-    private void registerReceiver() {
-        if (!isReceiverRegistered) {
-            LocalBroadcastManager.getInstance(this).registerReceiver(
-                    mRegistrationBroadcastReceiver,
-                    new IntentFilter(QuickstartPreferences.REGISTRATION_COMPLETE)
-            );
-            isReceiverRegistered = true;
-        }
     }
 
     private boolean checkPlayServices() {

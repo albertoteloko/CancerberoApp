@@ -1,16 +1,27 @@
 package com.at.cancerbero.app;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Binder;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.at.cancerbero.domain.service.InstallationService;
 import com.at.cancerbero.domain.service.InstallationServiceRemote;
+import com.at.cancerbero.domain.service.PushService;
+import com.at.cancerbero.domain.service.PushServiceRemote;
 import com.at.cancerbero.domain.service.SecurityService;
 import com.at.cancerbero.domain.service.SecurityServiceCognito;
+import com.at.cancerbero.domain.service.push.QuickstartPreferences;
+import com.at.cancerbero.domain.service.push.RegistrationIntentService;
 
 import java.util.UUID;
 
@@ -34,8 +45,9 @@ public class MainAppService extends Service {
 
     private final InstallationService installationService = new InstallationServiceRemote(securityService);
 
-    private final IBinder mBinder = new MainBinder();
+    private final PushService pushService = new PushServiceRemote();
 
+    private final IBinder mBinder = new MainBinder();
 
     public SecurityService getSecurityService() {
         return securityService;
@@ -45,12 +57,9 @@ public class MainAppService extends Service {
         return installationService;
     }
 
-    public void loadInstallation(UUID installationId) {
+    public PushService getPushService() {
+        return pushService;
     }
-
-    public void loadNode(String nodeId) {
-    }
-
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -70,6 +79,7 @@ public class MainAppService extends Service {
 
         Context context = getApplicationContext();
         securityService.start(context);
+        pushService.start(this);
         installationService.start(context);
 
         securityService.login().thenAccept(user ->
@@ -80,7 +90,9 @@ public class MainAppService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+
         installationService.stop();
+        pushService.stop();
         securityService.stop();
         Log.i(TAG, "Destroy :(");
         instance = null;

@@ -29,16 +29,21 @@ public class InstallationFragment extends AppFragment {
     private UUID installationId;
 
     public void showItems(Installation installation) {
-        getMainActivity().setActivityTitle(installation.name);
-        if (listView != null) {
-            if (installation.nodes.isEmpty()) {
-                listView.setVisibility(View.GONE);
-            } else {
-                listView.setVisibility(View.VISIBLE);
-                listView.setItemChecked(-1, true);
+        if (installation.nodes.size() == 1) {
+            Node node = installation.nodes.iterator().next();
+            selectNode(node);
+        } else {
+            getMainActivity().setActivityTitle(installation.name);
+            if (listView != null) {
+                if (installation.nodes.isEmpty()) {
+                    listView.setVisibility(View.GONE);
+                } else {
+                    listView.setVisibility(View.VISIBLE);
+                    listView.setItemChecked(-1, true);
 
-                List<Node> values = new ArrayList<>(installation.nodes);
-                listView.setAdapter(new InstallationAdapter(getContext(), values));
+                    List<Node> values = new ArrayList<>(installation.nodes);
+                    listView.setAdapter(new InstallationAdapter(getContext(), values));
+                }
             }
         }
     }
@@ -70,12 +75,6 @@ public class InstallationFragment extends AppFragment {
         getMainActivity().setActivityTitle(R.string.title_installation);
 
         return view;
-    }
-
-    private void selectNode(Node node) {
-        Bundle bundle = new Bundle();
-        bundle.putString("nodeId", node.id);
-        changeFragment(NodeFragment.class, bundle);
     }
 
 

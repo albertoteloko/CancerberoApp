@@ -188,8 +188,11 @@ public class NodeFragment extends AppFragment implements TabLayout.OnTabSelected
     public void onCardIdRead(String cardId) {
         super.onCardIdRead(cardId);
 
-        StreamSupport.stream(cardHandlers)
-                .forEach(handlers -> handlers.accept(cardId));
+        if (node.modules.card != null) {
+            selectTab(1);
+            StreamSupport.stream(cardHandlers)
+                    .forEach(handlers -> handlers.accept(cardId));
+        }
     }
 
     void loadNode() {
