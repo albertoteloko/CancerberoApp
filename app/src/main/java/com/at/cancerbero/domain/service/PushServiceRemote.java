@@ -89,7 +89,7 @@ public class PushServiceRemote implements PushService {
                 pubSub.subscribe(token, topic, null);
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            Log.e(TAG, "Unable to subscribe topics", e);
         }
     }
 
@@ -101,7 +101,7 @@ public class PushServiceRemote implements PushService {
                 pubSub.unsubscribe(token, topic);
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            Log.e(TAG, "Unable to unsubscribe topics", e);
         }
     }
 }

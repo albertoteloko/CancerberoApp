@@ -59,7 +59,7 @@ public class InstallationServiceRemote implements InstallationService {
     }
 
     private void subscribeToPushInstallations(Set<Installation> installations) {
-        mainAppService.getPushService().subscribeTopics(StreamSupport.stream(installations).map(i -> "/topics/installations/" + i.id).collect(Collectors.toSet()));
+        mainAppService.getPushService().subscribeTopics(StreamSupport.stream(installations).map(i -> "/topics/" + i.id).collect(Collectors.toSet()));
     }
 
     @Override
