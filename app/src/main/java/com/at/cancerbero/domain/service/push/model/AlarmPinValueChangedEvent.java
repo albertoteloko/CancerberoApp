@@ -1,4 +1,4 @@
-package com.at.cancerbero.domain.service.push;
+package com.at.cancerbero.domain.service.push.model;
 
 
 import lombok.Data;
@@ -8,7 +8,7 @@ import lombok.ToString;
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class AlarmPinActivatedEvent extends Event {
+public class AlarmPinValueChangedEvent extends Event {
     private String pinId;
     private String value;
 }

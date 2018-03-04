@@ -32,7 +32,7 @@ import android.widget.TextView;
 
 import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.app.fragments.AppFragment;
-import com.at.cancerbero.app.fragments.installation.InstallationsFragment;
+import com.at.cancerbero.app.fragments.node.NodesFragment;
 
 public class LoginFirstTimeFragment extends AppFragment {
     private String TAG = "LoginFirstTimeFragment";
@@ -119,7 +119,7 @@ public class LoginFirstTimeFragment extends AppFragment {
                         showToast(R.string.message_title_unable_to_login);
                         Log.e(TAG, "Unable to login", t);
                     } else {
-                        changeFragment(InstallationsFragment.class);
+                        changeFragment(NodesFragment.class);
                     }
                     dialog.dismiss();
                     return null;

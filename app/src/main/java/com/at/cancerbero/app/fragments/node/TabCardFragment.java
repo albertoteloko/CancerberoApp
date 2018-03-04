@@ -2,7 +2,6 @@ package com.at.cancerbero.app.fragments.node;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -14,7 +13,6 @@ import android.widget.ListView;
 
 import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.adapter.CardEntriesAdapter;
-import com.at.cancerbero.domain.model.AlarmStatus;
 import com.at.cancerbero.domain.model.Node;
 
 import java.util.HashMap;
@@ -137,7 +135,7 @@ public class TabCardFragment extends TabFragment {
     }
 
     private void addCardEntry(String cardId, String name) {
-        CompletableFuture<Boolean> future = getMainService().getInstallationService().addCard(nodeId, cardId, name);
+        CompletableFuture<Boolean> future = getMainService().getNodeService().addCard(nodeId, cardId, name);
         ProgressDialog dialog = showProgressMessage(R.string.label_adding_card);
 
         future.handle((v, t) -> {
@@ -163,7 +161,7 @@ public class TabCardFragment extends TabFragment {
 
 
     private void removeCardEntry(String cardId) {
-        CompletableFuture<Boolean> future = getMainService().getInstallationService().removeCard(nodeId, cardId);
+        CompletableFuture<Boolean> future = getMainService().getNodeService().removeCard(nodeId, cardId);
         ProgressDialog dialog = showProgressMessage(R.string.label_removing_card);
 
         future.handle((v, t) -> {

@@ -1,25 +1,22 @@
 package com.at.cancerbero.domain.service;
 
-import android.content.Context;
-
 import com.at.cancerbero.app.MainAppService;
-import com.at.cancerbero.domain.model.Installation;
 import com.at.cancerbero.domain.model.Node;
+import com.at.cancerbero.domain.service.push.model.Event;
 
-import java.util.Set;
-import java.util.UUID;
+import java.util.List;
 
 import java8.util.concurrent.CompletableFuture;
 
-public interface InstallationService {
+public interface NodeService {
 
     void start(MainAppService mainAppService);
 
     void stop();
 
-    CompletableFuture<Set<Installation>> loadInstallations();
+    void handleEvent(Event event);
 
-    CompletableFuture<Installation> loadInstallation(UUID installationId);
+    CompletableFuture<List<Node>> loadNodes();
 
     CompletableFuture<Node> loadNode(String nodeId);
 

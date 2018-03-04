@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.app.fragments.AppFragment;
-import com.at.cancerbero.app.fragments.installation.InstallationsFragment;
+import com.at.cancerbero.app.fragments.node.NodesFragment;
 import com.at.cancerbero.domain.service.exceptions.AuthenticationContinuationRequired;
 import com.at.cancerbero.domain.service.handlers.AuthenticationContinuations;
 
@@ -121,7 +121,7 @@ public class LoginFragment extends AppFragment {
                         Log.e(TAG, "Unable to log in", t);
                     }
                 } else {
-                    changeFragment(InstallationsFragment.class);
+                    changeFragment(NodesFragment.class);
                 }
                 return null;
             });

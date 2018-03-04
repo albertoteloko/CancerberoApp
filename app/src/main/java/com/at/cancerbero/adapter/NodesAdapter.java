@@ -14,11 +14,11 @@ import com.at.cancerbero.domain.model.Node;
 
 import java.util.List;
 
-public class InstallationAdapter extends ArrayAdapter<Node> {
+public class NodesAdapter extends ArrayAdapter<Node> {
     private final Context context;
     private final List<Node> values;
 
-    public InstallationAdapter(Context context, List<Node> values) {
+    public NodesAdapter(Context context, List<Node> values) {
         super(context, -1, values);
         this.context = context;
         this.values = values;

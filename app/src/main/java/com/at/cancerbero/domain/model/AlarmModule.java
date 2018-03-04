@@ -10,6 +10,6 @@ import lombok.ToString;
 @EqualsAndHashCode
 @AllArgsConstructor
 public class AlarmModule {
-    public final AlarmStatusChangeEvent status;
+    public AlarmStatusEvent status;
     public final Map<String, AlarmPin> pins;
 }

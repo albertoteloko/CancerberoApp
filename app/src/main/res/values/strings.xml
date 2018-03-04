@@ -20,8 +20,7 @@
     <string name="label_loading">Loading</string>
     <string name="label_singUp">Signing Up</string>
 
-    <string name="title_installations">Installations</string>
-    <string name="title_installation">Installation</string>
+    <string name="title_nodes">Node</string>
     <string name="title_node">Node</string>
 
     <string name="title_tab_card">Card</string>
@@ -60,7 +59,7 @@
     <string name="label_current_password">Current Password</string>
     <string name="label_current_password_empty">The current password cannot be empty</string>
     <string name="label_new_password_empty">The new password cannot be empty</string>
-    <string name="label_unable_to_load_installations">Unable to load installations</string>
+    <string name="label_unable_to_load_nodes">Unable to load nodes</string>
     <string name="label_unable_to_load_node">Unable to load node</string>
     <string name="label_status_sabotage">Sabotage</string>
     <string name="label_status_safety">Safety</string>
@@ -82,4 +81,6 @@
     <string name="cancel">Cancel</string>
     <string name="label_adding_card">Adding Card</string>
     <string name="label_removing_card">Removing card</string>
+    <string name="title_notification_node_alarmed">Alarm</string>
+    <string name="message_notification_node_alarmed">The node {0} alarm has been trigger</string>
 </resources>

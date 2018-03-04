@@ -1,4 +1,4 @@
-package com.at.cancerbero.domain.service.push;
+package com.at.cancerbero.domain.service.push.model;
 
 
 import com.at.cancerbero.domain.model.AlarmStatus;
@@ -12,5 +12,5 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 public class AlarmStatusChanged extends Event {
     private AlarmStatus value;
-    private String sourcce;
+    private String source;
 }

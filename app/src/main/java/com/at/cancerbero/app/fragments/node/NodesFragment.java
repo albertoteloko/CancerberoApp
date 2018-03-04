@@ -1,7 +1,6 @@
-package com.at.cancerbero.app.fragments.installation;
+package com.at.cancerbero.app.fragments.node;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -11,46 +10,37 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.at.cancerbero.CancerberoApp.R;
-import com.at.cancerbero.adapter.InstallationsAdapter;
+import com.at.cancerbero.adapter.NodesAdapter;
 import com.at.cancerbero.app.fragments.AppFragment;
-import com.at.cancerbero.domain.model.Installation;
 import com.at.cancerbero.domain.model.Node;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class InstallationsFragment extends AppFragment {
+public class NodesFragment extends AppFragment {
 
     private ListView listView;
 
-    public InstallationsFragment() {
-    }
 
-    private void showItems(Set<Installation> installations) {
-        if (installations.size() == 1) {
-            Installation installation = installations.iterator().next();
-
-            if (installation.nodes.size() == 1) {
-                Node node = installation.nodes.iterator().next();
-                selectNode(node);
-            } else {
-                selectInstallation(installation);
-            }
-        } else {
+    public void showItems(List<Node> nodes) {
+//        if (nodes.size() == 1) {
+//            Node node = nodes.iterator().next();
+//            selectNode(node);
+//        } else {
             if (listView != null) {
-                if (installations.isEmpty()) {
+                if (nodes.isEmpty()) {
                     listView.setVisibility(View.GONE);
                 } else {
                     listView.setVisibility(View.VISIBLE);
                     listView.setItemChecked(-1, true);
 
-                    List<Installation> values = new ArrayList<>(installations);
-                    listView.setAdapter(new InstallationsAdapter(getContext(), values));
+                    listView.setAdapter(new NodesAdapter(getContext(), nodes));
                 }
-            }
+//            }
         }
     }
+
 
     @Override
     public void onCreateOptionsMenuApp(Menu menu, MenuInflater inflater) {
@@ -61,7 +51,7 @@ public class InstallationsFragment extends AppFragment {
     public View onCreateViewApp(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
 
-        final View view = inflater.inflate(R.layout.fragment_installations, container, false);
+        final View view = inflater.inflate(R.layout.fragment_nodes, container, false);
 
         getSupportActionBar().show();
 
@@ -69,37 +59,36 @@ public class InstallationsFragment extends AppFragment {
         registerForContextMenu(listView);
 
         listView.setOnItemClickListener((parent, v, position, id) -> {
-            Installation installation = (Installation) listView.getItemAtPosition(position);
-            selectInstallation(installation);
-
+            Node node = (Node) listView.getItemAtPosition(position);
+            selectNode(node);
         });
 
-        getMainActivity().setActivityTitle(R.string.title_installations);
+        getMainActivity().setActivityTitle(R.string.title_nodes);
 
         return view;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
         if (id == R.id.menu_refresh) {
-            loadInstallations();
+            loadNodes();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    private void loadInstallations() {
+    private void loadNodes() {
         setRefreshing(true);
-        getMainService().getInstallationService().loadInstallations().handle((installations, t) -> {
+        getMainService().getNodeService().loadNodes().handle((nodes, t) -> {
             runOnUiThread(() -> {
                 if (t != null) {
-                    showToast(R.string.label_unable_to_load_installations);
-                    Log.e(TAG, "Unable to load installation", t);
+                    showToast(R.string.label_unable_to_load_nodes);
                 } else {
-                    showItems(installations);
+                    showItems(nodes);
                 }
                 setRefreshing(false);
             });
@@ -110,6 +99,6 @@ public class InstallationsFragment extends AppFragment {
     @Override
     public void onResume() {
         super.onResume();
-        loadInstallations();
+        loadNodes();
     }
 }

@@ -1,4 +1,4 @@
-package com.at.cancerbero.domain.service.push;
+package com.at.cancerbero.domain.service.push.model;
 
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;

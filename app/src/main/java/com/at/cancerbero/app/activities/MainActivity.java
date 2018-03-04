@@ -33,14 +33,11 @@ import com.at.cancerbero.app.MainAppService;
 import com.at.cancerbero.app.fragments.AboutFragment;
 import com.at.cancerbero.app.fragments.AppFragment;
 import com.at.cancerbero.app.fragments.LoadingFragment;
-import com.at.cancerbero.app.fragments.installation.InstallationsFragment;
 import com.at.cancerbero.app.fragments.login.ChangePasswordFragment;
 import com.at.cancerbero.app.fragments.login.LoginFragment;
+import com.at.cancerbero.app.fragments.node.NodesFragment;
 import com.at.cancerbero.domain.model.User;
 import com.at.cancerbero.domain.service.SecurityService;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -55,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         return instance;
     }
 
-    private static final String CURRENT_FRAGMENT = "CurrentFragment";
+    public static final String CURRENT_FRAGMENT = "CurrentFragment";
 
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
@@ -221,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
                 changeFragment(LoginFragment.class);
                 Log.e(TAG, "Unable to log in", t);
             } else {
-                changeFragment(InstallationsFragment.class);
+                changeFragment(NodesFragment.class);
             }
             return null;
         });

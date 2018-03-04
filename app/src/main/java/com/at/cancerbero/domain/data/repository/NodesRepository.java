@@ -1,17 +1,14 @@
 package com.at.cancerbero.domain.data.repository;
 
-import android.util.Log;
-
 import com.at.cancerbero.domain.data.repository.model.AddCard;
 import com.at.cancerbero.domain.data.repository.model.AlarmKey;
 import com.at.cancerbero.domain.data.repository.model.Node;
 import com.at.cancerbero.domain.data.repository.model.Nodes;
 import com.at.cancerbero.domain.data.repository.model.RemoveCard;
 
-import java.util.Set;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @AllArgsConstructor
 public class NodesRepository {
@@ -20,7 +17,7 @@ public class NodesRepository {
 
     private final BackEndClient serverConnector;
 
-    public Set<Node> loadNodes() {
+    public List<Node> loadNodes() {
         return serverConnector.get("/nodes", Nodes.class, 200).getNodes();
     }
 

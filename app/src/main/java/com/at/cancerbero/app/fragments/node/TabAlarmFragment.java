@@ -16,7 +16,7 @@ import com.at.cancerbero.adapter.NodeUtils;
 import com.at.cancerbero.adapter.PinsAdapter;
 import com.at.cancerbero.domain.model.AlarmPin;
 import com.at.cancerbero.domain.model.AlarmStatus;
-import com.at.cancerbero.domain.model.AlarmStatusChangeEvent;
+import com.at.cancerbero.domain.model.AlarmStatusEvent;
 import com.at.cancerbero.domain.model.Node;
 
 import java.util.ArrayList;
@@ -46,7 +46,7 @@ public class TabAlarmFragment extends TabFragment {
 
     @Override
     public void showItem(Node node) {
-        AlarmStatusChangeEvent status = getStatus(node);
+        AlarmStatusEvent status = getStatus(node);
         nodeId = node.id;
         currentStatus = status.value;
         nodeName.setText(NodeUtils.getText(currentStatus));
@@ -77,7 +77,7 @@ public class TabAlarmFragment extends TabFragment {
         imageButton = view.findViewById(R.id.key_button);
 
         imageButton.setOnClickListener((view1 -> {
-            CompletableFuture<Boolean> future = getMainService().getInstallationService().alarmKey(nodeId);
+            CompletableFuture<Boolean> future = getMainService().getNodeService().alarmKey(nodeId);
             ProgressDialog dialog;
             if (currentStatus != AlarmStatus.IDLE) {
                 dialog = showProgressMessage(R.string.label_disabling_alarm);
@@ -108,12 +108,6 @@ public class TabAlarmFragment extends TabFragment {
 
         getNodeFragment().addNodeListener(this::showItem);
 
-
-//        listView.setOnItemClickListener((parent, v, position, id) -> {
-//            Node node = (Node) listView.getItemAtPosition(position);
-//            selectNode(node);
-//        });
-
         return view;
     }
 
@@ -127,9 +121,8 @@ public class TabAlarmFragment extends TabFragment {
         return result;
     }
 
-    private AlarmStatusChangeEvent getStatus(Node node) {
-        AlarmStatusChangeEvent status = new AlarmStatusChangeEvent(
-                UUID.randomUUID(),
+    private AlarmStatusEvent getStatus(Node node) {
+        AlarmStatusEvent status = new AlarmStatusEvent(
                 "",
                 Calendar.getInstance().getTime(),
                 AlarmStatus.IDLE

@@ -1,7 +1,6 @@
 package com.at.cancerbero.adapter;
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,14 +9,10 @@ import android.widget.TextView;
 
 import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.domain.model.AlarmPin;
-import com.at.cancerbero.domain.model.AlarmPinChangeEvent;
-import com.at.cancerbero.domain.model.AlarmStatusChangeEvent;
+import com.at.cancerbero.domain.model.AlarmPinEvent;
 import com.at.cancerbero.domain.model.PinInput;
 import com.at.cancerbero.domain.model.PinMode;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -70,7 +65,7 @@ public class CardEntriesAdapter extends ArrayAdapter<Map.Entry<String, String>> 
         }
     }
 
-    private AlarmPinChangeEvent getChangeEvent(AlarmPin pin) {
+    private AlarmPinEvent getChangeEvent(AlarmPin pin) {
         return pin.activations;
     }
 }

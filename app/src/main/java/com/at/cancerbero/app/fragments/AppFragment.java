@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 
 import com.at.cancerbero.app.MainAppService;
 import com.at.cancerbero.app.activities.MainActivity;
-import com.at.cancerbero.app.fragments.installation.InstallationFragment;
+import com.at.cancerbero.app.fragments.node.NodesFragment;
 import com.at.cancerbero.app.fragments.node.NodeFragment;
 import com.at.cancerbero.domain.model.Installation;
 import com.at.cancerbero.domain.model.Node;
@@ -97,7 +97,7 @@ public abstract class AppFragment extends Fragment {
     protected void selectInstallation(Installation installation) {
         Bundle bundle = new Bundle();
         bundle.putString("installationId", installation.id.toString());
-        changeFragment(InstallationFragment.class, bundle);
+        changeFragment(NodesFragment.class, bundle);
     }
 
     protected void selectNode(Node node) {

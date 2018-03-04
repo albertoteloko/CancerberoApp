@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.app.fragments.AppFragment;
-import com.at.cancerbero.app.fragments.installation.InstallationsFragment;
+import com.at.cancerbero.app.fragments.node.NodesFragment;
 
 public class ChangePasswordFragment extends AppFragment {
 
@@ -111,7 +111,7 @@ public class ChangePasswordFragment extends AppFragment {
                     Log.e(TAG, "Unable to change password", t);
                 } else {
                     showToast(R.string.label_password_changed);
-                    changeFragment(InstallationsFragment.class);
+                    changeFragment(NodesFragment.class);
                 }
                 dialog.dismiss();
                 return null;
@@ -124,7 +124,7 @@ public class ChangePasswordFragment extends AppFragment {
 
     @Override
     public boolean onBackPressed() {
-        changeFragment(InstallationsFragment.class);
+        changeFragment(NodesFragment.class);
         return true;
     }
 }

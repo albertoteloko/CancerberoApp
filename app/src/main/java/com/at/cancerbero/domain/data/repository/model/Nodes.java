@@ -1,10 +1,10 @@
 package com.at.cancerbero.domain.data.repository.model;
 
-import java.util.Set;
+import java.util.List;
 
 import lombok.Data;
 
 @Data
 public class Nodes {
-    private Set<Node> nodes;
+    private List<Node> nodes;
 }

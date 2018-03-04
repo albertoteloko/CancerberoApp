@@ -3,16 +3,25 @@ package com.at.cancerbero.domain.service.converters;
 
 import com.at.cancerbero.domain.model.AlarmModule;
 import com.at.cancerbero.domain.model.AlarmPin;
-import com.at.cancerbero.domain.model.AlarmPinChangeEvent;
-import com.at.cancerbero.domain.model.AlarmStatusChangeEvent;
+import com.at.cancerbero.domain.model.AlarmPinEvent;
+import com.at.cancerbero.domain.model.AlarmStatusEvent;
 import com.at.cancerbero.domain.model.CardModule;
 import com.at.cancerbero.domain.model.Node;
 import com.at.cancerbero.domain.model.NodeModules;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import java8.util.stream.Collectors;
+import java8.util.stream.StreamSupport;
+
 public class NodeConverter {
+
+    public List<Node> convert(List<com.at.cancerbero.domain.data.repository.model.Node> input) {
+        return StreamSupport.stream(input).map(this::convert).collect(Collectors.toList());
+    }
+
     public Node convert(com.at.cancerbero.domain.data.repository.model.Node input) {
         Node result = null;
 
@@ -74,17 +83,15 @@ public class NodeConverter {
         );
     }
 
-    private AlarmPinChangeEvent convert(com.at.cancerbero.domain.data.repository.model.AlarmPinChangeEvent input) {
-        return new AlarmPinChangeEvent(
-                input.getId(),
+    private AlarmPinEvent convert(com.at.cancerbero.domain.data.repository.model.AlarmPinChangeEvent input) {
+        return new AlarmPinEvent(
                 input.getTimestamp(),
                 input.getValue()
         );
     }
 
-    private AlarmStatusChangeEvent convert(com.at.cancerbero.domain.data.repository.model.AlarmStatusChangeEvent input) {
-        return new AlarmStatusChangeEvent(
-                input.getId(),
+    private AlarmStatusEvent convert(com.at.cancerbero.domain.data.repository.model.AlarmStatusChangeEvent input) {
+        return new AlarmStatusEvent(
                 input.getSource(),
                 input.getTimestamp(),
                 input.getValue()

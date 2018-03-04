@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.at.cancerbero.CancerberoApp.R;
-import com.at.cancerbero.app.fragments.installation.InstallationsFragment;
+import com.at.cancerbero.app.fragments.node.NodesFragment;
 
 public class AboutFragment extends AppFragment {
 
@@ -32,7 +32,7 @@ public class AboutFragment extends AppFragment {
 
     @Override
     public boolean onBackPressed() {
-        changeFragment(InstallationsFragment.class);
+        changeFragment(NodesFragment.class);
         return true;
     }
 }

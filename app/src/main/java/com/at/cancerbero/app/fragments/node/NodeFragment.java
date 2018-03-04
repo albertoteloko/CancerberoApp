@@ -17,7 +17,6 @@ import android.view.ViewGroup;
 
 import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.app.fragments.AppFragment;
-import com.at.cancerbero.app.fragments.installation.InstallationFragment;
 import com.at.cancerbero.domain.model.Node;
 
 import java.util.ArrayList;
@@ -198,7 +197,7 @@ public class NodeFragment extends AppFragment implements TabLayout.OnTabSelected
     void loadNode() {
         if (nodeId != null) {
             setRefreshing(true);
-            getMainService().getInstallationService().loadNode(nodeId).handle((node, t) -> {
+            getMainService().getNodeService().loadNode(nodeId).handle((node, t) -> {
                 runOnUiThread(() -> {
                     if (t != null) {
                         showToast(R.string.label_unable_to_load_node);
@@ -236,7 +235,7 @@ public class NodeFragment extends AppFragment implements TabLayout.OnTabSelected
 
     @Override
     public boolean onBackPressed() {
-        changeFragment(InstallationFragment.class);
+        changeFragment(NodesFragment.class);
         return true;
     }
 

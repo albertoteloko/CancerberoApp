@@ -6,15 +6,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.domain.model.AlarmPin;
-import com.at.cancerbero.domain.model.AlarmPinChangeEvent;
-import com.at.cancerbero.domain.model.AlarmStatus;
-import com.at.cancerbero.domain.model.AlarmStatusChangeEvent;
-import com.at.cancerbero.domain.model.Node;
+import com.at.cancerbero.domain.model.AlarmPinEvent;
+import com.at.cancerbero.domain.model.AlarmStatusEvent;
 import com.at.cancerbero.domain.model.PinInput;
 import com.at.cancerbero.domain.model.PinMode;
 
@@ -27,7 +24,7 @@ public class PinsAdapter extends ArrayAdapter<AlarmPin> {
     private final Context context;
     private final List<AlarmPin> values;
 
-    public PinsAdapter(Context context, AlarmStatusChangeEvent status, List<AlarmPin> values) {
+    public PinsAdapter(Context context, AlarmStatusEvent status, List<AlarmPin> values) {
         super(context, -1, values);
         this.context = context;
         this.values = values;
@@ -90,7 +87,7 @@ public class PinsAdapter extends ArrayAdapter<AlarmPin> {
         }
     }
 
-    private AlarmPinChangeEvent getChangeEvent(AlarmPin pin) {
+    private AlarmPinEvent getChangeEvent(AlarmPin pin) {
         return pin.activations;
     }
 }
