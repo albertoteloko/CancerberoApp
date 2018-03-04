@@ -86,6 +86,7 @@ public class PushServiceRemote implements PushService {
             GcmPubSub pubSub = GcmPubSub.getInstance(mainAppService);
             pubSub.subscribe(token, GLOBAL_TOPIC, null);
             for (String topic : topics) {
+                Log.i(TAG, "Subscribing to: " + topic);
                 pubSub.subscribe(token, topic, null);
             }
         } catch (IOException e) {

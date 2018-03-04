@@ -10,9 +10,13 @@ import com.at.cancerbero.domain.model.Node;
 import com.at.cancerbero.domain.model.User;
 import com.at.cancerbero.domain.service.converters.InstallationConverter;
 import com.at.cancerbero.domain.service.converters.NodeConverter;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import java8.util.concurrent.CompletableFuture;
 import java8.util.stream.Collectors;
@@ -48,10 +52,30 @@ public class InstallationServiceRemote implements InstallationService {
         baseUrl = null;
     }
 
+    private final Cache<Set<Installation>> installationsCache = new Cache<Set<Installation>>(1L, TimeUnit.MINUTES) {
+        @Override
+        protected CompletableFuture<Set<Installation>> getFreshContent() {
+            return securityService.getCurrentUser()
+                    .thenApplyAsync(user -> installationConverter.convert(getInstallationRepository(user).loadInstallations()))
+                    .thenApplyAsync(installations -> {
+                        subscribeToPushInstallations(installations);
+                        return installations;
+                    });
+        }
+    };
+
+    private final CacheMap<String, Node> nodesCache = new CacheMap<String, Node>(1L, TimeUnit.MINUTES) {
+        @Override
+        protected CompletableFuture<Node> getFreshContent(String nodeId) {
+            return securityService.getCurrentUser()
+                    .thenApplyAsync(user -> nodeConverter.convert(getNodesRepository(user).loadNode(nodeId)));
+        }
+    };
+
     @Override
     public CompletableFuture<Set<Installation>> loadInstallations() {
         return securityService.getCurrentUser()
-                .thenApplyAsync(user -> installationConverter.convert(getInstallationRepository(user).loadInstallations(), getNodesRepository(user)))
+                .thenApplyAsync(user -> installationConverter.convert(getInstallationRepository(user).loadInstallations()))
                 .thenApplyAsync(installations -> {
                     subscribeToPushInstallations(installations);
                     return installations;
@@ -65,13 +89,12 @@ public class InstallationServiceRemote implements InstallationService {
     @Override
     public CompletableFuture<Installation> loadInstallation(UUID installationId) {
         return securityService.getCurrentUser()
-                .thenApplyAsync(user -> installationConverter.convert(getInstallationRepository(user).loadInstallation(installationId), getNodesRepository(user)));
+                .thenApplyAsync(user -> installationConverter.convert(getInstallationRepository(user).loadInstallation(installationId)));
     }
 
     @Override
     public CompletableFuture<Node> loadNode(String nodeId) {
-        return securityService.getCurrentUser()
-                .thenApplyAsync(user -> nodeConverter.convert(getNodesRepository(user).loadNode(nodeId)));
+        return nodesCache.get(nodeId);
     }
 
     @Override

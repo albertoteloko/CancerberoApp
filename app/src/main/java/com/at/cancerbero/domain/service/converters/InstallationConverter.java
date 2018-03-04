@@ -17,17 +17,17 @@ public class InstallationConverter {
 
     private final NodeConverter nodeConverter;
 
-    public Set<Installation> convert(Set<com.at.cancerbero.domain.data.repository.model.Installation> input, NodesRepository nodesRepository) {
-        return StreamSupport.stream(input).map(i -> convert(i, nodesRepository)).collect(Collectors.toSet());
+    public Set<Installation> convert(Set<com.at.cancerbero.domain.data.repository.model.Installation> input) {
+        return StreamSupport.stream(input).map(i -> convert(i)).collect(Collectors.toSet());
     }
 
-    public Installation convert(com.at.cancerbero.domain.data.repository.model.Installation input, NodesRepository nodesRepository) {
+    public Installation convert(com.at.cancerbero.domain.data.repository.model.Installation input) {
         return new Installation(
                 input.getId(),
                 input.getName(),
                 input.getUsers(),
                 StreamSupport.stream(input.getNodes())
-                        .map(n -> loadAndConvertNode(n, nodesRepository))
+                        .map(nodeConverter::convert)
                         .filter(Objects::nonNull)
                         .collect(Collectors.toSet())
         );

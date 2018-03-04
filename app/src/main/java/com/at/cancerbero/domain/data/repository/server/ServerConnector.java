@@ -23,7 +23,7 @@ public class ServerConnector {
 
     private static final int TIMEOUT = 5000;
 
-    private static ObjectMapper defaultObjectMapper() {
+    public static ObjectMapper defaultObjectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         return objectMapper;

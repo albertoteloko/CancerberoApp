@@ -13,28 +13,49 @@ import android.util.Log;
 import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.app.activities.MainActivity;
 import com.at.cancerbero.app.MainAppService;
+import com.at.cancerbero.domain.data.repository.server.ServerConnector;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.gcm.GcmListenerService;
+
+import java.io.IOException;
+import java.util.HashSet;
 
 public class MyGcmListenerService extends GcmListenerService {
 
     private static final String TAG = "MyGcmListenerService";
 
+    private final ObjectMapper mapper = ServerConnector.defaultObjectMapper();
+
     @Override
     public void onMessageReceived(String from, Bundle data) {
-        Log.i(TAG, "Keys: " + data.keySet());
-        String title = data.getString("title");
-        String message = data.getString("message");
-        Log.d(TAG, "From: " + from);
-        Log.d(TAG, "Title: " + title);
-        Log.d(TAG, "Message: " + message);
 
-        MainAppService service = MainAppService.getInstance();
+        String eventString = data.getString("event");
+        Log.d(TAG, "Event String: " + eventString);
+        try {
+            Event event = mapper.readValue(eventString, Event.class);
+            Log.d(TAG, "Event: " + event);
 
-        if (service != null) {
-//            service.onNodeStatusChange()
+            MainAppService service = MainAppService.getInstance();
+//
+            if (service != null) {
+                service.handleEvent(event);
+            }
+//
+
+        } catch (Exception e) {
+            Log.e(TAG, "Unable to process push notification: " + eventString, e);
         }
 
-        sendNotification2(title, message);
+
+//        MainAppService service = MainAppService.getInstance();
+//
+//        if (service != null) {
+////            service.onNodeStatusChange()
+//        }
+//
+//        sendNotification2("hello", "world");
     }
 
 
