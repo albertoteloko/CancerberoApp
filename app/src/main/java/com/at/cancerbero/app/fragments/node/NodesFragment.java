@@ -24,10 +24,10 @@ public class NodesFragment extends AppFragment {
 
 
     public void showItems(List<Node> nodes) {
-//        if (nodes.size() == 1) {
-//            Node node = nodes.iterator().next();
-//            selectNode(node);
-//        } else {
+        if (nodes.size() == 1) {
+            Node node = nodes.iterator().next();
+            selectNode(node);
+        } else {
             if (listView != null) {
                 if (nodes.isEmpty()) {
                     listView.setVisibility(View.GONE);
@@ -37,7 +37,7 @@ public class NodesFragment extends AppFragment {
 
                     listView.setAdapter(new NodesAdapter(getContext(), nodes));
                 }
-//            }
+            }
         }
     }
 
@@ -83,7 +83,7 @@ public class NodesFragment extends AppFragment {
 
     private void loadNodes() {
         setRefreshing(true);
-        getMainService().getNodeService().loadNodes().handle((nodes, t) -> {
+        getMainService().getNodeService().loadNodes().handleAsync((nodes, t) -> {
             runOnUiThread(() -> {
                 if (t != null) {
                     showToast(R.string.label_unable_to_load_nodes);

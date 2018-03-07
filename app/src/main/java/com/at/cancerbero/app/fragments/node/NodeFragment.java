@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,6 +23,7 @@ import com.at.cancerbero.domain.model.Node;
 import java.util.ArrayList;
 import java.util.List;
 
+import java8.util.Optional;
 import java8.util.function.Consumer;
 import java8.util.stream.StreamSupport;
 
@@ -36,6 +38,8 @@ public class NodeFragment extends AppFragment implements TabLayout.OnTabSelected
     private final List<Consumer<String>> cardHandlers = new ArrayList<>();
 
     private String nodeId;
+
+    private int nodeNumber = 0;
 
     private Node node;
 
@@ -55,7 +59,6 @@ public class NodeFragment extends AppFragment implements TabLayout.OnTabSelected
             timerHandler.postDelayed(updateNode, REFRESH_TIME);
         }
     };
-
 
     @Override
     public View onCreateViewApp(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -197,12 +200,21 @@ public class NodeFragment extends AppFragment implements TabLayout.OnTabSelected
     void loadNode() {
         if (nodeId != null) {
             setRefreshing(true);
-            getMainService().getNodeService().loadNode(nodeId).handle((node, t) -> {
+            getMainService().getNodeService().loadNodes().handleAsync((nodes, t) -> {
                 runOnUiThread(() -> {
                     if (t != null) {
                         showToast(R.string.label_unable_to_load_node);
                     } else {
-                        showItem(node);
+                        nodeNumber = nodes.size();
+
+                        Optional<Node> nodeOpt = StreamSupport.stream(nodes).filter(node -> node.id.equals(nodeId)).findFirst();
+
+                        if (nodeOpt.isPresent()) {
+                            showItem(nodeOpt.get());
+                        } else {
+                            Log.w(TAG, "Node not found :(");
+                            changeFragment(NodesFragment.class);
+                        }
                     }
                     setRefreshing(false);
                 });
@@ -235,8 +247,12 @@ public class NodeFragment extends AppFragment implements TabLayout.OnTabSelected
 
     @Override
     public boolean onBackPressed() {
-        changeFragment(NodesFragment.class);
-        return true;
+        if (nodeNumber == 1) {
+            return false;
+        } else {
+            changeFragment(NodesFragment.class);
+            return true;
+        }
     }
 
     @Override

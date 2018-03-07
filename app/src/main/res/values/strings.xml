@@ -20,7 +20,7 @@
     <string name="label_loading">Loading</string>
     <string name="label_singUp">Signing Up</string>
 
-    <string name="title_nodes">Node</string>
+    <string name="title_nodes">Nodes</string>
     <string name="title_node">Node</string>
 
     <string name="title_tab_card">Card</string>
@@ -83,4 +83,8 @@
     <string name="label_removing_card">Removing card</string>
     <string name="title_notification_node_alarmed">Alarm</string>
     <string name="message_notification_node_alarmed">The node {0} alarm has been trigger</string>
+    <string name="title_notification_node_safety">Safety</string>
+    <string name="message_notification_node_safety">The node {0} safety has been trigger</string>
+    <string name="title_notification_node_sabotage">Sabotage</string>
+    <string name="message_notification_node_sabotage">The node {0} sabotage has been trigger</string>
 </resources>

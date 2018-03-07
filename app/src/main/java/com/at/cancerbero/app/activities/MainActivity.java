@@ -132,6 +132,7 @@ public class MainActivity extends AppCompatActivity {
             bundle.putAll(params);
 
             FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.executePendingTransactions();
             fragmentManager.beginTransaction().replace(R.id.container, currentFragment).commit();
             fragmentManager.executePendingTransactions();
             currentFragment.onViewStateRestored(bundle);
@@ -158,9 +159,14 @@ public class MainActivity extends AppCompatActivity {
 
 
     @Override
-    protected void onCreate(final Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onCreate(Bundle originalState) {
+        super.onCreate(originalState);
 
+        if ((originalState == null) && (getIntent() != null) && (getIntent().getExtras() != null)) {
+            originalState = getIntent().getExtras();
+        }
+
+        final Bundle savedInstanceState = originalState;
         instance = this;
 
         setContentView(R.layout.activity_main);
@@ -190,7 +196,6 @@ public class MainActivity extends AppCompatActivity {
             public void onServiceConnected(ComponentName name, IBinder service) {
                 onRestoreInstanceState(savedInstanceState);
                 unbindService(this);
-                login();
             }
 
             @Override
@@ -202,7 +207,36 @@ public class MainActivity extends AppCompatActivity {
 //        checkPlayServices();
     }
 
-    private void login() {
+    @SuppressWarnings("unchecked")
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        getUserFuture().handle((u, t) -> {
+            if (t != null) {
+                showToast(R.string.message_title_unable_to_login);
+                changeFragment(LoginFragment.class);
+                Log.e(TAG, "Unable to log in", t);
+            } else {
+                Class<? extends AppFragment> fragmentClass = NodesFragment.class;
+                Bundle bundle = Bundle.EMPTY;
+
+                if (savedInstanceState != null) {
+                    String tabClassName = savedInstanceState.getString(CURRENT_FRAGMENT);
+
+                    if (tabClassName != null) {
+                        try {
+                            fragmentClass = (Class<? extends AppFragment>) Class.forName(tabClassName);
+                            bundle = savedInstanceState;
+                        } catch (ClassNotFoundException e) {
+                            Log.d(TAG, "Unable to load saved class: " + tabClassName);
+                        }
+                    }
+                }
+                changeFragment(fragmentClass, bundle);
+            }
+            return null;
+        });
+    }
+
+    private CompletableFuture<User> getUserFuture() {
         SecurityService securityService = getMainService().getSecurityService();
 
         CompletableFuture<User> future;
@@ -211,17 +245,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             future = securityService.getCurrentUser();
         }
-
-        future.handle((u, t) -> {
-            if (t != null) {
-                showToast(R.string.message_title_unable_to_login);
-                changeFragment(LoginFragment.class);
-                Log.e(TAG, "Unable to log in", t);
-            } else {
-                changeFragment(NodesFragment.class);
-            }
-            return null;
-        });
+        return future;
     }
 
     private void logout() {
@@ -257,25 +281,6 @@ public class MainActivity extends AppCompatActivity {
             case R.id.nav_user_change_password:
                 changeFragment(ChangePasswordFragment.class);
                 break;
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            super.onRestoreInstanceState(savedInstanceState);
-            String tabClassName = savedInstanceState.getString(CURRENT_FRAGMENT);
-
-            if (tabClassName != null) {
-                try {
-                    Class<? extends AppFragment> savedFragmentClass = (Class<? extends AppFragment>) Class.forName(tabClassName);
-                    changeFragment(savedFragmentClass);
-                } catch (ClassNotFoundException e) {
-                    Log.d(TAG, "Unable to load saved class: " + tabClassName);
-                }
-            } else {
-                login();
-            }
         }
     }
 
@@ -328,7 +333,7 @@ public class MainActivity extends AppCompatActivity {
                 String cardId = byteArrayToHexString(intent.getByteArrayExtra(NfcAdapter.EXTRA_ID));
                 Log.i(TAG, "New NFC Tag: " + cardId);
 
-                if(currentFragment!= null){
+                if (currentFragment != null) {
                     currentFragment.onCardIdRead(cardId);
                 }
             }

@@ -23,7 +23,7 @@ public class AboutFragment extends AppFragment {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getMainActivity().onBackPressed();
+                changeFragment(NodesFragment.class);
             }
         });
 

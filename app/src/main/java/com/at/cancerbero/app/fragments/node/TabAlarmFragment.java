@@ -98,7 +98,7 @@ public class TabAlarmFragment extends TabFragment {
                                     loadNode();
                                 });
                             }
-                        }, 500);
+                        }, 1500);
                     }
                     dialog.dismiss();
                 });
