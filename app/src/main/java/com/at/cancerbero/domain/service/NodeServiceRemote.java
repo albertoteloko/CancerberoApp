@@ -150,6 +150,8 @@ public class NodeServiceRemote implements NodeService {
                 String title = mainAppService.getResources().getString(R.string.title_notification_node_safety);
                 String message = MessageFormat.format(mainAppService.getResources().getString(R.string.message_notification_node_safety), node.name);
                 sendNotification(node, title, message);
+            } else {
+                silentChannels(node);
             }
             nodeStatuses.put(node.id, status);
         }
@@ -168,6 +170,17 @@ public class NodeServiceRemote implements NodeService {
         }
     }
 
+    private void silentChannels(Node node) {
+        if (Build.VERSION.SDK_INT < 26) {
+            return;
+        }
+        NotificationManager notificationManager = (NotificationManager) mainAppService.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if (notificationManager != null) {
+            notificationManager.cancel(node.id.hashCode());
+        }
+    }
+
     private void sendNotification(Node node, String title, String message) {
         initChannels(mainAppService, node);
         Intent intent = new Intent(mainAppService, MainActivity.class);
@@ -182,7 +195,7 @@ public class NodeServiceRemote implements NodeService {
                 .setAutoCancel(true)
                 .setContentIntent(pendingIntent); // clear notification after click
         NotificationManager mNotificationManager = (NotificationManager) mainAppService.getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(0, mBuilder.build());
+        mNotificationManager.notify(node.id.hashCode(), mBuilder.build());
     }
 
     private void subscribeToPushNodes(List<Node> nodes) {
