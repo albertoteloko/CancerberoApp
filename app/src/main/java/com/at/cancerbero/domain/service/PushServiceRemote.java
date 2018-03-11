@@ -65,6 +65,14 @@ public class PushServiceRemote implements PushService {
     }
 
     @Override
+    public void subscribeTopic(String topic) {
+        this.topics.add(topic);
+        if (token != null) {
+            subscribeTopics();
+        }
+    }
+
+    @Override
     public void onTokenRefresh() {
         try {
             InstanceID instanceID = InstanceID.getInstance(mainAppService);

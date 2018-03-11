@@ -12,5 +12,7 @@ public interface PushService {
 
     void subscribeTopics(Set<String> topics);
 
+    void subscribeTopic(String topic);
+
     void onTokenRefresh();
 }

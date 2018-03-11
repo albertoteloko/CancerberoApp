@@ -88,4 +88,5 @@
     <string name="title_notification_node_sabotage">Sabotage</string>
     <string name="message_notification_node_sabotage">The node {0} sabotage has been trigger</string>
     <string name="changed_by_label">Changed by</string>
+    <string name="last_ping_label">Ping</string>
 </resources>

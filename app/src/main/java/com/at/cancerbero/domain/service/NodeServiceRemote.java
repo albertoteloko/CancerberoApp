@@ -26,7 +26,6 @@ import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import java8.util.concurrent.CompletableFuture;
 import java8.util.stream.Collectors;
@@ -47,19 +46,6 @@ public class NodeServiceRemote implements NodeService {
 
     private String baseUrl;
 
-    private final Cache<List<Node>> nodesCache = new Cache<List<Node>>(1L, TimeUnit.MINUTES) {
-        @Override
-        protected CompletableFuture<List<Node>> getFreshContent() {
-            return securityService.getCurrentUser()
-                    .thenApplyAsync(user -> nodeConverter.convert(getNodesRepository(user).loadNodes()))
-                    .thenApplyAsync(nodes -> {
-                        subscribeToPushNodes(nodes);
-                        checkNodesNotifications(nodes);
-                        return nodes;
-                    });
-        }
-    };
-
     public NodeServiceRemote(SecurityService securityService) {
         this.securityService = securityService;
     }
@@ -77,15 +63,25 @@ public class NodeServiceRemote implements NodeService {
     }
 
     @Override
-    public CompletableFuture<List<Node>> loadNodes() {
-        return nodesCache.getContent();
+    public synchronized CompletableFuture<List<Node>> loadNodes() {
+        return securityService.getCurrentUser()
+                .thenApplyAsync(user -> nodeConverter.convert(getNodesRepository(user).loadNodes()))
+                .thenApplyAsync(nodes -> {
+                    subscribeToPushNodes(nodes);
+                    checkNodesNotifications(nodes);
+                    return nodes;
+                });
     }
 
     @Override
-    public CompletableFuture<Node> loadNode(String nodeId) {
-        return loadNodes().thenApply(nodes ->
-                StreamSupport.stream(nodes).filter(node -> node.id.equals(nodeId)).findFirst().orElse(null)
-        );
+    public synchronized CompletableFuture<Node> loadNode(String nodeId) {
+        return securityService.getCurrentUser()
+                .thenApplyAsync(user -> nodeConverter.convert(getNodesRepository(user).loadNode(nodeId)))
+                .thenApplyAsync(nodes -> {
+                    subscribeToPushNode(nodes);
+                    onStatusChange(nodes);
+                    return nodes;
+                });
     }
 
     @Override
@@ -114,11 +110,11 @@ public class NodeServiceRemote implements NodeService {
             }
 
             if (node != null) {
-                if (node.modules.alarm != null) {
-                    node.handleEvent(event);
-                    if (event instanceof AlarmStatusChanged) {
-                        onStatusChange(node);
-                    }
+                if (MainActivity.getInstance() != null) {
+                    MainActivity.getInstance().onNodeChanged(node);
+                }
+                if (event instanceof AlarmStatusChanged) {
+                    onStatusChange(node);
                 }
             } else {
                 Log.w(TAG, "Node not found: " + event.getNodeId());
@@ -200,6 +196,10 @@ public class NodeServiceRemote implements NodeService {
 
     private void subscribeToPushNodes(List<Node> nodes) {
         mainAppService.getPushService().subscribeTopics(StreamSupport.stream(nodes).map(i -> "/topics/" + i.id).collect(Collectors.toSet()));
+    }
+
+    private void subscribeToPushNode(Node node) {
+        mainAppService.getPushService().subscribeTopic("/topics/" + node.id);
     }
 
     private NodesRepository getNodesRepository(User user) {

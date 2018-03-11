@@ -12,7 +12,6 @@
     <uses-feature
         android:name="android.hardware.nfc"
         android:required="true" />
-    <!-- Registering app for receiving NFC's TAG_DISCOVERED intent -->
 
     <application
         android:allowBackup="true"
@@ -28,10 +27,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
 
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.nfc.action.TAG_DISCOVERED" />
-                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
@@ -72,5 +67,4 @@
             </intent-filter>
         </service>
     </application>
-
 </manifest>

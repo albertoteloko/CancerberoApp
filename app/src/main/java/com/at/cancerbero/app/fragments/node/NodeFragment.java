@@ -30,7 +30,7 @@ import java8.util.stream.StreamSupport;
 public class NodeFragment extends AppFragment implements TabLayout.OnTabSelectedListener, ViewPager.OnPageChangeListener {
 
     private static final String TAB_SELECTED = "TAB_SELECTED";
-    private static final int REFRESH_TIME = 10 * 1000;
+    private static final int REFRESH_TIME = 60 * 1000;
 
     private final List<TabFragment> items = new ArrayList<>();
 
@@ -51,12 +51,16 @@ public class NodeFragment extends AppFragment implements TabLayout.OnTabSelected
 
     private Handler timerHandler = new Handler();
 
+    private boolean showing = false;
+
     final Runnable updateNode = new Runnable() {
 
         @Override
         public void run() {
-            loadNode();
-            timerHandler.postDelayed(updateNode, REFRESH_TIME);
+            if (showing) {
+                loadNode();
+                timerHandler.postDelayed(updateNode, REFRESH_TIME);
+            }
         }
     };
 
@@ -94,6 +98,19 @@ public class NodeFragment extends AppFragment implements TabLayout.OnTabSelected
     @Override
     public void onCreateOptionsMenuApp(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_actions, menu);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        showing = false;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        showing = true;
+
     }
 
     @Override
@@ -221,6 +238,11 @@ public class NodeFragment extends AppFragment implements TabLayout.OnTabSelected
                 return null;
             });
         }
+    }
+
+    @Override
+    public void onNodeChanged(Node node) {
+        showItem(node);
     }
 
     private void restoreFromBundle(Bundle extras) {

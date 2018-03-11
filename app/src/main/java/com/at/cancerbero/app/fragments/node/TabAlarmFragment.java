@@ -19,6 +19,8 @@ import com.at.cancerbero.domain.model.AlarmStatus;
 import com.at.cancerbero.domain.model.AlarmStatusEvent;
 import com.at.cancerbero.domain.model.Node;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -38,6 +40,8 @@ public class TabAlarmFragment extends TabFragment {
 
     private TextView statusSourceText;
 
+    private TextView lastPing;
+
     private ListView listView;
 
     private ImageButton imageButton;
@@ -54,6 +58,9 @@ public class TabAlarmFragment extends TabFragment {
         nodeName.setText(NodeUtils.getText(currentStatus));
         statusImage.setImageResource(NodeUtils.getImage(currentStatus));
         statusSourceText.setText(status.sourceName);
+
+        DateFormat format =  new SimpleDateFormat("dd/MM/YYYY HH:mm");
+        lastPing.setText(format.format(node.lastPing));
 
         List<AlarmPin> pins = getPins(node);
         if (pins.isEmpty()) {
@@ -75,6 +82,8 @@ public class TabAlarmFragment extends TabFragment {
         statusImage = view.findViewById(R.id.node_status);
 
         statusSourceText = view.findViewById(R.id.change_status_value);
+
+        lastPing = view.findViewById(R.id.last_ping_value);
 
         listView = view.findViewById(R.id.list_pins);
         registerForContextMenu(listView);

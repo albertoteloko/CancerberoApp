@@ -36,6 +36,7 @@ import com.at.cancerbero.app.fragments.LoadingFragment;
 import com.at.cancerbero.app.fragments.login.ChangePasswordFragment;
 import com.at.cancerbero.app.fragments.login.LoginFragment;
 import com.at.cancerbero.app.fragments.node.NodesFragment;
+import com.at.cancerbero.domain.model.Node;
 import com.at.cancerbero.domain.model.User;
 import com.at.cancerbero.domain.service.SecurityService;
 
@@ -241,6 +242,15 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
+    public void onNodeChanged(Node node) {
+        if (currentFragment != null) {
+            runOnUiThread(() -> {
+                currentFragment.onNodeChanged(node);
+            });
+        }
+    }
+
     private CompletableFuture<User> getUserFuture() {
         SecurityService securityService = getMainService().getSecurityService();
 
@@ -316,16 +326,19 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
-        // creating intent receiver for NFC events:
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(NfcAdapter.ACTION_TAG_DISCOVERED);
-        filter.addAction(NfcAdapter.ACTION_NDEF_DISCOVERED);
-        filter.addAction(NfcAdapter.ACTION_TECH_DISCOVERED);
-        // enabling foreground dispatch for getting intent from NFC event:
         NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(this);
 
         if (nfcAdapter != null) {
+            nfcAdapter.disableForegroundDispatch(this);
+
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+            // creating intent receiver for NFC events:
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(NfcAdapter.ACTION_TAG_DISCOVERED);
+            filter.addAction(NfcAdapter.ACTION_NDEF_DISCOVERED);
+            filter.addAction(NfcAdapter.ACTION_TECH_DISCOVERED);
+            // enabling foreground dispatch for getting intent from NFC event:
+
             nfcAdapter.enableForegroundDispatch(this, pendingIntent, new IntentFilter[]{filter}, this.techList);
         }
     }

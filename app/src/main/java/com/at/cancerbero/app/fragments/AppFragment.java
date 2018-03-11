@@ -138,4 +138,8 @@ public abstract class AppFragment extends Fragment {
     public void onCardIdRead(String cardId) {
 
     }
+
+    public void onNodeChanged(Node node) {
+
+    }
 }
