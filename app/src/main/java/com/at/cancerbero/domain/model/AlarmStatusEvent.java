@@ -11,6 +11,7 @@ import lombok.ToString;
 @AllArgsConstructor
 public class AlarmStatusEvent {
     public final String source;
+    public final String sourceName;
     public final Date timestamp;
     public final AlarmStatus value;
 }

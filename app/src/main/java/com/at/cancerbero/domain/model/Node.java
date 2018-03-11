@@ -32,6 +32,7 @@ public class Node {
                 AlarmStatusChanged alarmStatusChanged = (AlarmStatusChanged) event;
                 modules.alarm.status = new AlarmStatusEvent(
                         alarmStatusChanged.getSource(),
+                        alarmStatusChanged.getSourceName(),
                         alarmStatusChanged.getTimestamp(),
                         alarmStatusChanged.getValue()
                 );

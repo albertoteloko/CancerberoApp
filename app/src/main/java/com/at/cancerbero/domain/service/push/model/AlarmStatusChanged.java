@@ -13,4 +13,5 @@ import lombok.ToString;
 public class AlarmStatusChanged extends Event {
     private AlarmStatus value;
     private String source;
+    private String sourceName;
 }

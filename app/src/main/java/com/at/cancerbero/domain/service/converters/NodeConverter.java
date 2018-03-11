@@ -93,6 +93,7 @@ public class NodeConverter {
     private AlarmStatusEvent convert(com.at.cancerbero.domain.data.repository.model.AlarmStatusChangeEvent input) {
         return new AlarmStatusEvent(
                 input.getSource(),
+                input.getSourceName(),
                 input.getTimestamp(),
                 input.getValue()
         );

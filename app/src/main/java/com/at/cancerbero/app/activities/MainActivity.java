@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout mDrawer;
     private ActionBarDrawerToggle mDrawerToggle;
     private Toolbar toolbar;
+    private TextView navHeaderSubTitle;
 
     public MainAppService getMainService() {
         return MainAppService.getInstance();
@@ -189,6 +190,9 @@ public class MainActivity extends AppCompatActivity {
         nDrawer = findViewById(R.id.nav_view);
         setNavDrawer();
 
+        View navigationHeader = nDrawer.getHeaderView(0);
+        navHeaderSubTitle = navigationHeader.findViewById(R.id.textViewNavUserSub);
+
         changeFragment(LoadingFragment.class);
 
         bindService(serviceIntent, new ServiceConnection() {
@@ -215,6 +219,7 @@ public class MainActivity extends AppCompatActivity {
                 changeFragment(LoginFragment.class);
                 Log.e(TAG, "Unable to log in", t);
             } else {
+                navHeaderSubTitle.setText(u.getName());
                 Class<? extends AppFragment> fragmentClass = NodesFragment.class;
                 Bundle bundle = Bundle.EMPTY;
 

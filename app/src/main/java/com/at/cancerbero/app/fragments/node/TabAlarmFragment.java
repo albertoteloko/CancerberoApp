@@ -36,6 +36,8 @@ public class TabAlarmFragment extends TabFragment {
 
     private ImageView statusImage;
 
+    private TextView statusSourceText;
+
     private ListView listView;
 
     private ImageButton imageButton;
@@ -51,6 +53,7 @@ public class TabAlarmFragment extends TabFragment {
         currentStatus = status.value;
         nodeName.setText(NodeUtils.getText(currentStatus));
         statusImage.setImageResource(NodeUtils.getImage(currentStatus));
+        statusSourceText.setText(status.sourceName);
 
         List<AlarmPin> pins = getPins(node);
         if (pins.isEmpty()) {
@@ -70,6 +73,8 @@ public class TabAlarmFragment extends TabFragment {
         nodeName = view.findViewById(R.id.node_name);
 
         statusImage = view.findViewById(R.id.node_status);
+
+        statusSourceText = view.findViewById(R.id.change_status_value);
 
         listView = view.findViewById(R.id.list_pins);
         registerForContextMenu(listView);
@@ -123,6 +128,7 @@ public class TabAlarmFragment extends TabFragment {
 
     private AlarmStatusEvent getStatus(Node node) {
         AlarmStatusEvent status = new AlarmStatusEvent(
+                "",
                 "",
                 Calendar.getInstance().getTime(),
                 AlarmStatus.IDLE

@@ -9,8 +9,8 @@ import lombok.Data;
 
 @Data
 public class AlarmStatusChangeEvent {
-    private UUID id;
     private String source;
+    private String sourceName;
     private Date timestamp;
     private AlarmStatus value;
 }
