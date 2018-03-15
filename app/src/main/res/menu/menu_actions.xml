@@ -3,5 +3,9 @@
     <item
         android:id="@+id/menu_refresh"
         android:title="@string/menu_refresh" />
+    <item
+        android:id="@+id/menu_setup"
+        android:title="@string/menu_setup"
+        android:visible="false" />
         <!--android:showAsAction="never"-->
 </menu>

@@ -1,7 +1,5 @@
 package com.at.cancerbero.domain.service;
 
-import android.content.Context;
-
 import com.at.cancerbero.app.MainAppService;
 import com.at.cancerbero.domain.model.User;
 

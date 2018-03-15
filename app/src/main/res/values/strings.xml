@@ -87,6 +87,8 @@
     <string name="message_notification_node_safety">The node {0} safety has been trigger</string>
     <string name="title_notification_node_sabotage">Sabotage</string>
     <string name="message_notification_node_sabotage">The node {0} sabotage has been trigger</string>
-    <string name="changed_by_label">Changed by</string>
-    <string name="last_ping_label">Ping</string>
+    <string name="changed_by_label">Changed by {0} on {1}</string>
+    <string name="last_ping_label">Last ping on {0}</string>
+    <string name="menu_setup">Setup Node</string>
+    <string name="label_setup_node">Setup Node</string>
 </resources>

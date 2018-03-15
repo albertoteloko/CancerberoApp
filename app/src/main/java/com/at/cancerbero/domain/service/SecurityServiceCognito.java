@@ -1,6 +1,8 @@
 package com.at.cancerbero.domain.service;
 
 import android.support.annotation.NonNull;
+import android.util.Base64;
+import android.util.Log;
 
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserDetails;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserPool;
@@ -16,6 +18,8 @@ import com.at.cancerbero.domain.service.handlers.AuthenticationContinuations;
 import com.at.cancerbero.domain.service.handlers.AuthenticationHandler;
 import com.at.cancerbero.domain.service.handlers.ForgotPasswordHandler;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -253,8 +257,25 @@ public class SecurityServiceCognito implements SecurityService {
         String userId = cognitoUserSession.getUsername();
         String name = cognitoUserDetails.getAttributes().getAttributes().get("given_name");
         String token = cognitoUserSession.getIdToken().getJWTToken();
-        Set<String> groups = new HashSet<>();
+        Set<String> groups = getGroups(cognitoUserSession.getAccessToken().getJWTToken());
         return new User(userId, name, token, groups);
+    }
+
+    private Set<String> getGroups(String token) {
+        Set<String> result = new HashSet<>();
+
+        String jwtRaw = token.substring(token.indexOf(".") + 1, token.lastIndexOf("."));
+
+        byte[] data = Base64.decode(jwtRaw, Base64.DEFAULT);
+        String jwt = new String(data, StandardCharsets.UTF_8);
+
+        String init = "\"cognito:groups\":[";
+        String end = "]";
+
+        int initIndex = jwt.indexOf(init);
+        String groupsRaw = jwt.substring(initIndex + init.length(), jwt.indexOf(end, initIndex)).replace("\"", "");
+        result.addAll(Arrays.asList(groupsRaw.split(",")));
+        return result;
     }
 
     @NonNull

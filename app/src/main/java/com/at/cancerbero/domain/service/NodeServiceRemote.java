@@ -91,6 +91,12 @@ public class NodeServiceRemote implements NodeService {
     }
 
     @Override
+    public CompletableFuture<Boolean> setup(String nodeId) {
+        return securityService.getCurrentUser()
+                .thenApplyAsync(user -> getNodesRepository(user).setup(nodeId));
+    }
+
+    @Override
     public CompletableFuture<Boolean> addCard(String nodeId, String cardId, String name) {
         return securityService.getCurrentUser()
                 .thenApplyAsync(user -> getNodesRepository(user).addCard(nodeId, cardId, name));

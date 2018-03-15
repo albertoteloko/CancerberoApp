@@ -1,5 +1,6 @@
 package com.at.cancerbero.app.fragments.node;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -18,12 +19,14 @@ import android.view.ViewGroup;
 
 import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.app.fragments.AppFragment;
+import com.at.cancerbero.app.fragments.login.LoginFragment;
 import com.at.cancerbero.domain.model.Node;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import java8.util.Optional;
+import java8.util.concurrent.CompletableFuture;
 import java8.util.function.Consumer;
 import java8.util.stream.StreamSupport;
 
@@ -52,6 +55,8 @@ public class NodeFragment extends AppFragment implements TabLayout.OnTabSelected
     private Handler timerHandler = new Handler();
 
     private boolean showing = false;
+
+    private MenuItem setupItem;
 
     final Runnable updateNode = new Runnable() {
 
@@ -98,6 +103,9 @@ public class NodeFragment extends AppFragment implements TabLayout.OnTabSelected
     @Override
     public void onCreateOptionsMenuApp(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_actions, menu);
+
+        setupItem = menu.getItem(1);
+
     }
 
     @Override
@@ -111,6 +119,22 @@ public class NodeFragment extends AppFragment implements TabLayout.OnTabSelected
         super.onResume();
         showing = true;
 
+        getMainService().getSecurityService().getCurrentUser().handle((u, t) -> {
+            if (t != null) {
+                showToast(R.string.message_title_unable_to_login);
+                changeFragment(LoginFragment.class);
+                Log.e(TAG, "Unable to log in", t);
+            } else {
+                Log.e(TAG, "Groups: " + u.getGroups());
+                runOnUiThread(() -> {
+
+                    boolean adminRight = u.getGroups().contains("Admins");
+                    setupItem.setVisible(adminRight);
+                });
+            }
+            return null;
+        });
+
     }
 
     @Override
@@ -120,9 +144,28 @@ public class NodeFragment extends AppFragment implements TabLayout.OnTabSelected
         if (id == R.id.menu_refresh) {
             loadNode();
             return true;
+        } else if (id == R.id.menu_setup) {
+            setupNode();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setupNode() {
+        CompletableFuture<Boolean> future = getMainService().getNodeService().setup(nodeId);
+        ProgressDialog dialog = showProgressMessage(R.string.label_setup_node);
+
+        future.handle((v, t) -> {
+            runOnUiThread(() -> {
+                if (t != null) {
+                    showToast(R.string.label_unable_to_perform_action);
+                    Log.e(TAG, "Unable to clear node", t);
+                }
+                dialog.dismiss();
+            });
+            return null;
+        });
     }
 
 

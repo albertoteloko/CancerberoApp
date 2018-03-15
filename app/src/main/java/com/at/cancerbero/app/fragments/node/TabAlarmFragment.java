@@ -20,13 +20,13 @@ import com.at.cancerbero.domain.model.AlarmStatusEvent;
 import com.at.cancerbero.domain.model.Node;
 
 import java.text.DateFormat;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.UUID;
 
 import java8.util.concurrent.CompletableFuture;
 import java8.util.stream.Collectors;
@@ -57,10 +57,13 @@ public class TabAlarmFragment extends TabFragment {
         currentStatus = status.value;
         nodeName.setText(NodeUtils.getText(currentStatus));
         statusImage.setImageResource(NodeUtils.getImage(currentStatus));
-        statusSourceText.setText(status.sourceName);
 
-        DateFormat format =  new SimpleDateFormat("dd/MM/YYYY HH:mm");
-        lastPing.setText(format.format(node.lastPing));
+        DateFormat format = new SimpleDateFormat("dd/MM/YYYY HH:mm");
+        String statusText = MessageFormat.format(getMainService().getResources().getString(R.string.changed_by_label), status.sourceName, format.format(status.timestamp));
+        statusSourceText.setText(statusText);
+
+        String lastPingText = MessageFormat.format(getMainService().getResources().getString(R.string.last_ping_label), format.format(node.lastPing));
+        lastPing.setText(lastPingText);
 
         List<AlarmPin> pins = getPins(node);
         if (pins.isEmpty()) {

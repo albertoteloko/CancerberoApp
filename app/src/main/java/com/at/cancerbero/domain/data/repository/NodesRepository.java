@@ -5,6 +5,7 @@ import com.at.cancerbero.domain.data.repository.model.AlarmKey;
 import com.at.cancerbero.domain.data.repository.model.Node;
 import com.at.cancerbero.domain.data.repository.model.Nodes;
 import com.at.cancerbero.domain.data.repository.model.RemoveCard;
+import com.at.cancerbero.domain.data.repository.model.Setup;
 
 import java.util.List;
 
@@ -27,6 +28,11 @@ public class NodesRepository {
 
     public Boolean alarmKey(String nodeId) {
         serverConnector.post("/nodes/" + nodeId + "/actions", new AlarmKey(), null, 200);
+        return true;
+    }
+
+    public Boolean setup(String nodeId) {
+        serverConnector.post("/nodes/" + nodeId + "/actions", new Setup(), null, 200);
         return true;
     }
 
