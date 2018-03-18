@@ -40,8 +40,6 @@ public class TabAlarmFragment extends TabFragment {
 
     private TextView statusSourceText;
 
-    private TextView lastPing;
-
     private ListView listView;
 
     private ImageButton imageButton;
@@ -61,9 +59,6 @@ public class TabAlarmFragment extends TabFragment {
         DateFormat format = new SimpleDateFormat("dd/MM/YYYY HH:mm");
         String statusText = MessageFormat.format(getMainService().getResources().getString(R.string.changed_by_label), status.sourceName, format.format(status.timestamp));
         statusSourceText.setText(statusText);
-
-        String lastPingText = MessageFormat.format(getMainService().getResources().getString(R.string.last_ping_label), format.format(node.lastPing));
-        lastPing.setText(lastPingText);
 
         List<AlarmPin> pins = getPins(node);
         if (pins.isEmpty()) {
@@ -85,8 +80,6 @@ public class TabAlarmFragment extends TabFragment {
         statusImage = view.findViewById(R.id.node_status);
 
         statusSourceText = view.findViewById(R.id.change_status_value);
-
-        lastPing = view.findViewById(R.id.last_ping_value);
 
         listView = view.findViewById(R.id.list_pins);
         registerForContextMenu(listView);

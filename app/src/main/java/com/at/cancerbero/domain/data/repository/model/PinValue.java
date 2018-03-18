@@ -6,8 +6,7 @@ import java.util.UUID;
 import lombok.Data;
 
 @Data
-public class AlarmPinChangeEvent {
-    private UUID id;
+public class PinValue {
     private Date timestamp;
     private int value;
 }

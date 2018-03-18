@@ -8,7 +8,7 @@ import lombok.ToString;
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class AlarmPinValueChangedEvent extends Event {
+public class AlarmPinValueEvent extends Event {
     private String pinId;
     private String value;
 }

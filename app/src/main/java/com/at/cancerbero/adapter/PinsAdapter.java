@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.domain.model.AlarmPin;
-import com.at.cancerbero.domain.model.AlarmPinEvent;
+import com.at.cancerbero.domain.model.PinValue;
 import com.at.cancerbero.domain.model.AlarmStatusEvent;
 import com.at.cancerbero.domain.model.PinInput;
 import com.at.cancerbero.domain.model.PinMode;
@@ -49,7 +49,8 @@ public class PinsAdapter extends ArrayAdapter<AlarmPin> {
         AlarmPin pin = values.get(position);
         textView.setText(pin.name);
 
-        Date date = getChangeEvent(pin).timestamp;
+        int value = pin.readings.value;
+        Date date = pin.readings.timestamp;
         DateFormat format =  new SimpleDateFormat("dd/MM/YYYY HH:mm");
         textDate.setText(format.format(date));
 
@@ -60,7 +61,7 @@ public class PinsAdapter extends ArrayAdapter<AlarmPin> {
                 textValue.setText(R.string.label_ok);
             }
         } else {
-            textValue.setText(getChangeEvent(pin).value + " " + pin.unit);
+            textValue.setText(value + " " + pin.unit);
         }
         if (isEnable(pin)) {
             textValue.setTextColor(ContextCompat.getColor(context, R.color.alert));
@@ -71,7 +72,7 @@ public class PinsAdapter extends ArrayAdapter<AlarmPin> {
     }
 
     private boolean isEnable(AlarmPin pin) {
-        int value = getChangeEvent(pin).value;
+        int value = pin.readings.value;
         if (pin.input == PinInput.DIGITAL) {
             if (pin.mode == PinMode.LOW) {
                 return value == 0;
@@ -85,9 +86,5 @@ public class PinsAdapter extends ArrayAdapter<AlarmPin> {
                 return value >= pin.threshold;
             }
         }
-    }
-
-    private AlarmPinEvent getChangeEvent(AlarmPin pin) {
-        return pin.activations;
     }
 }

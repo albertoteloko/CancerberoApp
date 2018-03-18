@@ -3,7 +3,7 @@ package com.at.cancerbero.domain.service.converters;
 
 import com.at.cancerbero.domain.model.AlarmModule;
 import com.at.cancerbero.domain.model.AlarmPin;
-import com.at.cancerbero.domain.model.AlarmPinEvent;
+import com.at.cancerbero.domain.model.PinValue;
 import com.at.cancerbero.domain.model.AlarmStatusEvent;
 import com.at.cancerbero.domain.model.CardModule;
 import com.at.cancerbero.domain.model.Node;
@@ -78,13 +78,12 @@ public class NodeConverter {
                 input.getMode(),
                 input.getUnit(),
                 input.getThreshold(),
-                convert(input.getActivations()),
                 convert(input.getReadings())
         );
     }
 
-    private AlarmPinEvent convert(com.at.cancerbero.domain.data.repository.model.AlarmPinChangeEvent input) {
-        return new AlarmPinEvent(
+    private PinValue convert(com.at.cancerbero.domain.data.repository.model.PinValue input) {
+        return new PinValue(
                 input.getTimestamp(),
                 input.getValue()
         );

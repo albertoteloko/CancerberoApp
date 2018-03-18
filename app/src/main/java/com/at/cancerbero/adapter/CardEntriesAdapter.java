@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import com.at.cancerbero.CancerberoApp.R;
 import com.at.cancerbero.domain.model.AlarmPin;
-import com.at.cancerbero.domain.model.AlarmPinEvent;
 import com.at.cancerbero.domain.model.PinInput;
 import com.at.cancerbero.domain.model.PinMode;
 
@@ -49,7 +48,7 @@ public class CardEntriesAdapter extends ArrayAdapter<Map.Entry<String, String>> 
     }
 
     private boolean isEnable(AlarmPin pin) {
-        int value = getChangeEvent(pin).value;
+        int value = pin.readings.value;
         if (pin.input == PinInput.DIGITAL) {
             if (pin.mode == PinMode.LOW) {
                 return value == 0;
@@ -63,9 +62,5 @@ public class CardEntriesAdapter extends ArrayAdapter<Map.Entry<String, String>> 
                 return value >= pin.threshold;
             }
         }
-    }
-
-    private AlarmPinEvent getChangeEvent(AlarmPin pin) {
-        return pin.activations;
     }
 }

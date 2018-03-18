@@ -10,7 +10,7 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 @AllArgsConstructor
-public class AlarmPinEvent {
+public class PinValue {
     public final Date timestamp;
     public final int value;
 }

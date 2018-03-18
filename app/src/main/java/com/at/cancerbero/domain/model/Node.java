@@ -2,8 +2,7 @@ package com.at.cancerbero.domain.model;
 
 import android.util.Log;
 
-import com.at.cancerbero.domain.service.push.model.AlarmPinActivatedEvent;
-import com.at.cancerbero.domain.service.push.model.AlarmPinValueChangedEvent;
+import com.at.cancerbero.domain.service.push.model.AlarmPinValueEvent;
 import com.at.cancerbero.domain.service.push.model.AlarmStatusChanged;
 import com.at.cancerbero.domain.service.push.model.Event;
 
@@ -36,33 +35,17 @@ public class Node {
                         alarmStatusChanged.getTimestamp(),
                         alarmStatusChanged.getValue()
                 );
-            } else if (event instanceof AlarmPinValueChangedEvent) {
-                AlarmPinValueChangedEvent alarmPinValueChangedEvent = (AlarmPinValueChangedEvent) event;
-                AlarmPin pin = modules.alarm.pins.get(alarmPinValueChangedEvent.getPinId());
+            } else if (event instanceof AlarmPinValueEvent) {
+                AlarmPinValueEvent alarmPinValueEvent = (AlarmPinValueEvent) event;
+                AlarmPin pin = modules.alarm.pins.get(alarmPinValueEvent.getPinId());
 
                 if (pin != null) {
-                    pin.readings = new AlarmPinEvent(
-                            alarmPinValueChangedEvent.getTimestamp(),
-                            Integer.parseInt(alarmPinValueChangedEvent.getValue())
+                    pin.readings = new PinValue(
+                            alarmPinValueEvent.getTimestamp(),
+                            Integer.parseInt(alarmPinValueEvent.getValue())
                     );
                 }else{
-                    Log.w(TAG, "Pin not found: " + alarmPinValueChangedEvent.getPinId());
-                }
-            } else if (event instanceof AlarmPinActivatedEvent) {
-                AlarmPinActivatedEvent alarmPinActivatedEvent = (AlarmPinActivatedEvent) event;
-                AlarmPin pin = modules.alarm.pins.get(alarmPinActivatedEvent.getPinId());
-
-                if (pin != null) {
-                    pin.activations = new AlarmPinEvent(
-                            alarmPinActivatedEvent.getTimestamp(),
-                            Integer.parseInt(alarmPinActivatedEvent.getValue())
-                    );
-                    pin.readings = new AlarmPinEvent(
-                            alarmPinActivatedEvent.getTimestamp(),
-                            Integer.parseInt(alarmPinActivatedEvent.getValue())
-                    );
-                }else{
-                    Log.w(TAG, "Pin not found: " + alarmPinActivatedEvent.getPinId());
+                    Log.w(TAG, "Pin not found: " + alarmPinValueEvent.getPinId());
                 }
             }
         }

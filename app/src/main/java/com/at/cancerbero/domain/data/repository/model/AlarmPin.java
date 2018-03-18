@@ -15,6 +15,5 @@ public class AlarmPin {
     private PinMode mode;
     private String unit;
     private int threshold;
-    private AlarmPinChangeEvent activations;
-    private AlarmPinChangeEvent readings;
+    private PinValue readings;
 }
