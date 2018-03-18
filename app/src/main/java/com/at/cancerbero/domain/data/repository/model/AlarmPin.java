@@ -14,6 +14,7 @@ public class AlarmPin {
     private PinInput input;
     private PinMode mode;
     private String unit;
-    private int threshold;
+    private Float scale;
+    private Integer threshold;
     private PinValue readings;
 }

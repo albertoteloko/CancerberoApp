@@ -77,6 +77,7 @@ public class NodeConverter {
                 input.getInput(),
                 input.getMode(),
                 input.getUnit(),
+                input.getScale(),
                 input.getThreshold(),
                 convert(input.getReadings())
         );

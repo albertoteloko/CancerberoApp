@@ -264,6 +264,7 @@ public class NodeFragment extends AppFragment implements TabLayout.OnTabSelected
                 runOnUiThread(() -> {
                     if (t != null) {
                         showToast(R.string.label_unable_to_load_node);
+                        Log.e(TAG, "Unable to load node", t);
                     } else {
                         nodeNumber = nodes.size();
 

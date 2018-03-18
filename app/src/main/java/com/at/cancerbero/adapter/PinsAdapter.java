@@ -15,7 +15,9 @@ import com.at.cancerbero.domain.model.AlarmStatusEvent;
 import com.at.cancerbero.domain.model.PinInput;
 import com.at.cancerbero.domain.model.PinMode;
 
+import java.math.RoundingMode;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -51,7 +53,7 @@ public class PinsAdapter extends ArrayAdapter<AlarmPin> {
 
         int value = pin.readings.value;
         Date date = pin.readings.timestamp;
-        DateFormat format =  new SimpleDateFormat("dd/MM/YYYY HH:mm");
+        DateFormat format = new SimpleDateFormat("dd/MM/YYYY HH:mm");
         textDate.setText(format.format(date));
 
         if (pin.input == PinInput.DIGITAL) {
@@ -61,7 +63,14 @@ public class PinsAdapter extends ArrayAdapter<AlarmPin> {
                 textValue.setText(R.string.label_ok);
             }
         } else {
-            textValue.setText(value + " " + pin.unit);
+            DecimalFormat df = new DecimalFormat("#.##");
+            df.setRoundingMode(RoundingMode.CEILING);
+            float finalValue = value;
+
+            if (pin.scale != null) {
+                finalValue = finalValue * pin.scale;
+            }
+            textValue.setText(df.format(finalValue) + " " + pin.unit);
         }
         if (isEnable(pin)) {
             textValue.setTextColor(ContextCompat.getColor(context, R.color.alert));
