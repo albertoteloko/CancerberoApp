@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.at.cancerbero.CancerberoApp">
+    package="com.at.hal9000.Hal9000App">
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -20,7 +20,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.at.cancerbero.app.activities.MainActivity"
+            android:name="com.at.hal9000.app.activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,16 +31,16 @@
         </activity>
 
         <service
-            android:name="com.at.cancerbero.app.MainAppService"
+            android:name="com.at.hal9000.app.MainAppService"
             android:enabled="true"
             android:exported="true" />
 
-        <receiver android:name="com.at.cancerbero.domain.service.receivers.MainServiceStartBootReceiver">
+        <receiver android:name="com.at.hal9000.domain.service.receivers.MainServiceStartBootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <receiver android:name="com.at.cancerbero.domain.service.receivers.MainServiceStartReceiver" />
+        <receiver android:name="com.at.hal9000.domain.service.receivers.MainServiceStartReceiver" />
 
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"
@@ -53,14 +53,14 @@
         </receiver>
 
         <service
-            android:name="com.at.cancerbero.domain.service.push.MyGcmListenerService"
+            android:name="com.at.hal9000.domain.service.push.MyGcmListenerService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
             </intent-filter>
         </service>
         <service
-            android:name="com.at.cancerbero.domain.service.push.MyInstanceIDListenerService"
+            android:name="com.at.hal9000.domain.service.push.MyInstanceIDListenerService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.android.gms.iid.InstanceID" />

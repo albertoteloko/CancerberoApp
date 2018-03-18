@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:newPasswordFragment="com.at.cancerbero.app.activities.MainActivity">
+    tools:newPasswordFragment="com.at.hal9000.app.activities.MainActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar_layout"

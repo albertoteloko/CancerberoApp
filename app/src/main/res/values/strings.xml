@@ -1,24 +1,11 @@
 <resources>
-    <string name="app_name">Cancerbero</string>
-    <string name="app_main_screen">Sign in</string>
+    <string name="app_name">HAL 9000</string>
     <string name="app_main_screen_title">Cancerbero</string>
-    <string name="app_main_desc">Be safe!</string>
     <string name="nav_drawer_open">Open navigation drawer</string>
     <string name="nav_drawer_close">Close navigation drawer</string>
-    <string name="title_activity_user">UserActivity</string>
     <string name="label_menu">Menu</string>
-    <string name="title_activity_about_app">AboutApp</string>
-    <string name="about">Cancerbero Domo management app 1.0</string>
-    <string name="more_info">https://github.com/albertoteloko/CancerberoApp</string>
-
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-
-    <string name="menu_save">Save</string>
-    <string name="menu_cancel">Cancel</string>
 
     <string name="label_loading">Loading</string>
-    <string name="label_singUp">Signing Up</string>
 
     <string name="title_nodes">Nodes</string>
     <string name="title_node">Node</string>
@@ -52,7 +39,6 @@
     <string name="message_missing_fields">Enter all required attributed</string>
     <string name="label_continue">Continue</string>
     <string name="label_change_password">Change Password</string>
-    <string name="label_about">About</string>
     <string name="label_sign_out">Sign out</string>
     <string name="label_forgot_password">Forgot Password</string>
     <string name="label_new_password_below">Enter your current and new passwords below.</string>
@@ -74,7 +60,6 @@
     <string name="label_enabling_alarm">Enabling alarm</string>
     <string name="label_disabling_alarm">Disabling alarm</string>
     <string name="label_unable_to_perform_action">Unable to perform action</string>
-    <string name="hint_card_name">Card Name</string>
     <string name="add_new_card">Add new card</string>
     <string name="remove_card">Remove card: </string>
     <string name="remove">Remove</string>

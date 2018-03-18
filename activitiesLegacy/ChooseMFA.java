@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.at.cancerbero.activitiesLegacy;
+package com.at.hal9000.activitiesLegacy;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -25,7 +25,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
-import com.at.cancerbero.CancerberoApp.R;
+import com.at.hal9000.Hal9000App.R;
 
 import java.util.List;
 

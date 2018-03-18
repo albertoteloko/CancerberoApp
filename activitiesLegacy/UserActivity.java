@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.at.cancerbero.activitiesLegacy;
+package com.at.hal9000.activitiesLegacy;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -48,7 +48,7 @@ import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserSession
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.GenericHandler;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.GetDetailsHandler;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.UpdateAttributesHandler;
-import com.at.cancerbero.CancerberoApp.R;
+import com.at.hal9000.Hal9000App.R;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.at.cancerbero.activitiesLegacy;
+package com.at.hal9000.activitiesLegacy;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -30,7 +30,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.at.cancerbero.CancerberoApp.R;
+import com.at.hal9000.Hal9000App.R;
 
 public class ForgotPasswordActivity extends AppCompatActivity {
     private EditText passwordInput;

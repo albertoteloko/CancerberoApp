@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.at.cancerbero.activitiesLegacy;
+package com.at.hal9000.activitiesLegacy;
 
 public class ItemToDisplay {
     // Text for display

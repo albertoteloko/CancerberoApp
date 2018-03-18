@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.at.cancerbero.activitiesLegacy;
+package com.at.hal9000.activitiesLegacy;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -33,7 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.GenericHandler;
-import com.at.cancerbero.CancerberoApp.R;
+import com.at.hal9000.Hal9000App.R;
 
 public class ChangePasswordActivity extends AppCompatActivity {
 

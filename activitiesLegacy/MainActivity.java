@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.at.cancerbero.activitiesLegacy;
+package com.at.hal9000.activitiesLegacy;
 
 import android.app.ProgressDialog;
 import android.content.ComponentName;
@@ -52,8 +52,8 @@ import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.NewP
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.ChooseMfaContinuation;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.AuthenticationHandler;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.ForgotPasswordHandler;
-import com.at.cancerbero.CancerberoApp.R;
-import com.at.cancerbero.service.MainService;
+import com.at.hal9000.Hal9000App.R;
+import com.at.hal9000.service.MainService;
 
 import java.util.List;
 import java.util.Locale;

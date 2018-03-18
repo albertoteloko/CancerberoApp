@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.at.cancerbero.activitiesLegacy;
+package com.at.hal9000.activitiesLegacy;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -55,17 +55,17 @@ public class AddAttributeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(com.at.cancerbero.CancerberoApp.R.layout.activity_add_attribute);
+        setContentView(com.at.hal9000.CancerberoApp.R.layout.activity_add_attribute);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        Toolbar toolbar = (Toolbar) findViewById(com.at.cancerbero.CancerberoApp.R.id.toolbar_add_attribute);
+        Toolbar toolbar = (Toolbar) findViewById(com.at.hal9000.CancerberoApp.R.id.toolbar_add_attribute);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        TextView main_title = (TextView) findViewById(com.at.cancerbero.CancerberoApp.R.id.add_attr_toolbar_title);
+        TextView main_title = (TextView) findViewById(com.at.hal9000.CancerberoApp.R.id.add_attr_toolbar_title);
         main_title.setText("Add attribute");
 
         attributeSelected = null;
@@ -86,9 +86,9 @@ public class AddAttributeActivity extends AppCompatActivity {
     }
 
     void init() {
-        attributeTypes = (Spinner) findViewById(com.at.cancerbero.CancerberoApp.R.id.spinnerAttributes);
-        attributeData = (EditText) findViewById(com.at.cancerbero.CancerberoApp.R.id.editTextAttrData);
-        addAttributeButton = (Button) findViewById(com.at.cancerbero.CancerberoApp.R.id.add_attr_button);
+        attributeTypes = (Spinner) findViewById(com.at.hal9000.CancerberoApp.R.id.spinnerAttributes);
+        attributeData = (EditText) findViewById(com.at.hal9000.CancerberoApp.R.id.editTextAttrData);
+        addAttributeButton = (Button) findViewById(com.at.hal9000.CancerberoApp.R.id.add_attr_button);
 
         updateDropdownList(AppHelper.getNewAvailableOptions());
 
@@ -115,22 +115,22 @@ public class AddAttributeActivity extends AppCompatActivity {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 if (s.length() == 0) {
-                    TextView label = (TextView) findViewById(com.at.cancerbero.CancerberoApp.R.id.textViewAttrDataLabel);
+                    TextView label = (TextView) findViewById(com.at.hal9000.CancerberoApp.R.id.textViewAttrDataLabel);
                     label.setText(attributeData.getHint());
-                    attributeData.setBackground(getDrawable(com.at.cancerbero.CancerberoApp.R.drawable.text_border_selector));
+                    attributeData.setBackground(getDrawable(com.at.hal9000.CancerberoApp.R.drawable.text_border_selector));
                 }
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                TextView label = (TextView) findViewById(com.at.cancerbero.CancerberoApp.R.id.textViewAttrDataMessage);
+                TextView label = (TextView) findViewById(com.at.hal9000.CancerberoApp.R.id.textViewAttrDataMessage);
                 label.setText("");
             }
 
             @Override
             public void afterTextChanged(Editable s) {
                 if (s.length() == 0) {
-                    TextView label = (TextView) findViewById(com.at.cancerbero.CancerberoApp.R.id.textViewAttrDataLabel);
+                    TextView label = (TextView) findViewById(com.at.hal9000.CancerberoApp.R.id.textViewAttrDataLabel);
                     label.setText("");
                 }
             }

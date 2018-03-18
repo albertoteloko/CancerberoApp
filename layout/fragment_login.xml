@@ -6,7 +6,7 @@
     android:layout_marginLeft="@dimen/activity_horizontal_margin"
     android:layout_marginRight="@dimen/activity_horizontal_margin"
     android:layout_marginTop="@dimen/activity_vertical_margin"
-    tools:newPasswordFragment="com.at.cancerbero.app.fragments.login.LoginFragment">
+    tools:newPasswordFragment="com.at.hal9000.app.fragments.login.LoginFragment">
 
     <ImageView
         android:layout_width="110dp"
