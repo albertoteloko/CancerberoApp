@@ -3,13 +3,9 @@ package com.at.hal9000.domain.service;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.at.hal9000.Hal9000App.R;
 import com.at.hal9000.app.MainAppService;
-import com.google.android.gms.gcm.GcmPubSub;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.google.android.gms.iid.InstanceID;
+import com.google.firebase.messaging.FirebaseMessaging;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -54,62 +50,37 @@ public class PushServiceRemote implements PushService {
 
     @Override
     public void subscribeTopics(Set<String> topics) {
-        if (token != null) {
+        if (!this.topics.equals(topics)) {
             unsubscribeTopics();
             this.topics = topics;
-            subscribeTopics();
-        } else {
-
-            this.topics = topics;
-        }
-    }
-
-    @Override
-    public void subscribeTopic(String topic) {
-        this.topics.add(topic);
-        if (token != null) {
             subscribeTopics();
         }
     }
 
     @Override
     public void onTokenRefresh() {
-        try {
-            InstanceID instanceID = InstanceID.getInstance(mainAppService);
-            token = instanceID.getToken(
-                    mainAppService.getString(R.string.gcm_defaultSenderId),
-                    GoogleCloudMessaging.INSTANCE_ID_SCOPE,
-                    null
-            );
-            Log.i(TAG, "GCM Registration Token: " + token);
-
-            subscribeTopics();
-        } catch (Exception e) {
-            Log.d(TAG, "Failed to complete token refresh", e);
-        }
+        subscribeTopics();
     }
 
     private void subscribeTopics() {
         try {
-            GcmPubSub pubSub = GcmPubSub.getInstance(mainAppService);
-            pubSub.subscribe(token, GLOBAL_TOPIC, null);
+            FirebaseMessaging instance = FirebaseMessaging.getInstance();
             for (String topic : topics) {
                 Log.i(TAG, "Subscribing to: " + topic);
-                pubSub.subscribe(token, topic, null);
+                instance.subscribeToTopic(topic);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             Log.e(TAG, "Unable to subscribe topics", e);
         }
     }
 
     private void unsubscribeTopics() {
         try {
-            GcmPubSub pubSub = GcmPubSub.getInstance(mainAppService);
-            pubSub.unsubscribe(token, GLOBAL_TOPIC);
+            FirebaseMessaging instance = FirebaseMessaging.getInstance();
             for (String topic : topics) {
-                pubSub.unsubscribe(token, topic);
+                instance.unsubscribeFromTopic(topic);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             Log.e(TAG, "Unable to unsubscribe topics", e);
         }
     }

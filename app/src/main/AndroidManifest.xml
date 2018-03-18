@@ -35,36 +35,26 @@
             android:enabled="true"
             android:exported="true" />
 
-        <receiver android:name="com.at.hal9000.domain.service.receivers.MainServiceStartBootReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
+            <receiver android:name="com.at.hal9000.domain.service.receivers.MainServiceStartBootReceiver">
+                <intent-filter>
+                    <action android:name="android.intent.action.BOOT_COMPLETED" />
+                </intent-filter>
+            </receiver>
         <receiver android:name="com.at.hal9000.domain.service.receivers.MainServiceStartReceiver" />
 
-        <receiver
-            android:name="com.google.android.gms.gcm.GcmReceiver"
-            android:exported="true"
-            android:permission="com.google.android.c2dm.permission.SEND">
+        <service
+            android:name="com.at.hal9000.domain.service.push.MyGcmListenerService">
             <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <category android:name="com.at.cancerbero" />
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
-        </receiver>
+        </service>
 
         <service
-            android:name="com.at.hal9000.domain.service.push.MyGcmListenerService"
-            android:exported="false">
+            android:name="com.at.hal9000.domain.service.push.MyInstanceIDListenerService">
             <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
             </intent-filter>
         </service>
-        <service
-            android:name="com.at.hal9000.domain.service.push.MyInstanceIDListenerService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.android.gms.iid.InstanceID" />
-            </intent-filter>
-        </service>
+
     </application>
 </manifest>

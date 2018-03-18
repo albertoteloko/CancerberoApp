@@ -4,7 +4,7 @@ apply plugin: 'me.tatarka.retrolambda'
 android {
     compileSdkVersion 26
     defaultConfig {
-        applicationId "com.at.cancerbero.CancerberoApp"
+        applicationId "com.at.hal9000.Hal9000App"
         minSdkVersion 23
         targetSdkVersion 26
         versionCode 1
@@ -42,6 +42,7 @@ repositories {
 dependencies {
     implementation 'com.amazonaws:aws-android-sdk-cognitoidentityprovider:2.6.12'
 
+    implementation 'com.google.firebase:firebase-messaging:11.8.0'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.9.3'
     compile('com.google.guava:guava:23.6-android') {
         exclude group: 'com.google.code.findbugs'
@@ -64,3 +65,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 }
+
+
+
+apply plugin: 'com.google.gms.google-services'

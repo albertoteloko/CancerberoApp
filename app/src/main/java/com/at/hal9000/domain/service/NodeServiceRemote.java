@@ -78,7 +78,6 @@ public class NodeServiceRemote implements NodeService {
         return securityService.getCurrentUser()
                 .thenApplyAsync(user -> nodeConverter.convert(getNodesRepository(user).loadNode(nodeId)))
                 .thenApplyAsync(nodes -> {
-                    subscribeToPushNode(nodes);
                     onStatusChange(nodes);
                     return nodes;
                 });
@@ -190,7 +189,7 @@ public class NodeServiceRemote implements NodeService {
         intent.putExtra("nodeId", node.id);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(mainAppService, 0, intent, PendingIntent.FLAG_ONE_SHOT);
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mainAppService, "default")
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mainAppService, node.id)
                 .setSmallIcon(R.drawable.logo_transparent)
                 .setContentTitle(title)
                 .setContentText(message)
@@ -202,10 +201,6 @@ public class NodeServiceRemote implements NodeService {
 
     private void subscribeToPushNodes(List<Node> nodes) {
         mainAppService.getPushService().subscribeTopics(StreamSupport.stream(nodes).map(i -> "/topics/" + i.id).collect(Collectors.toSet()));
-    }
-
-    private void subscribeToPushNode(Node node) {
-        mainAppService.getPushService().subscribeTopic("/topics/" + node.id);
     }
 
     private NodesRepository getNodesRepository(User user) {
